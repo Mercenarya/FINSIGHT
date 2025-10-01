@@ -20,7 +20,7 @@ root = os.path.join(current_dir, '..')
 sys.path.append(root)
 
 
-from utils.data_release_csv import extract_list,convert_data_frame
+from utils.data_release_csv import extract_keys,extract_list,convert_data_frame
 
 #Data operators
 
@@ -183,8 +183,17 @@ if __name__ == "__main__":
         
         
         val = extract_list(data)
+        tt,qq1,qq2,qq3,qq4 = extract_keys(data)
         # print(key)
-        print(val)
+        # print(val)
+        print("TITLE")
+        print(tt)
+        print(qq1)
+        print(qq2)
+        time.sleep(3)
+        print("Starting convert and divide data ... ")
+        time.sleep(3)
+        print(convert_data_frame(tt,qq1,qq2,qq3,qq4))
         # print(convert_data_frame(key,val,"D:\MCT\formweb\FinSightData\data\Raw_data.csv"))
         
     except Exception as error:
