@@ -24,7 +24,9 @@ from utils.data_release_csv import extract_keys,extract_list,convert_data_frame
 
 #Data operators
 
-id_class = ['01','02','10','11','20','21','22','23','24','25','26','30','31','32','40','50','51','52','60','61','62','70','71']
+id_class = ['01','02','10','11','20','21','22',
+            '23','24','25','26','30','31','32','40',
+            '50','51','52','60','61','62','70','71']
 
 
 #begin assessment - functions

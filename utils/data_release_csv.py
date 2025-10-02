@@ -4,6 +4,14 @@ import os
 import sys
 
 
+current_dir = os.path.dirname(os.path.abspath(__file__))
+root = os.path.join(current_dir, '..')
+sys.path.append(root)
+
+from utils.comm_functions import save_to_csv,seed_path,get_path
+from utils.comm_functions import PATH
+
+
 #kiểm tra đường dẫn
 def current_path(path:str):
     try: 
@@ -75,6 +83,9 @@ def extract_keys(data:list):
         return f"<101 - 1> Error message : {error}"
 
 
+
+
+
 #chuyển đổi các dũ liệu vào csv thành dữ liệu thô ban đầu
 def convert_data_frame(tt:list,qq1:list,qq2:list,
                        qq3:list,qq4:list):
@@ -105,10 +116,11 @@ def convert_data_frame(tt:list,qq1:list,qq2:list,
         }
 
         df = pd.DataFrame(data)
-        df.to_csv("",index=False)
-
-
-        return data_len,df
+        print(seed_path(PATH))
+        print(save_to_csv(
+            PATH,df
+        ))
+        return df
 
 
     except Exception as error:
