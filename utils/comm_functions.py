@@ -22,7 +22,11 @@ def get_path(filename:str):
 
 
 def seed_path(path:str) -> bool:
-
+    '''
+    Existed Path review
+    args:
+    - Path args : string
+    '''
     try:
         if os.path.exists(path):
             return True
