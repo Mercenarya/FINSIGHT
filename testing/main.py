@@ -194,7 +194,7 @@ if __name__ == "__main__":
         #lưu vào mục data/json
         print(json_data)
         print("Corrected dir: ",seed_json)
-        print(save_to_json(JSN,json_data))
+        print(save_to_json(JSN, json_data))
         time.sleep(3)
         val = extract_list(data)
         tt,qq1,qq2,qq3,qq4 = extract_keys(data)
