@@ -8,8 +8,8 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 root = os.path.join(current_dir, '..')
 sys.path.append(root)
 
-from utils.comm_functions import save_to_csv,seed_path,get_path
-from utils.comm_functions import PATH
+from utils.comm_functions import save_to_csv,seed_path,save_to_json,looping_json
+from utils.comm_functions import PATH,JSN
 
 
 #kiểm tra đường dẫn
@@ -58,13 +58,16 @@ def extract_keys(data:list):
     qt3 = []
     qt4 = []
 
+    
 
 
     try:
+        
         for obj in range(len(data)):
             if isinstance(data[obj], dict):
-
-                # lấy các giá trị extract từ phần tử duyệt được
+                
+                # lấy các giá trị extract từ phần tử duyệt được - 
+                # phần này dành cho dataframe để xử lí csv
                 title = data[obj].get("title")
                 q1 = data[obj].get("First")
                 q2 = data[obj].get("Second")

@@ -50,12 +50,34 @@ def save_to_csv(filename:str,df,directory='data/raw'):
     except Exception as error:
         return f"ERROR to CSV : {error}"
 
-def looping_json(data:dict):
-    pass
+def looping_json(data:list):
+    try:
+        dict_data = []
+        count = 0
+        for obj in range(len(data)):
+            # nếu phần tử được duyệt là dict
+            if isinstance(data[obj], dict):
+                dict_data.append(
+                    {
+                        "title": data[obj].get("title"),
+                        "First_quarter": data[obj].get("First"),
+                        "Second_quarter":data[obj].get("Second"),
+                        "Third_quarter":data[obj].get('Third'),
+                        "Fourth_quarter":data[obj].get("Fourth")
+                    }
+                )
+                count += 1
+                print(f"sheet {count} appended")
+        return dict_data
+                
+    except json.JSONDecodeError as jsdcerror:
+        return f"JSONDecode : {jsdcerror}"
+    except Exception as error:
+        return f"JSON general : {error}"
 
 
 # chuyển dữ liệu json
-def save_to_json(filename:str,data:dict,directory='data/json'):
+def save_to_json(filename:str,data:list,directory='data/json'):
     '''
     Args:
         - filename : prototype01.json
@@ -63,11 +85,18 @@ def save_to_json(filename:str,data:dict,directory='data/json'):
         - directory : data/json
     '''
     try:
-        
-        with open(filename, "a+", encoding='utf-8') as f:
-            json.dump(data, f, indent=4, ensure_ascii=True)
+        # count = 0
+        with open(filename, "w", encoding='utf-8') as f:
+           
+            # for obj in data:
+            json.dump(data, f, indent=4, ensure_ascii=False)
+            
+            print(f"json sheet wrote")
+
+
     except Exception as error:
         return "JSON hooking : ",error
 
 
 PATH = get_path(RAW)
+JSN = get_path(JSP)

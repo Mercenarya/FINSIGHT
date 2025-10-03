@@ -21,6 +21,8 @@ sys.path.append(root)
 
 
 from utils.data_release_csv import extract_keys,extract_list,convert_data_frame
+from utils.comm_functions import looping_json,save_to_json,seed_path
+from utils.comm_functions import JSN,PATH
 
 #Data operators
 
@@ -182,8 +184,18 @@ if __name__ == "__main__":
         print(current_timeline(driver))
         time.sleep(3)
         data = data_loops(id_class,driver)
-        
-        
+        time.sleep(3)
+        print("Extract to JSON ...")
+       
+
+        #lấy dữ liệu vào json riêng
+        json_data = looping_json(data)
+        seed_json = seed_path(JSN)
+        #lưu vào mục data/json
+        print(json_data)
+        print("Corrected dir: ",seed_json)
+        print(save_to_json(JSN,json_data))
+        time.sleep(3)
         val = extract_list(data)
         tt,qq1,qq2,qq3,qq4 = extract_keys(data)
         # print(key)
