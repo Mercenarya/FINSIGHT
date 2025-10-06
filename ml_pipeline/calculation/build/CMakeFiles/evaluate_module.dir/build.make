@@ -71,29 +71,29 @@ include CMakeFiles/evaluate_module.dir/flags.make
 CMakeFiles/evaluate_module.dir/codegen:
 .PHONY : CMakeFiles/evaluate_module.dir/codegen
 
-CMakeFiles/evaluate_module.dir/_evaluate.cpp.obj: CMakeFiles/evaluate_module.dir/flags.make
-CMakeFiles/evaluate_module.dir/_evaluate.cpp.obj: CMakeFiles/evaluate_module.dir/includes_CXX.rsp
-CMakeFiles/evaluate_module.dir/_evaluate.cpp.obj: D:/FinSightData/ml_pipeline/calculation/_evaluate.cpp
-CMakeFiles/evaluate_module.dir/_evaluate.cpp.obj: CMakeFiles/evaluate_module.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\FinSightData\ml_pipeline\calculation\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/evaluate_module.dir/_evaluate.cpp.obj"
-	C:\TDM-GCC-64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/evaluate_module.dir/_evaluate.cpp.obj -MF CMakeFiles\evaluate_module.dir\_evaluate.cpp.obj.d -o CMakeFiles\evaluate_module.dir\_evaluate.cpp.obj -c D:\FinSightData\ml_pipeline\calculation\_evaluate.cpp
+CMakeFiles/evaluate_module.dir/profitability.cpp.obj: CMakeFiles/evaluate_module.dir/flags.make
+CMakeFiles/evaluate_module.dir/profitability.cpp.obj: CMakeFiles/evaluate_module.dir/includes_CXX.rsp
+CMakeFiles/evaluate_module.dir/profitability.cpp.obj: D:/FinSightData/ml_pipeline/calculation/profitability.cpp
+CMakeFiles/evaluate_module.dir/profitability.cpp.obj: CMakeFiles/evaluate_module.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=D:\FinSightData\ml_pipeline\calculation\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/evaluate_module.dir/profitability.cpp.obj"
+	C:\TDM-GCC-64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/evaluate_module.dir/profitability.cpp.obj -MF CMakeFiles\evaluate_module.dir\profitability.cpp.obj.d -o CMakeFiles\evaluate_module.dir\profitability.cpp.obj -c D:\FinSightData\ml_pipeline\calculation\profitability.cpp
 
-CMakeFiles/evaluate_module.dir/_evaluate.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/evaluate_module.dir/_evaluate.cpp.i"
-	C:\TDM-GCC-64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E D:\FinSightData\ml_pipeline\calculation\_evaluate.cpp > CMakeFiles\evaluate_module.dir\_evaluate.cpp.i
+CMakeFiles/evaluate_module.dir/profitability.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/evaluate_module.dir/profitability.cpp.i"
+	C:\TDM-GCC-64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E D:\FinSightData\ml_pipeline\calculation\profitability.cpp > CMakeFiles\evaluate_module.dir\profitability.cpp.i
 
-CMakeFiles/evaluate_module.dir/_evaluate.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/evaluate_module.dir/_evaluate.cpp.s"
-	C:\TDM-GCC-64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S D:\FinSightData\ml_pipeline\calculation\_evaluate.cpp -o CMakeFiles\evaluate_module.dir\_evaluate.cpp.s
+CMakeFiles/evaluate_module.dir/profitability.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/evaluate_module.dir/profitability.cpp.s"
+	C:\TDM-GCC-64\bin\c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S D:\FinSightData\ml_pipeline\calculation\profitability.cpp -o CMakeFiles\evaluate_module.dir\profitability.cpp.s
 
 # Object files for target evaluate_module
 evaluate_module_OBJECTS = \
-"CMakeFiles/evaluate_module.dir/_evaluate.cpp.obj"
+"CMakeFiles/evaluate_module.dir/profitability.cpp.obj"
 
 # External object files for target evaluate_module
 evaluate_module_EXTERNAL_OBJECTS =
 
-evaluate_module.cp311-win_amd64.pyd: CMakeFiles/evaluate_module.dir/_evaluate.cpp.obj
+evaluate_module.cp311-win_amd64.pyd: CMakeFiles/evaluate_module.dir/profitability.cpp.obj
 evaluate_module.cp311-win_amd64.pyd: CMakeFiles/evaluate_module.dir/build.make
 evaluate_module.cp311-win_amd64.pyd: C:/Users/Admin/AppData/Local/Programs/Python/Python311/libs/python311.lib
 evaluate_module.cp311-win_amd64.pyd: CMakeFiles/evaluate_module.dir/linkLibs.rsp
