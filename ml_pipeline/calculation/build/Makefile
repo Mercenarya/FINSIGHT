@@ -128,29 +128,29 @@ evaluate_module/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\evaluate_module.dir\build.make CMakeFiles/evaluate_module.dir/build
 .PHONY : evaluate_module/fast
 
-_evaluate.obj: _evaluate.cpp.obj
-.PHONY : _evaluate.obj
+profitability.obj: profitability.cpp.obj
+.PHONY : profitability.obj
 
 # target to build an object file
-_evaluate.cpp.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\evaluate_module.dir\build.make CMakeFiles/evaluate_module.dir/_evaluate.cpp.obj
-.PHONY : _evaluate.cpp.obj
+profitability.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\evaluate_module.dir\build.make CMakeFiles/evaluate_module.dir/profitability.cpp.obj
+.PHONY : profitability.cpp.obj
 
-_evaluate.i: _evaluate.cpp.i
-.PHONY : _evaluate.i
+profitability.i: profitability.cpp.i
+.PHONY : profitability.i
 
 # target to preprocess a source file
-_evaluate.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\evaluate_module.dir\build.make CMakeFiles/evaluate_module.dir/_evaluate.cpp.i
-.PHONY : _evaluate.cpp.i
+profitability.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\evaluate_module.dir\build.make CMakeFiles/evaluate_module.dir/profitability.cpp.i
+.PHONY : profitability.cpp.i
 
-_evaluate.s: _evaluate.cpp.s
-.PHONY : _evaluate.s
+profitability.s: profitability.cpp.s
+.PHONY : profitability.s
 
 # target to generate assembly for a file
-_evaluate.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\evaluate_module.dir\build.make CMakeFiles/evaluate_module.dir/_evaluate.cpp.s
-.PHONY : _evaluate.cpp.s
+profitability.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\evaluate_module.dir\build.make CMakeFiles/evaluate_module.dir/profitability.cpp.s
+.PHONY : profitability.cpp.s
 
 # Help Target
 help:
@@ -161,9 +161,9 @@ help:
 	@echo ... edit_cache
 	@echo ... rebuild_cache
 	@echo ... evaluate_module
-	@echo ... _evaluate.obj
-	@echo ... _evaluate.i
-	@echo ... _evaluate.s
+	@echo ... profitability.obj
+	@echo ... profitability.i
+	@echo ... profitability.s
 .PHONY : help
 
 

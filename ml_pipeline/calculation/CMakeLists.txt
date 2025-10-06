@@ -10,7 +10,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Adding sources
 set(
     SOURCES
-    calculation/ _evaluate.cpp
+    calculation/ profitability.cpp
 )
 
 # Requires package
