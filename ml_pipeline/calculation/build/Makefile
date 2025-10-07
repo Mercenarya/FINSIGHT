@@ -128,6 +128,54 @@ evaluate_module/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\evaluate_module.dir\build.make CMakeFiles/evaluate_module.dir/build
 .PHONY : evaluate_module/fast
 
+_evaluate.obj: _evaluate.cpp.obj
+.PHONY : _evaluate.obj
+
+# target to build an object file
+_evaluate.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\evaluate_module.dir\build.make CMakeFiles/evaluate_module.dir/_evaluate.cpp.obj
+.PHONY : _evaluate.cpp.obj
+
+_evaluate.i: _evaluate.cpp.i
+.PHONY : _evaluate.i
+
+# target to preprocess a source file
+_evaluate.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\evaluate_module.dir\build.make CMakeFiles/evaluate_module.dir/_evaluate.cpp.i
+.PHONY : _evaluate.cpp.i
+
+_evaluate.s: _evaluate.cpp.s
+.PHONY : _evaluate.s
+
+# target to generate assembly for a file
+_evaluate.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\evaluate_module.dir\build.make CMakeFiles/evaluate_module.dir/_evaluate.cpp.s
+.PHONY : _evaluate.cpp.s
+
+liquidity.obj: liquidity.cpp.obj
+.PHONY : liquidity.obj
+
+# target to build an object file
+liquidity.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\evaluate_module.dir\build.make CMakeFiles/evaluate_module.dir/liquidity.cpp.obj
+.PHONY : liquidity.cpp.obj
+
+liquidity.i: liquidity.cpp.i
+.PHONY : liquidity.i
+
+# target to preprocess a source file
+liquidity.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\evaluate_module.dir\build.make CMakeFiles/evaluate_module.dir/liquidity.cpp.i
+.PHONY : liquidity.cpp.i
+
+liquidity.s: liquidity.cpp.s
+.PHONY : liquidity.s
+
+# target to generate assembly for a file
+liquidity.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\evaluate_module.dir\build.make CMakeFiles/evaluate_module.dir/liquidity.cpp.s
+.PHONY : liquidity.cpp.s
+
 profitability.obj: profitability.cpp.obj
 .PHONY : profitability.obj
 
@@ -161,6 +209,12 @@ help:
 	@echo ... edit_cache
 	@echo ... rebuild_cache
 	@echo ... evaluate_module
+	@echo ... _evaluate.obj
+	@echo ... _evaluate.i
+	@echo ... _evaluate.s
+	@echo ... liquidity.obj
+	@echo ... liquidity.i
+	@echo ... liquidity.s
 	@echo ... profitability.obj
 	@echo ... profitability.i
 	@echo ... profitability.s

@@ -1,4 +1,8 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/evaluate_module.dir/_evaluate.cpp.obj"
+  "CMakeFiles/evaluate_module.dir/_evaluate.cpp.obj.d"
+  "CMakeFiles/evaluate_module.dir/liquidity.cpp.obj"
+  "CMakeFiles/evaluate_module.dir/liquidity.cpp.obj.d"
   "CMakeFiles/evaluate_module.dir/profitability.cpp.obj"
   "CMakeFiles/evaluate_module.dir/profitability.cpp.obj.d"
   "evaluate_module.cp311-win_amd64.pyd"

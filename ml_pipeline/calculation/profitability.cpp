@@ -5,7 +5,7 @@
 #include <stack>
 #include <string>
 #include <pybind11/pybind11.h>
-#include <map>
+// #include "liquidity.h"
 
 // parameter
 namespace py = pybind11;
@@ -14,7 +14,12 @@ using namespace std;
 class Profitability{
     private:
         float revenue; 
-        int billion_sample;
+        float gross_profit;
+        float business_profit;
+        float profit_atm;
+        float net_income;
+        float share;
+        const int billion_sample;
 
     public:
         // tỉ suất lợi nhuận gộp
@@ -77,20 +82,17 @@ class Profitability{
 };
 
 // chuyển đổi sang thư viện assets python
-PYBIND11_MODULE(evaluate_module, m){
-    py::class_<Profitability>(m, "Profitability").def(py::init<>())
-    .def("gross_margin_result", &Profitability::gross_margin_result,"caculate gross margin result")
-    .def("operating_profit_result", &Profitability::operating_profit_result,"caculate operating profit result")
-    .def("ros_result", &Profitability::ros_result,"Calculating ROS profit")
-    .def("net_profit", &Profitability::net_profit,"Recieve Net Profit")
-    .def("roa_profit", &Profitability::roa_profit,"Recieve ROA")
-    .def("increase_revenue", &Profitability::increase_revenue,"increased revenue")
-    .def("finance_cost", &Profitability::finance_cost, "get finance & revenue cost");
+// PYBIND11_MODULE(evaluate_module, m){
+//     py::class_<Profitability>(m, "Profitability").def(py::init<>())
+//     .def("gross_margin_result", &Profitability::gross_margin_result,"caculate gross margin result")
+//     .def("operating_profit_result", &Profitability::operating_profit_result,"caculate operating profit result")
+//     .def("ros_result", &Profitability::ros_result,"Calculating ROS profit")
+//     .def("net_profit", &Profitability::net_profit,"Recieve Net Profit")
+//     .def("roa_profit", &Profitability::roa_profit,"Recieve ROA")
+//     .def("increase_revenue", &Profitability::increase_revenue,"increased revenue")
+//     .def("finance_cost", &Profitability::finance_cost, "get finance & revenue cost");
 
-    // .def("input_data", &Evaluate::input_data,"input all elements");
-}
+//     // .def("input_data", &Evaluate::input_data,"input all elements");
+// }
 
 
-int main(){
-    return 0;
-}

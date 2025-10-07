@@ -4,6 +4,7 @@
 
 using namespace std;
 
+const int sample = 1000000000;
 // tỉ suất lợi nhuận gộp
 float gross_margin_result(float revenue, float gross_profit, int billion_sample){
     revenue = float(revenue/billion_sample);
@@ -58,16 +59,64 @@ float finance_cost(float revenue, float cost , float billion_sample){
     float fn_cost = cost/revenue;
     return float(fn_cost*100);
 }
+float current_ratio(float currentassets, float liabilities){
 
+    try
+    {
+        currentassets = float(currentassets/sample);
+        liabilities = float(liabilities/sample);
+        float ratio_result = currentassets / liabilities;
+        return float(ratio_result*100);
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr <<"current ratio : " <<e.what() << '\n';
+    }
+    
+}
+float quick_ratio(float currentassets, float inventory, float liabilities){
+    try
+    {
+        currentassets = float(currentassets/sample);
+        liabilities = float(liabilities/sample);
+        inventory = float(inventory/sample);
+        float quick_ratio_result = (currentassets-inventory)/liabilities;
+        return float(quick_ratio_result*100);
+
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr <<"quick ratio : "<< e.what() << '\n';
+    }
+    
+}
+
+float cash_ratio(float cash, float liabilities){
+    try
+    {
+        cash = float(cash/sample);
+        liabilities = float(liabilities/sample);
+        float cash_ratỉo_result = cash / liabilities;
+        return float(cash_ratỉo_result*100);
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
+    
+}
 
 
 int main(){
+    
     float ev = 0;
+    float gr = 0;
     float revenue = 27245717878312;
     float gross_profit = -2818409788534;
     int sample = 1000000000;
 
     ev = gross_margin_result(revenue,gross_profit,sample);
     cout<<ev;
+    
     
 }
