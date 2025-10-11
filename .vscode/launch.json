@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "d:/FinSightData/ml_pipeline/calculation",
-      "program": "d:/FinSightData/ml_pipeline/calculation/build/Debug/outDebug",
+      "cwd": "d:/FinSightData/testing",
+      "program": "d:/FinSightData/testing/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
