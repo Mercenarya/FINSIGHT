@@ -75,6 +75,31 @@ def looping_json(data:list):
     except Exception as error:
         return f"JSON general : {error}"
 
+#load json data
+def json_search(filename:str,search:str):
+    message = search
+    try:
+        data = []
+        with open(filename, 'r', encoding='utf-8') as file:
+            json_data = json.load(file)
+            for obj in json_data:
+                if message in obj.get("title"):
+                    data.append(
+                        {
+                        
+                            "title": obj.get("title"),
+                            "First_quarter": obj.get("First_quarter"),
+                            "Second_quarter":obj.get("Second_quarter"),
+                            "Third_quarter":obj.get('Third_quarter'),
+                            "Fourth_quarter":obj.get("Fourth_quarter")
+                        
+                        }
+                
+                    )
+        return data
+        
+    except Exception as error:
+        return f"JSON data : {error}"
 
 # chuyển dữ liệu json
 def save_to_json(filename:str,data:list,directory='data/json'):
