@@ -1,6 +1,7 @@
 #include <pybind11/pybind11.h>
 #include "liquidity.cpp"
 #include "profitability.cpp"
+#include "efficiency.cpp"
 
 using namespace std;
 namespace py = pybind11;
@@ -22,4 +23,10 @@ PYBIND11_MODULE(evaluate_module, m){
     .def("increase_revenue", &Profitability::increase_revenue,"increased revenue")
     .def("finance_cost", &Profitability::finance_cost, "get finance & revenue cost");
 
+
+    py::class_<Efficiency>(m, "Efficiency").def(py::init<>())
+    .def("inventory_turnover", &Efficiency::inventory_turnover,"Inventory tuernover ratios")
+    .def("recv_turnover", &Efficiency::recv_turnover,"Receivable turnover ratios")
+    .def("asset_turnover", &Efficiency::asset_turnover, "Asset turnover ratios");
 }
+

@@ -1,0 +1,8 @@
+#create compiler
+cmake .. -G "MinGW Makefiles" -DCMAKE_C_COMPILER="../gcc.exe" -DCMAKE_CXX_COMPILER="../g++.exe" -Dpybind11_DIR="C:/Users/Admin/AppData/Local/Programs/Python/Python311/Lib/site-packages/pybind11/share/cmake/pybind11"
+make .. -G "MinGW Makefiles" -DCMAKE_C_COMPILER="../gcc.exe" -DCMAKE_CXX_COMPILER="../g++.exe" -Dpybind11_DIR="C:/Users/Admin/AppData/Local/Programs/Python/Python311/Lib/site-packages/pybind11/share/cmake/pybind11"
+
+#compile & run
+libstdc++-6.dll
+libgcc_s_seh-1.dll
+libwinpthread-1.dll

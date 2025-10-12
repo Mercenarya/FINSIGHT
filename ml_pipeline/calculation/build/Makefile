@@ -152,6 +152,30 @@ _evaluate.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\evaluate_module.dir\build.make CMakeFiles/evaluate_module.dir/_evaluate.cpp.s
 .PHONY : _evaluate.cpp.s
 
+efficiency.obj: efficiency.cpp.obj
+.PHONY : efficiency.obj
+
+# target to build an object file
+efficiency.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\evaluate_module.dir\build.make CMakeFiles/evaluate_module.dir/efficiency.cpp.obj
+.PHONY : efficiency.cpp.obj
+
+efficiency.i: efficiency.cpp.i
+.PHONY : efficiency.i
+
+# target to preprocess a source file
+efficiency.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\evaluate_module.dir\build.make CMakeFiles/evaluate_module.dir/efficiency.cpp.i
+.PHONY : efficiency.cpp.i
+
+efficiency.s: efficiency.cpp.s
+.PHONY : efficiency.s
+
+# target to generate assembly for a file
+efficiency.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\evaluate_module.dir\build.make CMakeFiles/evaluate_module.dir/efficiency.cpp.s
+.PHONY : efficiency.cpp.s
+
 liquidity.obj: liquidity.cpp.obj
 .PHONY : liquidity.obj
 
@@ -212,6 +236,9 @@ help:
 	@echo ... _evaluate.obj
 	@echo ... _evaluate.i
 	@echo ... _evaluate.s
+	@echo ... efficiency.obj
+	@echo ... efficiency.i
+	@echo ... efficiency.s
 	@echo ... liquidity.obj
 	@echo ... liquidity.i
 	@echo ... liquidity.s

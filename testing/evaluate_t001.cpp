@@ -1,9 +1,10 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <cmath>
+#include <exception>
 
 using namespace std;
-
 const int sample = 1000000000;
 // tỉ suất lợi nhuận gộp
 float gross_margin_result(float revenue, float gross_profit, int billion_sample){
@@ -87,6 +88,7 @@ float quick_ratio(float currentassets, float inventory, float liabilities){
     catch(const std::exception& e)
     {
         std::cerr <<"quick ratio : "<< e.what() << '\n';
+        return 0.0f;
     }
     
 }
@@ -102,21 +104,92 @@ float cash_ratio(float cash, float liabilities){
     catch(const std::exception& e)
     {
         std::cerr << e.what() << '\n';
+        return 0.0f;
+    }
+    
+}
+float inventory_turnover(float costGS, float avginventory){
+    try
+    {
+        costGS = float(costGS/sample);
+        avginventory = float(avginventory/sample);
+
+        float turnover = costGS / avginventory;
+        if(turnover == 0 ){
+            std::cout<<"Turnover cannot be none value"<<std::endl;
+        }
+
+        return turnover;
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+        return 0.0f;
     }
     
 }
 
+float recv_turnover(float revenue, float avgaccountsrcv){
+    try
+    {
+        revenue = float(revenue / sample);
+        avgaccountsrcv = float(avgaccountsrcv / sample);
+
+        float turnover = revenue / avgaccountsrcv;
+        if (turnover == 0){
+            std::cout<<"Turnover cannot be none value"<<std::endl;
+        }
+        return turnover;
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+        return 0.0f;
+    }
+    
+}
+
+float asset_turnover(float revenue, float ttassets){
+    try
+    {
+        revenue = revenue /= sample;
+        ttassets = ttassets /= sample;
+
+        float turnover = revenue / ttassets;
+        if (turnover == 0){
+            std::cout<<"Turnover cannot be none value"<<std::endl;
+        }
+        return turnover;;
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+        return 0.0f;
+    }
+    
+}
 
 int main(){
-    
+    float av = 0;
     float ev = 0;
     float gr = 0;
+    float tat = 0;
+    float rcv = 0;
+    
     float revenue = 27245717878312;
     float gross_profit = -2818409788534;
     int sample = 1000000000;
 
     ev = gross_margin_result(revenue,gross_profit,sample);
-    cout<<ev;
-    
+    av = recv_turnover(600000000, 100000000);
+    tat = asset_turnover(2000000000, 1000000000);
+    rcv = recv_turnover(1200000000,200000000);
+
+
+    cout<<av;
+    cout<<endl;
+    cout<<tat;
+    cout<<endl;
+    cout<<rcv;
     
 }

@@ -13,6 +13,7 @@ set(
     calculation/ _evaluate.cpp
     calculation/ profitability.cpp
     calculation/ liquidity.cpp
+    calculation/ efficiency.cpp
 )
 
 # Requires package

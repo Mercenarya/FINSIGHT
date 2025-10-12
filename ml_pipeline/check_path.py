@@ -1,17 +1,20 @@
 import sys
 import os
 import pybind11
-
+import importlib.util
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 root = os.path.join(current_dir, '..')
 sys.path.append(root)
 
-from ml_pipeline.calculation.build import evaluate_module
 
+
+
+from ml_pipeline.calculation.build import evaluate_module
 
 ev = evaluate_module.Profitability()
 av = evaluate_module.Liquidity()
+ef = evaluate_module.Efficiency()
 
 print(ev)
 print(dir(ev))
@@ -24,3 +27,5 @@ print("Gross profit margin : ",
 print("Gross profit margin : ",
     round(av.current_ratio(20000,28180.0),2
 ),"%")
+
+print("Turnover assets : ", round(ef.asset_turnover(2000000000.0,1000000000.0),2))
