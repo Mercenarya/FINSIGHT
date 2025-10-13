@@ -24,6 +24,7 @@ class Liquidity{
 
             try
             {
+
                 currentassets = float(currentassets/sample);
                 liabilities = float(liabilities/sample);
                 float ratio_result = currentassets / liabilities;
@@ -57,8 +58,8 @@ class Liquidity{
             {
                 cash = float(cash/sample);
                 liabilities = float(liabilities/sample);
-                float cash_ratỉo_result = cash / liabilities;
-                return float(cash_ratỉo_result*100);
+                float cash_ratio_result = cash / liabilities;
+                return float(cash_ratio_result*100);
             }
             catch(const std::exception& e)
             {

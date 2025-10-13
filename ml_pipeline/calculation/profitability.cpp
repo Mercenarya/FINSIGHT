@@ -77,6 +77,13 @@ class Profitability{
             return float(fn_cost*100);
         }
         
+        float roe_profit(float net_income, float equity){
+            net_income = float(net_income/billion_sample);
+            equity = float(equity/billion_sample);
+            float roe = net_income/equity;
+            return float(roe * 100);
+        }
+
         
     Profitability(): revenue(0), billion_sample(0) {};
 };

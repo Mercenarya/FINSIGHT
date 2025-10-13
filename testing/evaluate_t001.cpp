@@ -98,8 +98,8 @@ float cash_ratio(float cash, float liabilities){
     {
         cash = float(cash/sample);
         liabilities = float(liabilities/sample);
-        float cash_ratỉo_result = cash / liabilities;
-        return float(cash_ratỉo_result*100);
+        float cash_ratio_result = cash / liabilities;
+        return float(cash_ratio_result*100);
     }
     catch(const std::exception& e)
     {
@@ -169,13 +169,37 @@ float asset_turnover(float revenue, float ttassets){
     
 }
 
+
+float growth_rate(float current, float previous){
+    try
+    {
+        if (previous == 0){
+            return 0.0f;
+        }
+        current = float(current/sample);
+        previous = float(previous/sample);
+        float growth = (current - previous) / previous;
+        if (growth == 0){
+            std::cout<<"Growth rate cannot be none";
+
+        }
+        return float(growth * 100);
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+        return 0.0f;
+    }
+    
+}
+
 int main(){
     float av = 0;
     float ev = 0;
-    float gr = 0;
     float tat = 0;
     float rcv = 0;
-    
+    float gr = 0;
+
     float revenue = 27245717878312;
     float gross_profit = -2818409788534;
     int sample = 1000000000;
@@ -184,12 +208,15 @@ int main(){
     av = recv_turnover(600000000, 100000000);
     tat = asset_turnover(2000000000, 1000000000);
     rcv = recv_turnover(1200000000,200000000);
-
+    gr = growth_rate(1200000000000, 1000000000000);
 
     cout<<av;
     cout<<endl;
     cout<<tat;
     cout<<endl;
     cout<<rcv;
+    cout<<endl;
+    cout<<gr;
     
+    return 0;
 }
