@@ -15,9 +15,6 @@ from ml_pipeline.calculation.build import evaluate_module
 
 
 
-
-
-
 ev = evaluate_module.Profitability()
 av = evaluate_module.Liquidity()
 ef = evaluate_module.Efficiency()

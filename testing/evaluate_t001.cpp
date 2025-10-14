@@ -217,6 +217,8 @@ int main(){
     cout<<rcv;
     cout<<endl;
     cout<<gr;
+    cout<<endl;
+    cout<<ev;
     
     return 0;
 }
