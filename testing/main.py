@@ -27,10 +27,10 @@ sys.path.append(build_dir)
 from utils.data_release_csv import extract_keys,extract_list,convert_data_frame
 from utils.comm_functions import looping_json,save_to_json,seed_path
 from utils.comm_functions import JSN,PATH
-from ml_pipeline.calculation.build import evaluate_module
+# from ml_pipeline.calculation.build import evaluate_module
 
 
-ev = evaluate_module.Evaluate()
+# ev = evaluate_module.Evaluate()
 
 #Data operators
 

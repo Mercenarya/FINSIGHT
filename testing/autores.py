@@ -65,7 +65,6 @@ class StatmentCoverage:
     def create_threads(self):
         params = []
         threads = []
-        data = []
         result_queue = Queue()
         count = 0
         
@@ -86,12 +85,7 @@ class StatmentCoverage:
             threads.append(thread)
             thread.start()
 
-        # for value in threads:
-        #     count += 1
-        #     result = value.join()
-        #     record = threading.Thread(target=self.input_records, args=(case_title,str(result),count))
-        #     data.append(record)
-        #     record.start()
+       
         for th in threads:
             th.join()
 
