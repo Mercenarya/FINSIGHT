@@ -11,82 +11,157 @@
 namespace py = pybind11;
 using namespace std;
 
-class Profitability{
-    private:
-        float revenue; 
-        float gross_profit;
-        float business_profit;
-        float profit_atm;
-        float net_income;
-        float share;
-        const int billion_sample;
+typedef long long SAMPLE;// đơn vị chuẩn : 1,000,000,000
+typedef double RATIOS;// tỷ suất
+typedef double MARGIN;// biên 
+typedef vector<double> DATA;// quy chuẩn kiểu dữ liệu cho luồng dữ liệu 
 
+// đơn vị mẫu
+const SAMPLE sample = 1'000'000'000;
+
+/*
+    float revenue; 
+    float gross_profit;
+    float business_profit;
+    float profit_atm;
+    float net_income;
+    float share;
+*/
+
+
+// khởi tạo datasheet 
+struct datasheet{
+    long long GP; // gross profit (lợi nhuận gộp)
+    long long RV; // revenue (doanh thu thuần)
+    long long NI; // Net income (lợi nhuận ròng)
+    long long SEQ; // Shareholder enquity 
+    long long TTA; // total assets (tài sản)
+    long long BSNP; // business profit (lơi nhuận hoạt động EBIT)
+    long long BATMP; // lợi nhuận sau thuế
+};
+
+/* Trưng dụng hàm */
+void extract_data(){};
+void merge_vct(){};
+vector<double> ratio_vt(){};
+vector<double> margin_vt(){};
+
+class Profitability {
     public:
-        // tỉ suất lợi nhuận gộp
-        float gross_margin_result(float revenue, float gross_profit, int billion_sample){
-            revenue = float(revenue/billion_sample);
-            gross_profit = float(gross_profit/billion_sample);
-            float margin = gross_profit / revenue;
-            return float(margin * 100);
-        }
-        // tỉ suất lợi nhuận hoạt động kinh doanh
-        float operating_profit_result(float business_profit, float revenue,  int billion_sample){
-            revenue = float(revenue/billion_sample);
-            business_profit = float(business_profit/billion_sample);
-            float margin = business_profit/revenue;
-            return float(margin * 100);
-        }
-        // ROS ( Tỉ suất lợi nhuận ròng )
-        float ros_result(float revenue, float profit_atm, int billion_sample ){
-            revenue = float(revenue/billion_sample);
-            profit_atm = float(profit_atm/billion_sample);
-            float margin = profit_atm / revenue;
-            return float(margin*100);
+        /* Constructor cho Class*/
+        Profitability() = default;
+        
+        /*Xây dựng hàm tính toán tỉ suất*/
+        template <typename T>
+        MARGIN gross_profit_margin(T GP, T RV){
+            try{
+                if(RV == 0){
+                    if (GP > 0){
+                        throw std::invalid_argument("Revenue (RV) is none, undefined Gross margin");
+                        return 1.0f;
+                    }
+                    return 0.0f;
+                }
+                // xử lí ép kiểu dữ liệu từ long long --> double
+                GP = static_cast<double>(GP);
+                RV = static_cast<double>(RV);
+
+                // xử lí kết quả biên lợi nhuận
+                double margin = static_cast<double>(GP)/RV ;
+                return margin* 100;
+            }catch(const std::exception& e){
+                std::cerr << e.what() << '\n';
+            }
+            
+
         }
 
-        // biên lợi nhuận ròng
-        float net_profit(float revenue, float net_income, int billion_sample){
-            revenue = float(revenue/billion_sample);
-            net_income = float(net_income/billion_sample);
-            float net_pft = net_income/revenue;
-            return float(net_pft*100);
+
+        template<typename T>
+        MARGIN opm_margin(T BSNP, T RV){
+            try{
+                if(RV == 0){if (BSNP > 0){
+                    throw std::invalid_argument("Revenue (RV) is none, undefined Business net profit ");
+                        return 1.0f;
+                    }
+                    return 0.0f;
+                }
+                // xử lí ép kiểu dữ liệu long long --> double
+                BSNP = static_cast<double>(BSNP);
+                RV = static_cast<double>(RV);
+
+                //xử lí kết quả biên lợi nhuận
+                double margin = static_cast<double>(BSNP) / RV;
+                return margin*100;
+            }catch(const std::exception& e){
+                std::cerr << e.what() << '\n';
+            }
+        
             
         }
 
-        // lơi nhuận ROA
-        float roa_profit(float revenue, float share, int billion_sample){
-            revenue = float(revenue/billion_sample);
-            share = float(share/billion_sample);
-            float roa_pft = share/revenue;
-            return float(roa_pft*100);
+
+        template <typename T>
+        MARGIN npm_margin(T BATMP, T RV ){
+            try{
+                if( RV == 0){
+                    if(BATMP > 0){
+                        throw std::invalid_argument("Revenue (RV) is none, undefined Net income");
+                        return 1.0f;
+                 
+                    }
+                    return 0.0f;
+                }
+                
+                //xử lí ép kiểu dữ liệu long long --> double
+                BATMP = static_cast<double>(BATMP);
+                RV = static_cast<double>(RV);
+
+                // xử lí kết quả biên lợi nhuận
+                double margin = static_cast<double>(BATMP) / RV;
+                return margin*100;
+            }catch(const std::exception& e){
+                std::cerr << e.what() << '\n';
+            }
+            
         }
 
-        // chỉ số tăng trưởng doanh thu
-        float increase_revenue(float pre_rv, float current_rv, int billion_sample){
-            pre_rv = float(pre_rv/billion_sample);
-            current_rv = float(current_rv/billion_sample);
-            float inc_rev = (current_rv-pre_rv)/pre_rv;
-            return float(inc_rev*100);
-        }
-
-        // chi phí tài chính doanh thu
-        float finance_cost(float revenue, float cost , int billion_sample){
-            revenue = float(revenue/billion_sample);
-            cost = float(cost/billion_sample);
-            float fn_cost = cost/revenue;
-            return float(fn_cost*100);
-        }
-        
-        float roe_profit(float net_income, float equity){
-            net_income = float(net_income/billion_sample);
-            equity = float(equity/billion_sample);
-            float roe = net_income/equity;
-            return float(roe * 100);
-        }
-
-        
-    Profitability(): revenue(0), billion_sample(0) {};
 };
+
+
+
+
+// extract result of current ratio to absolute vector
+template<typename T>
+vector<double> margin_vt(vector<T> &x, vector<T> &y){
+    vector<double> result;
+    MARGIN margin = 0;
+    if(x.size() != y.size()){
+        throw std::invalid_argument("Assets and liabilities must be same length");
+    }
+    /*
+    Vì 2 luồng vector dữ liệu là 2 luồng vector
+    vốn dĩ là cùng kích thướng nên ta chỉ cần
+    sử dụng 1 vector làm mẫu 
+    */
+   // x[value].y[value] là vị trí giá trị để lấy giá trị đó vào result
+    for(int value = 0; value < x.size(); value ++){
+        // đẩy các giá trị vào result
+        margin = Profitability().gross_profit_margin(x[value],y[value]);
+        result.push_back(margin);
+    }
+    return result;
+};
+
+// extract result
+template<typename T>
+void extract_data( vector<T> &data){
+    for(auto value : data){
+        cout<<value<<",";
+    }
+
+};
+
 
 // chuyển đổi sang thư viện assets python
 // PYBIND11_MODULE(evaluate_module, m){

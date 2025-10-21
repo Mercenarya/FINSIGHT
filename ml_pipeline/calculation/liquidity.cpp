@@ -1,18 +1,21 @@
-// #ifndef LIQUIDITY_H
-// #define LIQUIDITY_H
 #include <iostream>
 #include <cmath>
-#include <pybind11/pybind11.h>
-#include <exception>
+#include <queue>
+#include <vector>
+#include <stdexcept>
+#include <thread>
 
 
-// parameter
-namespace py = pybind11;
+// standard namspace 
 using namespace std;
 
 
 // đơn vị chuẩn : 1,000,000,000
 typedef long long SAMPLE;
+// current ratio
+typedef double CRT;
+const SAMPLE sample = 1'000'000'000;
+
 
 // khởi tạo giá trị 
 struct datasheet
@@ -27,7 +30,6 @@ struct datasheet
 
 class Liquidity{
     public:
-        const SAMPLE sample = 1000000000LL;
         Liquidity() = default;
         /*Template : sử dụng để làm biển mẫu nhằm xác định đa dạng kiểu dữ liệu vào*/
         template <typename T>
@@ -38,16 +40,17 @@ class Liquidity{
                 if(liabilities == 0){
                     if(current_assets > 0){
                         throw std::invalid_argument("liabilities is zero, undifined current assets");
+                        return 1.0f;
                     }
                     return 0.0f;
-                }
+                };
 
                 //Ép kiểu dữ liệu double, chuyển đổi giá trị cho từng mục
-                current_assets = static_cast<double>(current_assets);
-                liabilities = static_cast<double>(liabilities);
+                // current_assets = static_cast<double>(current_assets);
+                // liabilities = static_cast<double>(liabilities);
 
                 /*Ratio*/
-                double ratio = current_assets / liabilities;
+                double ratio = static_cast<double> (current_assets) / liabilities;
                 return ratio;
                 
 
@@ -57,10 +60,7 @@ class Liquidity{
                std::cerr << e.what() << '\n';
                return 1.0f;
             }
-            catch(const std::invalid_argument& e){
-               std::cerr << e.what() << '\n';
-               return 1.0f;
-            }
+
             
         }
         
@@ -72,16 +72,17 @@ class Liquidity{
                 if (liabilities == 0){
                     if(current_assets > 0 || inventory > 0){
                         throw std::invalid_argument("liabilities is zero, undefined current assets and inventory");
+                        return 1.0f;
                     }
                     return 0.0f;
                 }
 
-                current_assets = static_cast<double>(current_assets);
-                inventory = static_cast<double>(inventory);
-                liabilities = static_cast<double>(liabilities);
+                // current_assets = static_cast<double>(current_assets);
+                // inventory = static_cast<double>(inventory);
+                // liabilities = static_cast<double>(liabilities);
 
                 /*Ratio*/
-                double ratio = (current_assets - inventory) / liabilities;
+                double ratio = static_cast<double>(current_assets - inventory) / liabilities;
 
                 return ratio;
 
@@ -92,10 +93,7 @@ class Liquidity{
                 std::cerr << e.what() << '\n';
                 return 1.0f;
             }
-            catch(const std::invalid_argument& e){
-                std::cerr << e.what() << '\n';
-                return 1.0f;
-            }
+            
             
         }
 
@@ -107,16 +105,17 @@ class Liquidity{
                 if (liabilities == 0){
                     if(cash > 0 || marketable_sc > 0){
                         throw std::invalid_argument("liabilities is zero, undefined cash and marketable security");
+                        return 1.0f;
                     }
                     return 0.0f;
                 }
 
-                cash = static_cast<double>(cash);
-                marketable_sc = static_cast<double>(marketable_sc);
-                liabilities = static_cast<double>(liabilities);
+                // cash = static_cast<double>(cash);
+                // marketable_sc = static_cast<double>(marketable_sc);
+                // liabilities = static_cast<double>(liabilities);
 
                 /*Ratio*/
-                double ratio = (cash + marketable_sc) / liabilities;
+                double ratio = static_cast<double>(cash + marketable_sc) / liabilities;
                 return ratio;
             }
             catch(const std::exception& e)
@@ -124,11 +123,53 @@ class Liquidity{
                 std::cerr << e.what() << '\n';
                 return 1.0f;
             }
-            catch(const std::invalid_argument& e){
-                std::cerr << e.what() << '\n';
-                return 1.0f;
-            }
+            
             
         }
 
 };
+
+
+// extract result of current ratio to absolute vector
+template<typename T>
+vector<double> crt_ratio_vt(vector<T> &assets, vector<T> &liabilities){
+    vector<double> result;
+    CRT ratio = 0;
+    if(assets.size() != liabilities.size()){
+        throw std::invalid_argument("Assets and liabilities must be same length");
+    }
+    for(int value = 0; value < assets.size(); value ++){
+        ratio = Liquidity().current_ratio(assets[value],liabilities[value]);
+        result.push_back(ratio);
+    }
+    return result;
+};
+
+// extract result
+template<typename T>
+void extract_data( vector<T> &data){
+    for(auto value : data){
+        cout<<value<<",";
+    }
+
+};
+
+
+// int main(){
+//     vector<long long> assets = {
+//         423'990'500, 400'374'790,
+//         372'183'892, 528'475'505
+//     };
+//     vector<long long> liabilities = {
+//         470'411'783, 514'844'802,
+//         440'710'635, 506'624'303
+//     };
+
+//     vector<double> data = crt_ratio_vt(assets, liabilities);
+//     extract_data(data);
+// }
+
+/* Trưng dụng hàm */
+void extract_data(){};
+void merge_vct(){};
+vector<double> crt_ratio_vt(){};
