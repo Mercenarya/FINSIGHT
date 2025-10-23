@@ -131,82 +131,82 @@ class Profitability {
         - tỉ suất sinh lời trên vốn sở hữu
         */
 
-    // tỉ suất ROA 
-    template<typename T>
-    RATIOS roa_ratios(T TTA, T NI){
-        try
-        {
-            if(TTA == 0){
-                if(NI > 0){
-                    throw std::invalid_argument("Total assest is none, Net income is undefined");
-                    return 1.0f;
+        // tỉ suất ROA 
+        template<typename T>
+        RATIOS roa_ratios(T TTA, T NI){
+            try
+            {
+                if(TTA == 0){
+                    if(NI > 0){
+                        throw std::invalid_argument("Total assest is none, Net income is undefined");
+                        return 1.0f;
+                    }
+                    return 0.0f;
                 }
-                return 0.0f;
-            }
-            TTA = static_cast<double>(TTA);
-            NI = static_cast<double>(NI);
+                TTA = static_cast<double>(TTA);
+                NI = static_cast<double>(NI);
 
-            double ratios = static_cast<double>(NI) / TTA;
-            return ratios * 100;
+                double ratios = static_cast<double>(NI) / TTA;
+                return ratios * 100;
+                
+            }
+            catch(const std::exception& e)
+            {
+            
+
+                std::cerr << e.what() << '\n';
+            }
             
         }
-        catch(const std::exception& e)
-        {
-           
-
-            std::cerr << e.what() << '\n';
-        }
-        
-    }
 
 
-    // tỉ suất ROE
-    template<typename T>
-    RATIOS roe_ratios(T ATE ,T NI){
-        try
-        {
-            if(ATE==0){
-                if(NI > 0){
-                    throw std::invalid_argument("After-tax Equity is none, net income is undefined");
-                    return 1.0f;
+        // tỉ suất ROE
+        template<typename T>
+        RATIOS roe_ratios(T ATE ,T NI){
+            try
+            {
+                if(ATE==0){
+                    if(NI > 0){
+                        throw std::invalid_argument("After-tax Equity is none, net income is undefined");
+                        return 1.0f;
+                    }
+                    return 0.0f;
                 }
-                return 0.0f;
+
+                ATE = static_cast<double>(ATE);
+                NI = static_cast<double>(NI);
+
+                double ratios = static_cast<double>(NI) / ATE;
+                return ratios * 100;
+
+
             }
-
-            ATE = static_cast<double>(ATE);
-            NI = static_cast<double>(NI);
-
-            double ratios = static_cast<double>(NI) / ATE;
-            return ratios * 100;
-
-
-        }
-        catch(const std::exception& e)
-        {
-            std::cerr << e.what() << '\n';
-        }
-        
-    }
-
-    // Thu nhập trên mỗi cổ phần
-    template<typename T>
-    RATIOS eps_ratios(T NI, T PD, T ASO){
-        try{
+            catch(const std::exception& e)
+            {
+                std::cerr << e.what() << '\n';
+            }
             
-            NI = static_cast<double>(NI);// net income
-            PD = static_cast<double>(PD);// Preffered Dividend
-            ASO = static_cast<double>(ASO);// Average shares outstanding
-
-            double ratios = static_cast<double>((NI)-PD) / ASO;
-            return ratios
-
         }
-        catch(const std::exception& e)
-        {
-            std::cerr << e.what() << '\n';
+
+        // Thu nhập trên mỗi cổ phần
+        template<typename T>
+        RATIOS eps_ratios(T NI, T PD, T ASO){
+            try{
+                
+                NI = static_cast<double>(NI);// net income
+                PD = static_cast<double>(PD);// Preffered Dividend
+                ASO = static_cast<double>(ASO);// Average shares outstanding
+
+                double ratios = static_cast<double>((NI)-PD) / ASO;
+                return ratios
+
+            }
+            catch(const std::exception& e)
+            {
+                std::cerr << e.what() << '\n';
+            }
+            
         }
-        
-    }
 
 };
 
