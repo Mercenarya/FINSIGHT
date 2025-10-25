@@ -115,6 +115,11 @@
     "thread": "cpp",
     "cinttypes": "cpp",
     "typeindex": "cpp",
-    "typeinfo": "cpp"
+    "typeinfo": "cpp",
+    "bit": "cpp",
+    "compare": "cpp",
+    "concepts": "cpp",
+    "ranges": "cpp",
+    "stop_token": "cpp"
   }
 }
