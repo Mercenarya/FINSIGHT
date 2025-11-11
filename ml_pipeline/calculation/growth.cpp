@@ -31,20 +31,18 @@ class Growth{
                 if(previous == 0){
                     
                     throw std::invalid_argument("Previous cannot be none");
-                  
-                    
+          
                 }
 
                 current = static_cast<double>(current);
                 previous = static_cast<double>(previous);
-
+                
                 GROWTH growth = static_cast<double>(current - previous) / previous;
                 return growth * 100;
             }
             catch(const std::exception& e)
             {
-                std::cerr << e.what() << '\n';
-               
+                std::cerr << e.what() << '\n';  
             }
             
         }
@@ -57,7 +55,6 @@ class Growth{
                 if(previous == 0){
                     
                     throw std::invalid_argument("Previous cannot be none");
-                    
                     
                 }
 
