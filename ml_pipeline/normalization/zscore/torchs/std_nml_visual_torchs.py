@@ -93,6 +93,7 @@ async def update_nml_data(x_point):
 
 
 
+
 if __name__ == "__main__":
     try:
         prc_data = read_data(RAW)
