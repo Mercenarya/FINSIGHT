@@ -1,0 +1,129 @@
+.system-health-page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.health-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.health-metric-card {
+  background: #1e3a5f;
+  padding: 20px;
+  border-radius: 12px;
+}
+
+.metric-header {
+  margin-bottom: 16px;
+}
+
+.metric-label {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 4px;
+}
+
+.metric-time {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.metric-value.large {
+  font-size: 32px;
+  font-weight: 700;
+  color: white;
+}
+
+.metric-value.alert {
+  color: #f44336;
+}
+
+.health-chart-panel {
+  background: #1e3a5f;
+  padding: 24px;
+  border-radius: 12px;
+}
+
+.health-chart-panel h3 {
+  font-size: 18px;
+  color: white;
+  margin: 0 0 20px 0;
+  font-weight: 600;
+}
+
+.events-panel {
+  background: #1e3a5f;
+  padding: 24px;
+  border-radius: 12px;
+}
+
+.events-panel h3 {
+  font-size: 18px;
+  color: white;
+  margin: 0 0 20px 0;
+  font-weight: 600;
+}
+
+.events-table {
+  overflow-x: auto;
+}
+
+.events-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.events-table th,
+.events-table td {
+  text-align: left;
+  padding: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.events-table th {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 600;
+}
+
+.events-table td {
+  color: white;
+  font-size: 14px;
+}
+
+.severity-badge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.severity-badge.critical {
+  background: rgba(244, 67, 54, 0.2);
+  color: #f44336;
+}
+
+.severity-badge.warning {
+  background: rgba(255, 193, 7, 0.2);
+  color: #ffc107;
+}
+
+.severity-badge.normal {
+  background: rgba(76, 175, 80, 0.2);
+  color: #4caf50;
+}
+
+@media (max-width: 1024px) {
+  .health-metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .health-metrics-grid {
+    grid-template-columns: 1fr;
+  }
+}
