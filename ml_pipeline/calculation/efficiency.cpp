@@ -18,29 +18,29 @@ typedef double TAT; //vòng quay tổng tài sản
 typedef double DPO; // kỳ trả bình quân 
 
 typedef long long SAMPLE; // đơn vị khử 
-const SAMPLE sample = 1'000'000'000;
+// const SAMPLE sample = 1'000'000'000;
 
 
 // constructor dữ liệu nạp vào
-struct efficiency
-{
-    double revenue;
-    double costGS;
-    double avgttassets;
-    double avginventory;
-    double avgaccountsrcv;
-    double inventoryturnover;
-    double netcreditsales;
-    double netsales;
-    double avgaccpay;
-    double accpayturnover;
-};
+// struct efficiency
+// {
+//     double revenue;
+//     double costGS;
+//     double avgttassets;
+//     double avginventory;
+//     double avgaccountsrcv;
+//     double inventoryturnover;
+//     double netcreditsales;
+//     double netsales;
+//     double avgaccpay;
+//     double accpayturnover;
+// };
 
 /* Trưng dụng hàm */
-void extract_data(){};
-void merge_vct(){};
-vector<EF> crt_ratio_vt(){};
-void progress();
+// void extract_data(){};
+// void merge_vct(){};
+// vector<EF> crt_ratio_vt(){};
+// void progress();
 
 
 // lớp tính mức độ hiệu quả BCTC
@@ -75,8 +75,8 @@ class Efficiency {
         }
 
         //days sale outstanding ( số ngày tồn kho )
-        template<typename T>
-        DIO dio_stand(const int days = 365, T inventoryturnover){
+        
+        DIO dio_stand(long long inventoryturnover, const int days = 365){
             try{
                 if(inventoryturnover == 0){
                     throw std::invalid_argument("Undefined inventory turnover");
@@ -84,8 +84,8 @@ class Efficiency {
                 }
 
                 // xử lí kiểu dữ liêu
-                inventoryturnover = static_cast<double> (inventoryturnover);
-                DIO dio = static_cast<double> (days) / inventoryturnover;
+                inventoryturnover = static_cast<long long> (inventoryturnover);
+                DIO dio = static_cast<long long> (days) / inventoryturnover;
                 return dio;
 
             }
@@ -168,8 +168,8 @@ class Efficiency {
         }
 
         // kỳ trả tiền bình quân
-        template<typename T>
-        DPO dpo_outstanding(const int days=365, T accpayturnover ){
+        
+        DPO dpo_outstanding(long long accpayturnover , const int days=365 ){
             try
             {
                 if(accpayturnover == 0){
@@ -178,7 +178,7 @@ class Efficiency {
                 }
 
                 //xử lí kiểu dữ liệu
-                accpayturnover = static_cast<double> (accpayturnover);
+                accpayturnover = static_cast<long long> (accpayturnover);
 
                 DPO result = days / accpayturnover;
                 return result;
@@ -191,6 +191,13 @@ class Efficiency {
             }
             
         }
+        DIO dio_stand_py(int days, long long inventoryturnover) {
+            return dio_stand(inventoryturnover, days);
+        }
+        DPO dpo_outstanding_py(int days, long long accpayturnover) {
+            return dpo_outstanding(accpayturnover, days);
+        }
+
 
 
 };

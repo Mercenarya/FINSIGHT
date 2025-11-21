@@ -14,17 +14,17 @@ using namespace std;
 typedef long long SAMPLE;
 // current ratio
 typedef double CRT;
-const SAMPLE sample = 1'000'000'000;
+// const SAMPLE sample = 1'000'000'000;
 
 
-// khởi tạo giá trị 
-struct datasheet
-{
-    long long current_assets;
-    long long liabilities;
-    long long inventory;
-    long long marketable_sc;
-};
+// // khởi tạo giá trị 
+// struct datasheet
+// {
+//     long long current_assets;
+//     long long liabilities;
+//     long long inventory;
+//     long long marketable_sc;
+// };
 
 
 
@@ -131,28 +131,28 @@ class Liquidity{
 
 
 // extract result of current ratio to absolute vector
-template<typename T>
-vector<double> crt_ratio_vt(vector<T> &assets, vector<T> &liabilities){
-    vector<double> result;
-    CRT ratio = 0;
-    if(assets.size() != liabilities.size()){
-        throw std::invalid_argument("Assets and liabilities must be same length");
-    }
-    for(int value = 0; value < assets.size(); value ++){
-        ratio = Liquidity().current_ratio(assets[value],liabilities[value]);
-        result.push_back(ratio);
-    }
-    return result;
-};
+// template<typename T>
+// vector<double> crt_ratio_vt(vector<T> &assets, vector<T> &liabilities){
+//     vector<double> result;
+//     CRT ratio = 0;
+//     if(assets.size() != liabilities.size()){
+//         throw std::invalid_argument("Assets and liabilities must be same length");
+//     }
+//     for(int value = 0; value < assets.size(); value ++){
+//         ratio = Liquidity().current_ratio(assets[value],liabilities[value]);
+//         result.push_back(ratio);
+//     }
+//     return result;
+// };
 
-// extract result
-template<typename T>
-void extract_data( vector<T> &data){
-    for(auto value : data){
-        cout<<value<<",";
-    }
+// // extract result
+// template<typename T>
+// void extract_data( vector<T> &data){
+//     for(auto value : data){
+//         cout<<value<<",";
+//     }
 
-};
+// };
 
 
 // int main(){
@@ -170,6 +170,6 @@ void extract_data( vector<T> &data){
 // }
 
 /* Trưng dụng hàm */
-void extract_data(){};
-void merge_vct(){};
-vector<double> crt_ratio_vt(){};
+// void extract_data(){};
+// void merge_vct(){};
+// vector<double> crt_ratio_vt(){};

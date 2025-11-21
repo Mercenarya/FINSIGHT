@@ -56,11 +56,12 @@ PYBIND11_MODULE(evaluate_module, m){
 
     py::class_<Efficiency>(m, "Efficiency").def(py::init<>())
     .def("inventory_turnover_ratio", static_cast<inventory_TOR_sig>(&Efficiency::inventory_turnover_ratio),"Inventory turnover ratio")
-    .def("dio_stand", static_cast<dio_stand_sig>(&Efficiency::dio_stand),"DIO Stand")
+    // .def("dio_stand", static_cast<dio_stand_sig>(&Efficiency::dio_stand),"DIO Stand")
     .def("art_turnover", static_cast<art_turnover_sig>(&Efficiency::apt_turnover),"ART Turnover")
     .def("tta_turnover", static_cast<tta_turnover_sig>(&Efficiency::tta_turnover),"TTA Turnover")
     .def("apt_turnover", static_cast<tta_turnover_sig>(&Efficiency::apt_turnover),"APT Turnover")
-    .def("dpo_outstanding", static_cast<dpo_outstanding_sig>(&Efficiency::dpo_outstanding),"DPO Outstanding");
+    .def("dio_stand", &Efficiency::dio_stand_py, "DIO Stand")
+    .def("dpo_outstanding", &Efficiency::dpo_outstanding_py, "DPO Outstanding");
   
     py::class_<Growth>(m, "Growth").def(py::init<>())
     .def("single_growth_rate",static_cast<single_growth_rate_sig>(&Growth::single_growth_rate),"Single growth rate")

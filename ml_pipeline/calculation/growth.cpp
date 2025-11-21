@@ -10,12 +10,12 @@ using namespace std;
 typedef double GROWTH; // định nghĩa kiểu dữ liệu
 typedef double CAGR; // tăng trưởng kép
 
-// khởi tạo datasheet
-struct datasheet {
-    double current; // kì hiện tại
-    double previous; // kì trước
-    double year; // số năm
-};
+// // khởi tạo datasheet
+// struct datasheet {
+//     double current; // kì hiện tại
+//     double previous; // kì trước
+//     double year; // số năm
+// };
 
 
 // lóp tăng trưởng
@@ -42,7 +42,8 @@ class Growth{
             }
             catch(const std::exception& e)
             {
-                std::cerr << e.what() << '\n';  
+                std::cerr << e.what() << '\n';
+                return numeric_limits<GROWTH>::quiet_NaN();
             }
             
         }

@@ -17,7 +17,7 @@ typedef double MARGIN;// biên
 typedef vector<double> DATA;// quy chuẩn kiểu dữ liệu cho luồng dữ liệu 
 
 // đơn vị mẫu
-const SAMPLE sample = 1'000'000'000;
+// const SAMPLE sample = 1'000'000'000;
 
 /*
     float revenue; 
@@ -30,21 +30,21 @@ const SAMPLE sample = 1'000'000'000;
 
 
 // khởi tạo datasheet 
-struct datasheet{
-    long long GP; // gross profit (lợi nhuận gộp)
-    long long RV; // revenue (doanh thu thuần)
-    long long NI; // Net income (lợi nhuận ròng)
-    long long SEQ; // Shareholder enquity 
-    long long TTA; // total assets (tài sản)
-    long long BSNP; // business profit (lơi nhuận hoạt động EBIT)
-    long long BATMP; // lợi nhuận sau thuế
-};
+// struct datasheet{
+//     long long GP; // gross profit (lợi nhuận gộp)
+//     long long RV; // revenue (doanh thu thuần)
+//     long long NI; // Net income (lợi nhuận ròng)
+//     long long SEQ; // Shareholder enquity 
+//     long long TTA; // total assets (tài sản)
+//     long long BSNP; // business profit (lơi nhuận hoạt động EBIT)
+//     long long BATMP; // lợi nhuận sau thuế
+// };
 
-/* Trưng dụng hàm */
-void extract_data(){};
-void merge_vct(){};
-vector<double> ratio_vt(){};
-vector<double> margin_vt(){};
+// /* Trưng dụng hàm */
+// void extract_data(){};
+// void merge_vct(){};
+// vector<double> ratio_vt(){};
+// vector<double> margin_vt(){};
 
 class Profitability {
     public:
@@ -71,6 +71,7 @@ class Profitability {
                 return margin* 100;
             }catch(const std::exception& e){
                 std::cerr << e.what() << '\n';
+                return 0.0;
             }
             
 
@@ -95,6 +96,7 @@ class Profitability {
                 return margin*100;
             }catch(const std::exception& e){
                 std::cerr << e.what() << '\n';
+                return 0.0;
             }
         
             
@@ -122,6 +124,7 @@ class Profitability {
                 return margin*100;
             }catch(const std::exception& e){
                 std::cerr << e.what() << '\n';
+                return 0.0;
             }
             
         }
@@ -155,6 +158,7 @@ class Profitability {
             
 
                 std::cerr << e.what() << '\n';
+                return 0.0;
             }
             
         }
@@ -184,6 +188,7 @@ class Profitability {
             catch(const std::exception& e)
             {
                 std::cerr << e.what() << '\n';
+                return 0.0;
             }
             
         }
@@ -198,12 +203,13 @@ class Profitability {
                 ASO = static_cast<double>(ASO);// Average shares outstanding
 
                 double ratios = static_cast<double>((NI)-PD) / ASO;
-                return ratios
+                return ratios;
 
             }
             catch(const std::exception& e)
             {
                 std::cerr << e.what() << '\n';
+                return 0.0;
             }
             
         }
@@ -213,36 +219,36 @@ class Profitability {
 
 
 
-// extract result of current ratio to absolute vector
-template<typename T>
-vector<double> margin_vt(vector<T> &x, vector<T> &y){
-    vector<double> result;
-    MARGIN margin = 0;
-    if(x.size() != y.size()){
-        throw std::invalid_argument("Assets and liabilities must be same length");
-    }
-    /*
-    Vì 2 luồng vector dữ liệu là 2 luồng vector
-    vốn dĩ là cùng kích thướng nên ta chỉ cần
-    sử dụng 1 vector làm mẫu 
-    */
-   // x[value].y[value] là vị trí giá trị để lấy giá trị đó vào result
-    for(int value = 0; value < x.size(); value ++){
-        // đẩy các giá trị vào result
-        margin = Profitability().gross_profit_margin(x[value],y[value]);
-        result.push_back(margin);
-    }
-    return result;
-};
+// // extract result of current ratio to absolute vector
+// template<typename T>
+// vector<double> margin_vt(vector<T> &x, vector<T> &y){
+//     vector<double> result;
+//     MARGIN margin = 0;
+//     if(x.size() != y.size()){
+//         throw std::invalid_argument("Assets and liabilities must be same length");
+//     }
+//     /*
+//     Vì 2 luồng vector dữ liệu là 2 luồng vector
+//     vốn dĩ là cùng kích thướng nên ta chỉ cần
+//     sử dụng 1 vector làm mẫu 
+//     */
+//    // x[value].y[value] là vị trí giá trị để lấy giá trị đó vào result
+//     for(int value = 0; value < x.size(); value ++){
+//         // đẩy các giá trị vào result
+//         margin = Profitability().gross_profit_margin(x[value],y[value]);
+//         result.push_back(margin);
+//     }
+//     return result;
+// };
 
-// extract result
-template<typename T>
-void extract_data( vector<T> &data){
-    for(auto value : data){
-        cout<<value<<",";
-    }
+// // extract result
+// template<typename T>
+// void extract_data( vector<T> &data){
+//     for(auto value : data){
+//         cout<<value<<",";
+//     }
 
-};
+// };
 
 
 // chuyển đổi sang thư viện assets python

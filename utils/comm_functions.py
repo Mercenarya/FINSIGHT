@@ -2,12 +2,20 @@ import os
 import sys
 import pandas as pd
 import json
+import sklearn
+import numpy as np
+from sklearn.preprocessing import StandardScaler
+
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 root = os.path.join(current_dir, '..')
 sys.path.append(root)
 
-from config import JSP,RAW,PRC
+RAW = os.path.join(root,'data','raw','cleandpt001.csv')
+JSR = os.path.join(root,'data','json','reports.json')
+ASSETSJS = os.path.join(root,'data','json','assets.json')
+ASSETS = os.path.join(root,'data','raw','assets001.csv')
+
 
 
 def get_path(filename:str):
@@ -37,7 +45,7 @@ def seed_path(path:str) -> bool:
         return f"OSERROR : {error}"
 
 # chuyển dữ liệu vào csv
-def save_to_csv(filename:str,df,directory='data/raw'):
+def save_to_csv(filename:str,df):
     try:
         '''
         Args:
@@ -103,19 +111,13 @@ def json_search(filename:str,search:str):
 
 #load json data
 def json_data(filename:str):
-    message = input("Enter data title: ")
+    
     try:
         
         with open(filename, 'r', encoding='utf-8') as file:
             json_data = json.load(file)
         
-        
-            for obj in json_data:
-                if message in obj.get("title"):
-                    print(obj)
-            else:
-                print("This data is invalid")
-        # return json_data
+        return json_data
                     
         
         
@@ -171,7 +173,45 @@ def save_to_json(filename:str,data:list,directory='data/json'):
         return "JSON hooking : ",error
 
 
-PATH = get_path(RAW)
-JSN = get_path(JSP)
+# đọc dữ liệu
+def release_csv(filename:str):
+    try:
+        if os.path.exists(filename):
+            print(f"filename : {filename} is not exists")
+        else:
+            df = pd.read_csv(filename)
+            
+            # thay các dữ liệu NaN ( các giá trị lỗi hoặc rỗng) sang 0
+            df['Quarter 1'] = df['Quarter 1'].replace(np.nan,0)
+            df['Quarter 2'] = df['Quarter 2'].replace(np.nan,0)
+            df['Quarter 3'] = df['Quarter 3'].replace(np.nan,0)
+            df['Quarter 4'] = df['Quarter 4'].replace(np.nan,0)
 
-print(json_data('data/json/prototype01.json'))
+            # thay các giá trị comma (dấu phẩy)
+            df = df.replace(',','')
+
+            # kiểm ra ouput sau khi qua xử lí
+            print("==="*30)
+            print(df)
+            print("==="*30)
+            data = {
+                "Title":df['Title'],
+                "Q_1":df['Quarter 1'],
+                "Q_2":df['Quarter 2'],
+                "Q_3":df['Quarter 3'],
+                "Q_4":df['Quarter 4']
+            }
+            return data
+    except OSError as oserr:
+        return f"Release CSV OSERRORS : {oserr}"
+    except Exception as error:
+        return f"Release CSV Errors : {error}"
+
+
+
+
+PATH = get_path(RAW)
+JSNRP = get_path(JSR)
+JSNAS = get_path(ASSETSJS)
+ASSET = get_path(ASSETS)
+

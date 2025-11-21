@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import os
 import sys
+import datetime
 
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -9,7 +10,7 @@ root = os.path.join(current_dir, '..')
 sys.path.append(root)
 
 from utils.comm_functions import save_to_csv,seed_path,save_to_json,looping_json
-from utils.comm_functions import PATH,JSN
+# from utils.comm_functions import PATH,JSNRP,JSNAS
 
 
 #kiểm tra đường dẫn
@@ -80,9 +81,19 @@ def extract_keys(data:list):
                 qt2.append(q2)
                 qt3.append(q3)
                 qt4.append(q4)
+        
 
         return tt,qt1,qt2,qt3,qt4
     except Exception as error:
+        print(
+            {
+                "tt":len(tt),
+                "qq1":len(qt1),
+                "qq2":len(qt2),
+                "qq3":len(qt3),
+                "qq4":len(qt4)
+            }
+        )
         return f"<101 - 1> Error message : {error}"
 
 
@@ -91,7 +102,7 @@ def extract_keys(data:list):
 
 #chuyển đổi các dũ liệu vào csv thành dữ liệu thô ban đầu
 def convert_data_frame(tt:list,qq1:list,qq2:list,
-                       qq3:list,qq4:list):
+                       qq3:list,qq4:list,path:str):
     try: 
         '''
         data_len đảm nhiệm vai trò là kiếm chứng
@@ -111,6 +122,7 @@ def convert_data_frame(tt:list,qq1:list,qq2:list,
 
         # chia cột dữ liệu
         data = {
+            "time: ":datetime.datetime.now(),
             "Title":tt,
             "Quarter 1": qq1,
             "Quarter 2": qq2,
@@ -119,9 +131,9 @@ def convert_data_frame(tt:list,qq1:list,qq2:list,
         }
 
         df = pd.DataFrame(data)
-        print(seed_path(PATH))
+        print(seed_path(path))
         print(save_to_csv(
-            PATH,df
+            path,df
         ))
         return df
 
