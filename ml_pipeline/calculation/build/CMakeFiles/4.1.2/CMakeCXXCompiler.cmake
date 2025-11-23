@@ -1,4 +1,4 @@
-set(CMAKE_CXX_COMPILER "D:/Msys2/mingw64/bin/g++.exe")
+set(CMAKE_CXX_COMPILER "D:/Msys2/ucrt64/bin/g++.exe")
 set(CMAKE_CXX_COMPILER_ARG1 "")
 set(CMAKE_CXX_COMPILER_ID "GNU")
 set(CMAKE_CXX_COMPILER_VERSION "15.2.0")
@@ -25,17 +25,17 @@ set(CMAKE_CXX_COMPILER_ARCHITECTURE_ID "x86_64")
 
 
 
-set(CMAKE_AR "D:/Msys2/mingw64/bin/ar.exe")
-set(CMAKE_CXX_COMPILER_AR "D:/Msys2/mingw64/bin/gcc-ar.exe")
-set(CMAKE_RANLIB "D:/Msys2/mingw64/bin/ranlib.exe")
-set(CMAKE_CXX_COMPILER_RANLIB "D:/Msys2/mingw64/bin/gcc-ranlib.exe")
-set(CMAKE_LINKER "D:/Msys2/mingw64/bin/ld.exe")
+set(CMAKE_AR "D:/Msys2/ucrt64/bin/ar.exe")
+set(CMAKE_CXX_COMPILER_AR "D:/Msys2/ucrt64/bin/gcc-ar.exe")
+set(CMAKE_RANLIB "D:/Msys2/ucrt64/bin/ranlib.exe")
+set(CMAKE_CXX_COMPILER_RANLIB "D:/Msys2/ucrt64/bin/gcc-ranlib.exe")
+set(CMAKE_LINKER "D:/Msys2/ucrt64/bin/ld.exe")
 set(CMAKE_LINKER_LINK "")
 set(CMAKE_LINKER_LLD "")
-set(CMAKE_CXX_COMPILER_LINKER "D:/Msys2/mingw64/x86_64-w64-mingw32/bin/ld.exe")
-set(CMAKE_CXX_COMPILER_LINKER_ID "GNU")
-set(CMAKE_CXX_COMPILER_LINKER_VERSION 2.45)
-set(CMAKE_CXX_COMPILER_LINKER_FRONTEND_VARIANT GNU)
+set(CMAKE_CXX_COMPILER_LINKER "D:/Msys2/ucrt64/x86_64-w64-mingw32/bin/ld.exe")
+set(CMAKE_CXX_COMPILER_LINKER_ID "")
+set(CMAKE_CXX_COMPILER_LINKER_VERSION )
+set(CMAKE_CXX_COMPILER_LINKER_FRONTEND_VARIANT )
 set(CMAKE_MT "")
 set(CMAKE_TAPI "CMAKE_TAPI-NOTFOUND")
 set(CMAKE_COMPILER_IS_GNUCXX 1)
@@ -59,7 +59,7 @@ endforeach()
 
 set(CMAKE_CXX_LINKER_PREFERENCE 30)
 set(CMAKE_CXX_LINKER_PREFERENCE_PROPAGATES 1)
-set(CMAKE_CXX_LINKER_DEPFILE_SUPPORTED FALSE)
+set(CMAKE_CXX_LINKER_DEPFILE_SUPPORTED )
 set(CMAKE_LINKER_PUSHPOP_STATE_SUPPORTED TRUE)
 set(CMAKE_CXX_LINKER_PUSHPOP_STATE_SUPPORTED TRUE)
 
@@ -90,9 +90,9 @@ endif()
 
 
 
-set(CMAKE_CXX_IMPLICIT_INCLUDE_DIRECTORIES "D:/Msys2/mingw64/include/c++/15.2.0;D:/Msys2/mingw64/include/c++/15.2.0/x86_64-w64-mingw32;D:/Msys2/mingw64/include/c++/15.2.0/backward;D:/Msys2/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include;D:/Msys2/mingw64/include;D:/Msys2/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0/include-fixed;/mingw64/include")
+set(CMAKE_CXX_IMPLICIT_INCLUDE_DIRECTORIES "D:/Msys2/ucrt64/include/c++/15.2.0;D:/Msys2/ucrt64/include/c++/15.2.0/x86_64-w64-mingw32;D:/Msys2/ucrt64/include/c++/15.2.0/backward;D:/Msys2/ucrt64/lib/gcc/x86_64-w64-mingw32/15.2.0/include;D:/Msys2/ucrt64/include;D:/Msys2/ucrt64/lib/gcc/x86_64-w64-mingw32/15.2.0/include-fixed;/ucrt64/include")
 set(CMAKE_CXX_IMPLICIT_LINK_LIBRARIES "stdc++;mingw32;gcc_s;gcc;mingwex;kernel32;pthread;advapi32;shell32;user32;kernel32;mingw32;gcc_s;gcc;mingwex;kernel32")
-set(CMAKE_CXX_IMPLICIT_LINK_DIRECTORIES "D:/Msys2/mingw64/lib/gcc/x86_64-w64-mingw32/15.2.0;D:/Msys2/mingw64/lib/gcc;D:/Msys2/mingw64/x86_64-w64-mingw32/lib;D:/Msys2/mingw64/lib")
+set(CMAKE_CXX_IMPLICIT_LINK_DIRECTORIES "D:/Msys2/ucrt64/lib/gcc/x86_64-w64-mingw32/15.2.0;D:/Msys2/ucrt64/lib/gcc;D:/Msys2/ucrt64/x86_64-w64-mingw32/lib;D:/Msys2/ucrt64/lib")
 set(CMAKE_CXX_IMPLICIT_LINK_FRAMEWORK_DIRECTORIES "")
 set(CMAKE_CXX_COMPILER_CLANG_RESOURCE_DIR "")
 

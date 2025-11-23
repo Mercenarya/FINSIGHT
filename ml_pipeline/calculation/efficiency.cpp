@@ -104,8 +104,10 @@ class Efficiency {
             {
                 if(avgaccountsrcv == 0){
                     throw std::invalid_argument("undefined average account recieve");
-                    
+                    // return 0.0f;
                 }
+                TOV result = (TOV)netcreditsale / (TOV)avgaccountsrcv;
+                return result;
                 
             }
             catch(const std::exception& e)

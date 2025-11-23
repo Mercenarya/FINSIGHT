@@ -19,32 +19,16 @@ set(
 # Requires package
 find_package(pybind11 REQUIRED)
 
-# Last module processing
-pybind11_add_module(evaluate_module ${SOURCES})
+# Last module processing (Định nghĩa target)
+pybind11_add_module(evaluate_module_update ${SOURCES})
 
-# set_target_properties(evaluate_module PROPERTIES
-#     LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/calculation/build"
-# )
-# cmake_minimum_required(VERSION 3.14)
-# project(evaluate_module LANGUAGES CXX)
+# Thêm lệnh Find Python (Dùng cho target)
+find_package(Python 3.11 COMPONENTS Interpreter Development)
 
-# set(CMAKE_CXX_STANDARD 17)
-# set(CMAKE_CXX_STANDARD_REQUIRED ON)
+# Thêm thư viện Python vào target (Đã sửa tên target)
+target_link_libraries(evaluate_module_update PRIVATE ${PYTHON_LIBRARIES})
 
-# # Fix warning pybind11
-# set(PYBIND11_FINDPYTHON ON)
-
-# find_package(Python3 COMPONENTS Development REQUIRED)
-# find_package(pybind11 REQUIRED)
-
-# pybind11_add_module(
-#     evaluate_module
-#     main.cpp
-#     liquidity.cpp
-#     profitability.cpp
-#     efficiency.cpp
-#     growth.cpp
-# )
-
-# target_include_directories(evaluate_module PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
-# target_link_libraries(evaluate_module PRIVATE pybind11::module Python3::Python)
+# **QUAN TRỌNG:** Buộc MinGW sử dụng thư viện Python đúng cách (Đã sửa tên target)
+target_link_options(evaluate_module_update PRIVATE
+    "-Wl,--allow-multiple-definition"
+)
