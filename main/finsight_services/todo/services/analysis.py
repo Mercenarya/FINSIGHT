@@ -13,7 +13,7 @@ CURRENT = os.path.dirname(os.path.realpath(__file__))
 ROOT = os.path.abspath(os.path.join(CURRENT,'..'))
 # MODULE_DIR là thư mục chứa file .pyd đã được đổi tên
 
-RAW_DIR = os.path.abspath(os.path.join(CURRENT,'..','..','..'))
+RAW_DIR = os.path.abspath(os.path.join(CURRENT,'..','..','..','..'))
 RAW = os.path.join(RAW_DIR,'data','raw','cleandpt001.csv')
 ASSETS = os.path.join(RAW_DIR,'data','raw','assets001.csv')
 LIBS = os.path.join(ROOT, 'libs') 

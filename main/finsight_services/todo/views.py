@@ -1,6 +1,7 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse,JsonResponse
-from . import analysis as an
+from .services import analysis as an
+from django.template import loader
 # from analysis import normalization,read_data,extract_finance_profitability
 import json
 
@@ -11,7 +12,9 @@ def clients(request):
     return render(request, 'index.html')
 
 
-def analysis(request):
+
+
+def analysis_api(request):
     try:
         df_reports = an.read_data(an.RAW)
         df_assets = an.read_data(an.ASSETS)
@@ -44,4 +47,18 @@ def analysis(request):
                 'Detail':f"{errorstatus}"
             },
             status = 500
+        )
+    
+
+def analysis(request):
+    try:
+        
+        template = loader.get_template('index.html')
+        return HttpResponse(template.render())
+    except Exception as error:
+        return JsonResponse(
+            {
+                'errors':'An unexpected error occured during loading template',
+                'Detail':f"{error}"
+            }
         )
