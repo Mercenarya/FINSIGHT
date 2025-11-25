@@ -16,6 +16,8 @@ function Analysis() {
   const [dropdownIndex, setDropdownIndex] = useState(-1);
   const [metricsOpen, setMetricsOpen] = useState(false);
   const [selectedMetrics, setSelectedMetrics] = useState([]);
+  // metrics currently shown in the cards (decoupled from the dropdown selection)
+  const [displayedMetrics, setDisplayedMetrics] = useState(['revenue','profit','expenses','cash']);
   const [period, setPeriod] = useState('1 Month');
   const [periodOpen, setPeriodOpen] = useState(false);
 
@@ -41,14 +43,75 @@ function Analysis() {
     { key: 'liquidity', label: 'Liquidity' },
   ];
 
-  const toggleMetric = (key) => {
-    const exists = selectedMetrics.includes(key);
-    if (!exists && selectedMetrics.length >= 4) {
-      // limit reached
-      alert('Maximum 4 metrics can be selected');
+  // detailed items per category for the modal
+  const categoryItems = {
+    liquidity: [
+      { key: 'cash_ratio', label: 'Cash Ratio' },
+      { key: 'quick_ratio', label: 'Quick Ratio' },
+      { key: 'current_ratio', label: 'Current Ratio' },
+    ],
+    profitability: [
+      { key: 'gross_profit_margin', label: 'Gross profit margin' },
+      { key: 'opm_margin', label: 'Operating Profit Margin' },
+      { key: 'npm_margin', label: 'Net Profit Margin' },
+      { key: 'roa_ratio', label: 'Return on Assets margin ratios' },
+      { key: 'roe_profit', label: 'Return on Equity ratios' },
+      { key: 'eps_ratios', label: 'Earnings Per Share ratios' },
+    ],
+    efficiency: [
+      { key: 'inventory_turnover_ratio', label: 'Inventory Turnover Ratio' },
+      { key: 'dio_stand', label: 'Days Inventory Outstanding' },
+      { key: 'art_turnover', label: 'Accounts Receivable Turnover' },
+      { key: 'tta_turnover', label: 'Total Asset Turnover' },
+      { key: 'apt_turnover', label: 'Accounts Payable Turnover' },
+      { key: 'dpo_outstanding', label: 'Days Payable Outstanding' },
+    ],
+    growth: [
+      { key: 'single_growth_rate', label: 'Single Growth Rate' },
+      { key: 'cagr_growth_rate', label: 'Compound Annual Growth Rate' },
+    ]
+  };
+
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalCategory, setModalCategory] = useState(null);
+  const [modalSelected, setModalSelected] = useState([]);
+  // Persist selections per category so outside UI can reflect checked items
+  const [selectionsByCategory, setSelectionsByCategory] = useState({});
+
+  const openCategoryModal = (categoryKey) => {
+    setModalCategory(categoryKey);
+    // initialize modalSelected from previously saved selections for this category
+    const existing = selectionsByCategory[categoryKey] || [];
+    setModalSelected(Array.isArray(existing) ? [...existing] : []);
+    setModalOpen(true);
+  };
+
+  const toggleModalItem = (key) => {
+    const exists = modalSelected.includes(key);
+    if (!exists && modalSelected.length >= 4) {
+      // limit
       return;
     }
-    setSelectedMetrics(prev => exists ? prev.filter(p => p !== key) : [...prev, key]);
+    setModalSelected(prev => exists ? prev.filter(p => p !== key) : [...prev, key]);
+  };
+
+  const confirmModal = () => {
+    // persist modal selections for this category
+    const updated = { ...selectionsByCategory, [modalCategory]: [...modalSelected] };
+    setSelectionsByCategory(updated);
+    // compute which categories have at least one selection so the outside dropdown shows ticks
+    const categoriesSelected = metricOptions.map(o => o.key).filter(k => updated[k] && updated[k].length > 0);
+    setSelectedMetrics(categoriesSelected);
+    setModalOpen(false);
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+  };
+
+  // switch to single-selection (radio) behavior: selecting a metric replaces previous selection
+  const selectMetric = (key) => {
+    setSelectedMetrics([key]);
   };
 
   const metricDataMap = {
@@ -63,10 +126,10 @@ function Analysis() {
   };
 
   const getMetricCards = () => {
-    if (selectedMetrics.length > 0) {
-      return selectedMetrics.map(k => metricDataMap[k] || { label: k, value: '-', change: '' });
+    if (displayedMetrics && displayedMetrics.length > 0) {
+      return displayedMetrics.map(k => metricDataMap[k] || { label: k, value: '-', change: '' });
     }
-    // default cards
+    // fallback default cards
     return [metricDataMap.revenue, metricDataMap.profit, metricDataMap.expenses, metricDataMap.cash];
   };
 
@@ -133,7 +196,7 @@ function Analysis() {
 
             {periodOpen && (
               <div className="search-dropdown" style={{ width: 150 }}>
-                {['1 Month','6 Month','First Quarter','Second Quarter','Third Quarter','Fourth Quarter'].map((p) => (
+                {['1 Month','4 Month','6 Month','First Quarter','Second Quarter','Third Quarter','Fourth Quarter'].map((p) => (
                   <div
                     key={p}
                     className={`search-dropdown-item${p === period ? ' active' : ''}`}
@@ -164,12 +227,12 @@ function Analysis() {
             {metricsOpen && (
               <div className="metrics-dropdown">
                 {metricOptions.map(opt => {
-                  const active = selectedMetrics.includes(opt.key);
+                  const active = Array.isArray(selectedMetrics) && selectedMetrics.includes(opt.key);
                   return (
                     <div
                       key={opt.key}
                       className={`metrics-item${active ? ' active' : ''}`}
-                      onMouseDown={() => toggleMetric(opt.key)}
+                      onMouseDown={() => { setSelectedMetrics(prev => (Array.isArray(prev) && prev.includes(opt.key)) ? prev : [...(Array.isArray(prev) ? prev : []), opt.key]); openCategoryModal(opt.key); }}
                     >
                       <span className="metrics-label">{opt.label}</span>
                       {active ? <span className="metrics-check">✓</span> : <span className="metrics-box" />}
@@ -274,6 +337,39 @@ function Analysis() {
           </div>
         </div>
       </div>
+
+      {modalOpen && (
+        <div className="metric-modal-overlay" onMouseDown={closeModal}>
+          <div className="metric-modal" onMouseDown={e => e.stopPropagation()} role="dialog" aria-modal="true">
+            <div className="metric-modal-header">
+              <div className="metric-modal-title">Choose Calculation</div>
+              <div className="metric-modal-close" onClick={closeModal} aria-label="Close">✕</div>
+            </div>
+
+            <div className="metric-modal-list">
+              {(modalCategory && categoryItems[modalCategory]) ? categoryItems[modalCategory].map(item => {
+                const checked = modalSelected.includes(item.key);
+                return (
+                  <div
+                    key={item.key}
+                    className="metric-modal-item"
+                    onMouseDown={() => toggleModalItem(item.key)}
+                  >
+                    <div className="metric-modal-left">
+                      <span className="metric-modal-label">{item.label}</span>
+                    </div>
+                    <div className={`custom-checkbox${checked ? ' checked' : ''}`} aria-hidden />
+                  </div>
+                );
+              }) : <div className="metric-modal-item"><span className="metric-modal-label">No items</span></div>}
+            </div>
+
+            <div className="metric-modal-footer">
+              <button className="metric-modal-confirm" onMouseDown={confirmModal}>Confirm</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
