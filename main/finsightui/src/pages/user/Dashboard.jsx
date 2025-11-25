@@ -56,7 +56,7 @@ const ComparisonBlock = () => {
           <div className="chart-card">
             <div className="chart-card-title">Revenue & Net Profit Comparison</div>
             <div className="chart-placeholder">
-              <ResponsiveContainer width="100%" height={220}>
+                <ResponsiveContainer width="100%" height={260}>
                 <BarChart data={revenueData}>
                   <XAxis dataKey="name" stroke="#9aa4b2" />
                   <YAxis />
@@ -72,7 +72,7 @@ const ComparisonBlock = () => {
           <div className="chart-card">
             <div className="chart-card-title">Growth Trends Across Industries</div>
             <div className="chart-placeholder">
-              <ResponsiveContainer width="100%" height={220}>
+                <ResponsiveContainer width="100%" height={260}>
                 <LineChart data={growthData}>
                   <XAxis dataKey="name" stroke="#9aa4b2" />
                   <YAxis />

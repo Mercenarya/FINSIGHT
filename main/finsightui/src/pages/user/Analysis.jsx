@@ -3,19 +3,22 @@ import './Analysis.css';
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, Legend } from 'recharts';
 
 const companyList = [
-  
+  "Apple Inc.",
+  "Microsoft Corp.",
+  "FPT Corp.",
+  "Vin C.",
 ];
-
-
 
 function Analysis() {
   const [activeTab, setActiveTab] = useState('balance-sheet');
   const [searchValue, setSearchValue] = useState("");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [dropdownIndex, setDropdownIndex] = useState(-1);
-  
-  const [suggestions,setSuggestions] = useState([])
-  
+  const [metricsOpen, setMetricsOpen] = useState(false);
+  const [selectedMetrics, setSelectedMetrics] = useState([]);
+  const [period, setPeriod] = useState('1 Month');
+  const [periodOpen, setPeriodOpen] = useState(false);
+
   const filteredCompanies = companyList.filter(c =>
     c.toLowerCase().includes(searchValue.toLowerCase())
   );
@@ -29,6 +32,42 @@ function Analysis() {
   const handleSelectCompany = company => {
     setSearchValue(company);
     setDropdownOpen(false);
+  };
+
+  const metricOptions = [
+    { key: 'profitability', label: 'Profitability' },
+    { key: 'efficiency', label: 'Efficiency' },
+    { key: 'growth', label: 'Growth' },
+    { key: 'liquidity', label: 'Liquidity' },
+  ];
+
+  const toggleMetric = (key) => {
+    const exists = selectedMetrics.includes(key);
+    if (!exists && selectedMetrics.length >= 4) {
+      // limit reached
+      alert('Maximum 4 metrics can be selected');
+      return;
+    }
+    setSelectedMetrics(prev => exists ? prev.filter(p => p !== key) : [...prev, key]);
+  };
+
+  const metricDataMap = {
+    profitability: { label: 'Profitability', value: '18%', change: '+8%', positive: true },
+    efficiency: { label: 'Efficiency', value: '1.8', change: '-3%', positive: false },
+    growth: { label: 'Growth', value: '+12%', change: '+12%', positive: true },
+    liquidity: { label: 'Liquidity', value: '2.5', change: '+1%', positive: true },
+    revenue: { label: 'Revenue', value: '$1,250,000', change: '+5%', positive: true },
+    profit: { label: 'Profit', value: '$320,000', change: '+8%', positive: true },
+    expenses: { label: 'Expenses', value: '$185,000', change: '-3%', positive: false },
+    cash: { label: 'Cash Flow', value: '$150,000', change: '+2%', positive: true },
+  };
+
+  const getMetricCards = () => {
+    if (selectedMetrics.length > 0) {
+      return selectedMetrics.map(k => metricDataMap[k] || { label: k, value: '-', change: '' });
+    }
+    // default cards
+    return [metricDataMap.revenue, metricDataMap.profit, metricDataMap.expenses, metricDataMap.cash];
   };
 
   return (
@@ -70,42 +109,92 @@ function Analysis() {
           )}
         </div>
 
+        {/* New small controls: Year input and Period select */}
+        <div className="search-extras">
+          <input
+            className="small-input"
+            type="text"
+            placeholder="Year"
+          />
+          <div
+            className="period-wrapper"
+            tabIndex={0}
+            onBlur={() => setTimeout(() => setPeriodOpen(false), 150)}
+          >
+            <div
+              className="filter-select period-trigger"
+              onClick={() => setPeriodOpen(!periodOpen)}
+            >
+              <span className="period-value">{period}</span>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M7 10l5 5 5-5z" fill="#b0b8c1" />
+              </svg>
+            </div>
+
+            {periodOpen && (
+              <div className="search-dropdown" style={{ width: 150 }}>
+                {['1 Month','6 Month','First Quarter','Second Quarter','Third Quarter','Fourth Quarter'].map((p) => (
+                  <div
+                    key={p}
+                    className={`search-dropdown-item${p === period ? ' active' : ''}`}
+                    onMouseDown={() => { setPeriod(p); setPeriodOpen(false); }}
+                  >
+                    {p}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
         <div className="controls-group">
-          <button className="control-btn">Change Metrics</button>
+          <div
+            className="metrics-wrapper"
+            tabIndex={0}
+          >
+            <button
+              className="control-btn"
+              onClick={() => setMetricsOpen(open => !open)}
+              aria-haspopup="true"
+              aria-expanded={metricsOpen}
+            >
+              Change Metrics
+            </button>
+
+            {metricsOpen && (
+              <div className="metrics-dropdown">
+                {metricOptions.map(opt => {
+                  const active = selectedMetrics.includes(opt.key);
+                  return (
+                    <div
+                      key={opt.key}
+                      className={`metrics-item${active ? ' active' : ''}`}
+                      onMouseDown={() => toggleMetric(opt.key)}
+                    >
+                      <span className="metrics-label">{opt.label}</span>
+                      {active ? <span className="metrics-check">✓</span> : <span className="metrics-box" />}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
           <button className="control-btn">Exchange Rate</button>
           <button className="btn-analyze">Analyze</button>
         </div>
       </div>
 
       <div className="metrics-grid">
-        <div className="metric-card">
-          <div className="metric-header">
-            <span className="metric-label">Revenue</span>
+        {getMetricCards().map((m) => (
+          <div className="metric-card" key={m.label}>
+            <div className="metric-header">
+              <span className="metric-label">{m.label}</span>
+            </div>
+            <div className="metric-value">{m.value}</div>
+            <div className={`metric-change ${m.positive ? 'positive' : 'negative'}`}>{m.change}</div>
           </div>
-          <div className="metric-value">$1,250,000</div>
-          <div className="metric-change positive">+5%</div>
-        </div>
-        <div className="metric-card">
-          <div className="metric-header">
-            <span className="metric-label">Profit</span>
-          </div>
-          <div className="metric-value">$320,000</div>
-          <div className="metric-change positive">+8%</div>
-        </div>
-        <div className="metric-card">
-          <div className="metric-header">
-            <span className="metric-label">Expenses</span>
-          </div>
-          <div className="metric-value">$185,000</div>
-          <div className="metric-change negative">-3%</div>
-        </div>
-        <div className="metric-card">
-          <div className="metric-header">
-            <span className="metric-label">Cash Flow</span>
-          </div>
-          <div className="metric-value">$150,000</div>
-          <div className="metric-change positive">+2%</div>
-        </div>
+        ))}
       </div>
 
       <div className="chart-section">
