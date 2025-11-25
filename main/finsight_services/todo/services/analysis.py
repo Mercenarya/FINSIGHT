@@ -31,9 +31,7 @@ sys.path.append(LIBS)
 from libs import evaluate_module_update as ev 
 
 
-ef = ev.Efficiency()
-gr = ev.Growth()
-lq = ev.Liquidity()
+
 
 
 '''
@@ -77,7 +75,37 @@ def read_data(filename:str):
     except Exception as error:
         return f"General Error of data reader {error}"
 
+# lấy thông tin tăng trưởng
+def extract_finance_growth(prev_quarter,current_quarter,years):
+    try:
+        growth = ev.Growth()
+        
+        current_quarter = int(current_quarter)
+        prev_quarter = int(prev_quarter)
+        # lấy chỉ số tăng trưởng đơn
+        single_growth_rate = growth.single_growth_rate(current_quarter,prev_quarter)
 
+        # lấy chỉ số tăng trưởng kép theo năm
+        cagr_growth_rate = growth.cagr_growth_rate(current_quarter,prev_quarter,years)
+
+        # không thể tính toán chỉ số tăng trưởng khi giá trị của mốc trước là 0
+        if prev_quarter == 0:
+            print("Previous quarter cannot be none")
+            return
+        if prev_quarter <= 0 or current_quarter <=0 or years <= 0:
+            cagr_growth_rate = 'N/A'
+
+
+
+        analysis_template = {
+            'Year':years,
+            'single growth rate':single_growth_rate,
+            'compound annual growth rate':cagr_growth_rate
+        }
+        return analysis_template
+
+    except Exception as error:
+        return f"Extract finance growth problems set : {error}"
 
 # lọc các nội dung tài chính từ Báo Cáo
 def extract_finance_profitability(df,df2):

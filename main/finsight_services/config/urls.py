@@ -16,7 +16,7 @@ Including another URLconf
 """
 
 from django.contrib import admin
-from django.urls import path
+from django.urls import path,include,re_path
 from todo import views
 
 
@@ -26,5 +26,6 @@ urlpatterns = [
     path("users/", views.clients, name='users'),
     # 
     path("api/analysis/", views.analysis_api, name='financial_analysis'),
-    path("analysis/")
+    # path("api/search/suggestions", views.companies_search, name='search_companies'),
+    re_path(r'^api/search/suggestions/?$', views.companies_search, name='search_companies'),
 ]

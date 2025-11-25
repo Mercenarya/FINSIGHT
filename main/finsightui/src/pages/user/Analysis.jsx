@@ -3,18 +3,19 @@ import './Analysis.css';
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, Legend } from 'recharts';
 
 const companyList = [
-  "Apple Inc.",
-  "Microsoft Corp.",
-  "FPT Corp.",
-  "Vin C.",
+  
 ];
+
+
 
 function Analysis() {
   const [activeTab, setActiveTab] = useState('balance-sheet');
   const [searchValue, setSearchValue] = useState("");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [dropdownIndex, setDropdownIndex] = useState(-1);
-
+  
+  const [suggestions,setSuggestions] = useState([])
+  
   const filteredCompanies = companyList.filter(c =>
     c.toLowerCase().includes(searchValue.toLowerCase())
   );
