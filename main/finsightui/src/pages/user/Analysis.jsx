@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './Analysis.css';
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, Legend } from 'recharts';
+import axios from 'axios';
 
-const companyList = [
-  "Apple Inc.",
-  "Microsoft Corp.",
-  "FPT Corp.",
-  "Vin C.",
-];
+
+
+
 
 function Analysis() {
+  
+  const [companyList, setCompanyList] = useState([]);
   const [activeTab, setActiveTab] = useState('balance-sheet');
   const [searchValue, setSearchValue] = useState("");
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -21,20 +21,15 @@ function Analysis() {
   const [period, setPeriod] = useState('1 Month');
   const [periodOpen, setPeriodOpen] = useState(false);
 
-  const filteredCompanies = companyList.filter(c =>
-    c.toLowerCase().includes(searchValue.toLowerCase())
-  );
+  // const filteredCompanies = companyList.filter(c =>
+  //   c.toLowerCase().includes(searchValue.toLowerCase())
+  // );
 
-  const handleSearchChange = e => {
-    setSearchValue(e.target.value);
-    setDropdownIndex(-1);
-    setDropdownOpen(true);
-  };
-
-  const handleSelectCompany = company => {
-    setSearchValue(company);
-    setDropdownOpen(false);
-  };
+  
+  // const handleSelectCompany = company => {
+  //   setSearchValue(company);
+  //   setDropdownOpen(false);
+  // };
 
   const metricOptions = [
     { key: 'profitability', label: 'Profitability' },
@@ -114,6 +109,62 @@ function Analysis() {
     setSelectedMetrics([key]);
   };
 
+
+  //-------------------- chức năng lấy các thông tin đề xuất khi tìm kiếm  ------------------
+  // lấy api search
+  async function fetch_api_search(keyword){
+      if(!keyword || keyword.trim().length == 0){
+        setCompanyList([]);
+        return;
+      }
+      try{
+        const result = await axios.get(
+          `http://127.0.0.1:8080/api/search/suggestions/?query=${keyword}`
+        );
+        // trả về kết quả dạng array list
+        setCompanyList(result.data || []);
+      }
+      catch (error) {
+        console.log(`Error search ${error}`);
+        setCompanyList([]);
+      };
+  };
+
+  
+  // lấy các dữ liệu vào hàm 
+  const handleSearchChange = (e) =>{
+    const text = e.target.value;
+    setSearchValue(text);
+
+    fetch_api_search(text);
+
+    setDropdownIndex(-1);
+    setDropdownOpen(true);
+  };
+  // xử lí các kết quả gợi ý vào một list drop-downSỨ
+
+  const handleSelectCompany = (company) => {
+    setSearchValue(company);
+    setDropdownOpen(false);
+  };
+
+  const filteredCompanies = companyList
+    .map(c => c.result)
+    .filter(name => name.toLowerCase().includes(searchValue.toLowerCase()));
+
+  
+
+  
+
+  // useEffect(() => {
+  //   if(companyList.length() > 0){
+  //     setDropdownOpen(true);
+  //   }
+  //   else{
+  //     setDropdownOpen(false);
+  //   }
+  // },[companyList])
+ 
   const metricDataMap = {
     profitability: { label: 'Profitability', value: '18%', change: '+8%', positive: true },
     efficiency: { label: 'Efficiency', value: '1.8', change: '-3%', positive: false },

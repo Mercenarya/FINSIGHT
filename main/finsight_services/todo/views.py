@@ -57,6 +57,7 @@ def analysis_api(request):
                 'Detail':f"{errorstatus}"
             },
             status = 500
+            
         )
     
 

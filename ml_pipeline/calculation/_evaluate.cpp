@@ -10,7 +10,7 @@ namespace py = pybind11;
 
 using T = long long;
 // nhóm liquidity
-using cash_ratio_sig = double (Liquidity::*)(T, T, T);
+using cash_ratio_sig = double (Liquidity::*)(T, T);
 using quick_ratio_sig = double (Liquidity::*)(T, T, T);
 using current_ratio_sig = double (Liquidity::*)(T, T);
 

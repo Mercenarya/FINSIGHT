@@ -24,10 +24,6 @@ import time
 CURRENT = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.join(CURRENT,'..','..','..','..')
 sys.path.append(ROOT)
-import finance_execute
-from finance_execute import get_finance_assets, get_finance_reports
-from finance_execute import get_ecn_reports, get_ecn_assets
-from finance_execute import run_procedure
 print(ROOT)
 
 # đồng bộ quá trình lấy danh sách kết quả tìm kiếm

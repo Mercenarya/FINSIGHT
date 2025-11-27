@@ -5,3 +5,7 @@ numpy==1.26.4
 selenium==4.35.0
 bs4==0.0.2
 pybind11==3.0.1
+matplotlib
+scikit-learn
+unidecode
+

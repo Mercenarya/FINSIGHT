@@ -99,11 +99,11 @@ class Liquidity{
 
         // tỷ số thanh khoản bằng tiền
         template<typename T>
-        double cash_ratio(T cash,T marketable_sc, T liabilities){
+        double cash_ratio(T cash, T liabilities){
             try
             {
                 if (liabilities == 0){
-                    if(cash > 0 || marketable_sc > 0){
+                    if(cash > 0 ){
                         throw std::invalid_argument("liabilities is zero, undefined cash and marketable security");
                         return 1.0f;
                     }
@@ -115,7 +115,7 @@ class Liquidity{
                 // liabilities = static_cast<double>(liabilities);
 
                 /*Ratio*/
-                double ratio = static_cast<double>(cash + marketable_sc) / liabilities;
+                double ratio = static_cast<double>(cash) / liabilities;
                 return ratio;
             }
             catch(const std::exception& e)
