@@ -68,9 +68,7 @@ async def analysis_api(request):
 @require_http_methods(['GET','POST'])
 def analysis(request):
     try:
-        if request.method == "POST":
-            pass
-        
+        pass
     except Exception as errorstatus:
         return JsonResponse(
             {
