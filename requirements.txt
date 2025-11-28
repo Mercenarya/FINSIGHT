@@ -8,4 +8,4 @@ pybind11==3.0.1
 matplotlib
 scikit-learn
 unidecode
-
+mongoengine
