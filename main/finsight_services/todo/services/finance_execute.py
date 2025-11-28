@@ -17,12 +17,12 @@ import sys
 import re
 import asyncio
 
-current_dir = os.path.dirname(os.path.abspath(__file__))
-root = os.path.join(current_dir, '..')
-sys.path.append(root)
+# current_dir = os.path.dirname(os.path.abspath(__file__))
+# root = os.path.join(current_dir, '..')
+# sys.path.append(root)
 
-build_dir = os.path.join(current_dir,'caculation','build')
-sys.path.append(build_dir)
+# build_dir = os.path.join(current_dir,'caculation','build')
+# sys.path.append(build_dir)
 
 
 from utils.data_release_csv import extract_keys,extract_list,convert_data_frame
@@ -30,11 +30,11 @@ from utils.comm_functions import looping_json,save_to_json,seed_path
 from utils.comm_functions import JSNAS,ASSET,ASSETS
 from utils.comm_functions import JSNRP,RAW
 # lấy các hàm xử lí từ ASSETS
-from fn_assets import assets_id_class,renew_string_data,convert_string
-from fn_assets import get_ecn_assets,data_loops_assets,looping_json,seed_path
+from main.finsight_services.todo.services.fn_assets import assets_id_class,renew_string_data,convert_string
+from main.finsight_services.todo.services.fn_assets import get_ecn_assets,data_loops_assets,looping_json,seed_path
 # lấy các hàm xử lí từ BCTC
-from fn_reports import reports_id_class,convert_data_reports,convert_sales_service_data_reports,current_timeline_reports
-from fn_reports import get_ecn_reports,data_loops_reports,looping_json,seed_path
+from main.finsight_services.todo.services.fn_reports import reports_id_class,convert_data_reports,convert_sales_service_data_reports,current_timeline_reports
+from main.finsight_services.todo.services.fn_reports import get_ecn_reports,data_loops_reports,looping_json,seed_path
 
 
 
@@ -157,7 +157,7 @@ def get_finance_assets(driver,result):
     except Exception as err:
         print(f"Finance Reports general errors : {err}")
 
-def run_procedure(driver,result):
+async def run_procedure_collect(driver,result):
     # reports
     url = 'https://cafef.vn/du-lieu.chn'
     driver.execute_script("window.open('about:blank','_blank');")
@@ -175,13 +175,13 @@ def run_procedure(driver,result):
     
     
 
-if __name__ == "__main__":
-    options = Options()
-    service = Service(ChromeDriverManager().install())
-    options.add_argument("--headless")
-    driver = webdriver.Chrome(service=service,options=options)
+
+options = Options()
+service = Service(ChromeDriverManager().install())
+options.add_argument("--headless")
+driver = webdriver.Chrome(service=service,options=options)
     
-    result = "CTR"
+    # result = "CTR"
     
-    run_procedure(driver,result=result)
-    driver.quit()
+    # run_procedure(driver,result=result)
+    # driver.quit()

@@ -8,12 +8,12 @@ import asyncio
 
 
 CURRENT = os.path.dirname(os.path.abspath(__file__))
-ROOT = os.path.join(CURRENT,'..')
+ROOT = os.path.join(CURRENT)
 # MODULE_DIR là thư mục chứa file .pyd đã được đổi tên
 
 RAW_DIR = os.path.abspath(os.path.join(CURRENT,'..','..','..','..'))
-RAW = os.path.join(RAW_DIR,'LAB','data','raw','cleanedpt001.csv')
-ASSETS = os.path.join(RAW_DIR,'LAB','data','raw','assets001.csv')
+RAW = os.path.join(RAW_DIR,'data','raw','cleandpt001.csv')
+ASSETS = os.path.join(RAW_DIR,'data','raw','assets001.csv')
 MODULE_DIR = os.path.join(ROOT, 'libs') 
 
 os.add_dll_directory('D:/Msys2/ucrt64/bin')
@@ -38,24 +38,6 @@ lq = evaluate_module_update.Liquidity()
 '''
 Mục tính mức độ lơi nhuận tài chính
 '''
-
-
-async def updating_json(data,filename:str):
-    try:
-        with open(filename) as file:
-            data = json.dumps(data)
-            file.write(data)
-        print('Json updated')
-    except Exception as dce:
-        print("Error occured during Dce json",dce)
-        return {}
-    
-
-
-
-
-
-
 
 # đọc dữ liệu
 async def read_data(filename:str):
@@ -107,7 +89,7 @@ async def extract_finance_growth(df,prev_quarter,current_quarter,years,major):
         print('QUÝ trước : ',business_net_profit_prev)
         print('Quý hiện tại : ',business_net_profit_current)
         analysis_template = {
-            'Quarter':quarter,
+            
             'Major':df.iloc[major]['Title'],
             'Year':years,
             'single growth rate':single_growth_rate,

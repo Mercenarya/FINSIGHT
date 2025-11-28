@@ -37,6 +37,7 @@ def analysis_api(request):
             # mẫu sử dụng ( lợi nhuận từ kinh doanh )
 
             single_growth = an.extract_finance_growth()
+            
 
             analysis_data = json.loads(profitability_results)
             return JsonResponse(analysis_data)

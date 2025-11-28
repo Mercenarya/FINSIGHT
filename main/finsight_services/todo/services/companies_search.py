@@ -73,7 +73,7 @@ async def get_ul_list_results(driver,result):
 
 # hàm đặc biệt trưng dụng khi gọi sang module Views của Django
 # kiểm soát driver và từng lần query
-def search_result(query:str):
+async def search_result(query:str):
     options = Options() # tạo options
     service = Service(ChromeDriverManager().install()) # lấy driver trình duyệt
     options.add_argument("--headless") # dấu trình duyệt
@@ -83,7 +83,7 @@ def search_result(query:str):
 
     try:
         
-        results = asyncio.run(get_ul_list_results(driver,query))
+        results = await get_ul_list_results(driver,query)
         return results
     except Exception as error:
         print('Search result error',f'{error}')
