@@ -180,8 +180,3 @@ options = Options()
 service = Service(ChromeDriverManager().install())
 options.add_argument("--headless")
 driver = webdriver.Chrome(service=service,options=options)
-    
-    # result = "CTR"
-    
-    # run_procedure(driver,result=result)
-    # driver.quit()

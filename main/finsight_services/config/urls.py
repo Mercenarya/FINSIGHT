@@ -24,6 +24,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("",views.clients,name='clients_root'),
     path("users/", views.clients, name='users'),
-    path("api/analysis/", views.analysis_api, name='financial_analysis'),
-    re_path(r'^api/search/suggestions/?$', views.companies_search, name='search_companies'),
+    re_path(r"^api/analysis/?$", views.analysis_api, name='financial_analysis_api'),
+    path("analysis/", views.analysis, name="analysis"),
+    re_path(r'^api/search/suggestions/?$', views.companies_search, name='search_companies_api'),
 ]

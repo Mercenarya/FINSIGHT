@@ -153,18 +153,30 @@ function Analysis() {
     .filter(name => name.toLowerCase().includes(searchValue.toLowerCase()));
 
   
+  //-------------------- chức năng lấy các thông tin đề xuất khi tìm kiếm  ------------------
+  async function fetch_api_analysis(result){
+    try{
+      if (!result || result.trim().length == 0){
+        // chỉnh sửa sang dialog
+        console.log("unknown result during searching")
+        return;
+      }
+      const result = axios.get(`http://127.0.0.1:8080/api/analysis/?query=${result}`)
+
+    }catch(error){
+      console.log(
+        {
+          message:"an error occured during fetch point",
+          detail:`${error}`
+        }
+      )
+    }
+  }
 
   
 
-  // useEffect(() => {
-  //   if(companyList.length() > 0){
-  //     setDropdownOpen(true);
-  //   }
-  //   else{
-  //     setDropdownOpen(false);
-  //   }
-  // },[companyList])
- 
+  
+//  ------------------------------------------------------------------------------------------
   const metricDataMap = {
     profitability: { label: 'Profitability', value: '18%', change: '+8%', positive: true },
     efficiency: { label: 'Efficiency', value: '1.8', change: '-3%', positive: false },

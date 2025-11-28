@@ -1,0 +1,92 @@
+.expert-validation {
+  background-color: #0a1929;
+  min-height: 100vh;
+}
+
+.expert-validation-content {
+  padding: 32px;
+}
+
+.expert-validation-table-section {
+  background-color: #1a2332;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.expert-validation-table table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 24px;
+}
+
+.expert-validation-table th {
+  text-align: left;
+  padding: 12px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.expert-validation-table td {
+  padding: 16px;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.expert-validation-status-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.expert-validation-status-badge.validated {
+  background-color: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+}
+
+.expert-validation-status-badge.pending {
+  background-color: rgba(251, 191, 36, 0.15);
+  color: #fbbf24;
+}
+
+.expert-view-btn {
+  background-color: rgba(13, 110, 253, 0.15);
+  color: #0d6efd;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.expert-view-btn:hover {
+  background-color: rgba(13, 110, 253, 0.25);
+}
+
+.expert-validation-footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.expert-validate-btn {
+  background-color: #0d6efd;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.expert-validate-btn:hover {
+  background-color: #0b5ed7;
+}

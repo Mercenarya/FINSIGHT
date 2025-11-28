@@ -1,0 +1,109 @@
+.reports-page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.reports-search {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.search-input {
+  background: #1e3a5f;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 10px 16px;
+  border-radius: 8px;
+  color: white;
+  font-size: 14px;
+  width: 300px;
+}
+
+.search-input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.reports-panel {
+  background: #1e3a5f;
+  padding: 24px;
+  border-radius: 12px;
+}
+
+.reports-table {
+  overflow-x: auto;
+}
+
+.reports-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.reports-table th,
+.reports-table td {
+  text-align: left;
+  padding: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.reports-table th {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 600;
+}
+
+.reports-table td {
+  color: white;
+  font-size: 14px;
+}
+
+.report-status {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.report-status.approved {
+  background: rgba(76, 175, 80, 0.2);
+  color: #4caf50;
+}
+
+.report-status.pending {
+  background: rgba(255, 193, 7, 0.2);
+  color: #ffc107;
+}
+
+.report-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.action-btn {
+  padding: 6px 16px;
+  border-radius: 6px;
+  border: none;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.action-btn.view {
+  background: #00d9ff;
+  color: #0a1929;
+}
+
+.action-btn.edit {
+  background: rgba(33, 150, 243, 0.8);
+  color: white;
+}
+
+.action-btn.download {
+  background: rgba(0, 217, 255, 0.8);
+  color: white;
+}
+
+.action-btn:hover {
+  transform: translateY(-1px);
+  opacity: 0.9;
+}

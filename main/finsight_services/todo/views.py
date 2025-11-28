@@ -2,6 +2,9 @@ from django.shortcuts import render,redirect
 from django.http import HttpResponse,JsonResponse
 from .services import analysis as an
 from .services import companies_search as cpn
+# from .services.companies_search import sea
+# from .services.companies_search import search_result
+from .services import ultimate
 from django.template import loader
 from django.views.decorators.csrf import csrf_exempt #skip csrf của react để tương tác API
 from django.views.decorators.http import require_http_methods
@@ -16,31 +19,32 @@ def clients(request):
 
 
 # tạo api của phân tích tài chính
-@csrf_exempt
-def analysis_api(request):
+@require_http_methods(['GET'])
+async def analysis_api(request):
     try:
-        if request.method == 'POST':
+        query = request.GET.get('query','')
+        if not query:
+            # nếu không có query nào thì trả về kết quả rỗng
+            return JsonResponse([],safe=False)
+        
             
-            df_reports = an.read_data(an.RAW)
-            df_assets = an.read_data(an.ASSETS)
-   
-            if df_reports is None or df_assets is None or isinstance(df_reports, str) or isinstance(df_assets,str):
-                return JsonResponse(
-                    {
-                        'error':'Failed to read data files.',
-                        'detail':f"{df_reports} {df_assets}"
-                    },
-                    status = 500
-                )
-            # thực hiện phân tích tính toán (Profitability)
-            profitability_results = an.extract_finance_profitability(df=df_reports,df2=df_assets)
-            # mẫu sử dụng ( lợi nhuận từ kinh doanh )
+        df_reports = await an.read_data(an.RAW)
+        df_assets = await an.read_data(an.ASSETS)
+        
+        if df_reports is None or df_assets is None or isinstance(df_reports, str) or isinstance(df_assets,str):
+            return JsonResponse(
+                {
+                    'error':'Failed to read data files.',
+                    'detail':f"{df_reports} {df_assets}"
+                },
+                status = 500
+            )
+        # thực hiện phân tích tính toán (Profitability)
+        data = await ultimate.run_procedure(query)
+        
 
-            single_growth = an.extract_finance_growth()
-            
-
-            analysis_data = json.loads(profitability_results)
-            return JsonResponse(analysis_data)
+        analysis_data = json.loads(data)
+        return JsonResponse(analysis_data, safe=False)
 
         # return redirect("http://127.0.0.1:8080/user/analysis")
     except Exception as error:
@@ -61,6 +65,20 @@ def analysis_api(request):
             
         )
     
+@require_http_methods(['GET','POST'])
+def analysis(request):
+    try:
+        if request.method == "POST":
+            pass
+        
+    except Exception as errorstatus:
+        return JsonResponse(
+            {
+                "Analysis error":"An unexpected error occured during analysis directly",
+                "Detail":f"{errorstatus}"
+            },
+            status=500
+        )
 
 
 
@@ -68,14 +86,14 @@ def analysis_api(request):
 
 # tìm kiếm doanh nghiệp, công ti
 @require_http_methods(['GET'])
-def companies_search(request):
+async def companies_search(request):
     try:
         query = request.GET.get('query','')
         if not query:
             # nếu không có query nào thì trả về kết quả rỗng
             return JsonResponse([],safe=False)
         
-        suggestions = cpn.search_result(query)
+        suggestions = await  cpn.search_result(query)
         dumping_json = json.dumps(suggestions)
         result = json.loads(dumping_json)
 
