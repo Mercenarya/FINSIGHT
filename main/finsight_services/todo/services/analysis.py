@@ -174,6 +174,9 @@ async def extract_finance_profitability(df,df2,quarter):
         return f"Extract params errors : {error}"
 
 
+
+
+
 # phân tích chỉ số thanh khoản tài chính
 async def extract_finance_liquidity(df,quarter):
     try:
@@ -260,28 +263,34 @@ async def convert_reports(template,filename):
         return df
     except Exception as error:
         return f"Reports general errors : {error}"
-    
 
 
 
 
-if __name__ == "__main__":
+async def main():
     quarter = 'Quarter 3'
     major = 0 #'1. Doanh thu bán hàng và cung cấp dịch vụ'
     prev = 'Quarter 3'
     current = 'Quarter 4'
 
-    df = read_data(RAW)
-    df2 = read_data(ASSETS)
+    df = await read_data(RAW)
+    df2 = await read_data(ASSETS)
     print(df)
     print("="*100)
-    
+    pft = await extract_finance_profitability(df,df2,quarter=quarter)
     print('NỘI DUNG LỢI NHUẬN DOANH NGHIỆP - PROFITABILITY')
-    print(extract_finance_profitability(df,df2,quarter=quarter))
+    print(pft)
     print('NỘI DUNG TĂNG TRƯỞNG MỐC - GROWTH')
     
     
-    
-    print(extract_finance_growth(df=df,prev_quarter=prev,current_quarter=current,major=major,years=2024))
+    growth = await extract_finance_growth(df=df,prev_quarter=prev,current_quarter=current,major=major,years=2024)
+    print(growth)
     print("NỘI DUNG PHÂN TÍCH CHỈ SỐ THANH KHOẢN TÀI CHÍNH")
-    print(extract_finance_liquidity(df2,quarter=quarter))
+    lq = await extract_finance_liquidity(df2,quarter=quarter)
+    print(lq)
+
+
+
+
+if __name__ == "__main__":
+    asyncio.run(main=main())
