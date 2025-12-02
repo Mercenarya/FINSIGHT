@@ -12,9 +12,9 @@ namespace py = pybind11;
 using namespace std;
 
 typedef long long SAMPLE;// đơn vị chuẩn : 1,000,000,000
-typedef double RATIOS;// tỷ suất
-typedef double MARGIN;// biên 
-typedef vector<double> DATA;// quy chuẩn kiểu dữ liệu cho luồng dữ liệu 
+typedef float RATIOS;// tỷ suất
+typedef float MARGIN;// biên 
+typedef vector<float> DATA;// quy chuẩn kiểu dữ liệu cho luồng dữ liệu 
 
 // đơn vị mẫu
 // const SAMPLE sample = 1'000'000'000;
@@ -63,11 +63,11 @@ class Profitability {
                     return 0.0f;
                 }
                 // xử lí ép kiểu dữ liệu từ long long --> double
-                GP = static_cast<double>(GP);
-                RV = static_cast<double>(RV);
+                GP = static_cast<float>(GP);
+                RV = static_cast<float>(RV);
 
                 // xử lí kết quả biên lợi nhuận
-                double margin = static_cast<double>(GP)/RV ;
+                double margin = static_cast<float>(GP)/RV ;
                 return margin* 100;
             }catch(const std::exception& e){
                 std::cerr << e.what() << '\n';
@@ -88,11 +88,11 @@ class Profitability {
                     return 0.0f;
                 }
                 // xử lí ép kiểu dữ liệu long long --> double
-                BSNP = static_cast<double>(BSNP);
-                RV = static_cast<double>(RV);
+                BSNP = static_cast<float>(BSNP);
+                RV = static_cast<float>(RV);
 
                 //xử lí kết quả biên lợi nhuận
-                double margin = static_cast<double>(BSNP) / RV;
+                double margin = static_cast<float>(BSNP) / RV;
                 return margin*100;
             }catch(const std::exception& e){
                 std::cerr << e.what() << '\n';
@@ -106,7 +106,7 @@ class Profitability {
         template <typename T>
         MARGIN npm_margin(T BATMP, T RV ){
             try{
-                if( RV == 0){
+                if( RV == 0.0){
                     if(BATMP > 0){
                         throw std::invalid_argument("Revenue (RV) is none, undefined Net income");
                         return 1.0f;
@@ -116,11 +116,11 @@ class Profitability {
                 }
                 
                 //xử lí ép kiểu dữ liệu long long --> double
-                BATMP = static_cast<double>(BATMP);
-                RV = static_cast<double>(RV);
+                BATMP = static_cast<float>(BATMP);
+                RV = static_cast<float>(RV);
 
                 // xử lí kết quả biên lợi nhuận
-                double margin = static_cast<double>(BATMP) / RV;
+                double margin = static_cast<float>(BATMP) / RV;
                 return margin*100;
             }catch(const std::exception& e){
                 std::cerr << e.what() << '\n';
@@ -139,17 +139,17 @@ class Profitability {
         RATIOS roa_ratios(T TTA, T NI){
             try
             {
-                if(TTA == 0){
-                    if(NI > 0){
+                if(TTA == 0.0){
+                    if(NI > 0.0){
                         throw std::invalid_argument("Total assest is none, Net income is undefined");
                         return 1.0f;
                     }
                     return 0.0f;
                 }
-                TTA = static_cast<double>(TTA);
-                NI = static_cast<double>(NI);
+                TTA = static_cast<float>(TTA);
+                NI = static_cast<float>(NI);
 
-                double ratios = static_cast<double>(NI) / TTA;
+                double ratios = static_cast<float>(NI) / TTA;
                 return ratios * 100;
                 
             }
@@ -169,18 +169,18 @@ class Profitability {
         RATIOS roe_ratios(T ATE ,T NI){
             try
             {
-                if(ATE==0){
-                    if(NI > 0){
+                if(ATE==0.0){
+                    if(NI > 0.0){
                         throw std::invalid_argument("After-tax Equity is none, net income is undefined");
                         return 1.0f;
                     }
                     return 0.0f;
                 }
 
-                ATE = static_cast<double>(ATE);
-                NI = static_cast<double>(NI);
+                ATE = static_cast<float>(ATE);
+                NI = static_cast<float>(NI);
 
-                double ratios = static_cast<double>(NI) / ATE;
+                double ratios = static_cast<float>(NI) / ATE;
                 return ratios * 100;
 
 
@@ -198,11 +198,11 @@ class Profitability {
         RATIOS eps_ratios(T NI, T PD, T ASO){
             try{
                 
-                NI = static_cast<double>(NI);// net income
-                PD = static_cast<double>(PD);// Preffered Dividend
-                ASO = static_cast<double>(ASO);// Average shares outstanding
+                NI = static_cast<float>(NI);// net income
+                PD = static_cast<float>(PD);// Preffered Dividend
+                ASO = static_cast<float>(ASO);// Average shares outstanding
 
-                double ratios = static_cast<double>((NI)-PD) / ASO;
+                double ratios = static_cast<float>((NI)-PD) / ASO;
                 return ratios;
 
             }

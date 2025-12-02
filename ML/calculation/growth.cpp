@@ -7,8 +7,8 @@
 
 using namespace std;
 
-typedef double GROWTH; // định nghĩa kiểu dữ liệu
-typedef double CAGR; // tăng trưởng kép
+typedef float GROWTH; // định nghĩa kiểu dữ liệu
+typedef float CAGR; // tăng trưởng kép
 
 // // khởi tạo datasheet
 // struct datasheet {
@@ -28,16 +28,16 @@ class Growth{
         GROWTH single_growth_rate(T current, T previous){
             try
             {
-                if(previous == 0){
+                if(previous == 0.0){
                     
                     throw std::invalid_argument("Previous cannot be none");
           
                 }
 
-                current = static_cast<double>(current);
-                previous = static_cast<double>(previous);
+                current = static_cast<float>(current);
+                previous = static_cast<float>(previous);
                 
-                GROWTH growth = static_cast<double>(current - previous) / previous;
+                GROWTH growth = static_cast<float>(current - previous) / previous;
                 return growth * 100;
             }
             catch(const std::exception& e)
@@ -53,17 +53,17 @@ class Growth{
         CAGR cagr_growth_rate(T current, T previous, T year){
             try
             {
-                if(previous == 0){
+                if(previous == 0.0){
                     
                     throw std::invalid_argument("Previous cannot be none");
                     
                 }
 
-                current = static_cast<double> (current);
-                previous = static_cast<double> (previous);
-                year = static_cast<double> (year);
+                current = static_cast<float> (current);
+                previous = static_cast<float> (previous);
+                year = static_cast<float> (year);
         
-                GROWTH growth = static_cast<double> (pow(current/previous, 1.0 /year))-1;
+                GROWTH growth = static_cast<float> (pow(current/previous, 1.0 /year))-1;
                 return growth * 100;
             }
             catch(const std::exception& e)

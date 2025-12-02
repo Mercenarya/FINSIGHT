@@ -9,13 +9,13 @@
 using namespace std;
 
 // định nghĩa kiểu dữ liệu
-typedef double EF; // hiêỵ quả
-typedef double RATIOS;// tỷ syất
-typedef double DIO; //số ngày tồn kho bình quân
-typedef double TOV; // turnover
-typedef double DSO; // days sale outstanding
-typedef double TAT; //vòng quay tổng tài sản
-typedef double DPO; // kỳ trả bình quân 
+typedef float EF; // hiêỵ quả
+typedef float RATIOS;// tỷ syất
+typedef float DIO; //số ngày tồn kho bình quân
+typedef float TOV; // turnover
+typedef float DSO; // days sale outstanding
+typedef float TAT; //vòng quay tổng tài sản
+typedef float DPO; // kỳ trả bình quân 
 
 typedef long long SAMPLE; // đơn vị khử 
 // const SAMPLE sample = 1'000'000'000;
@@ -54,16 +54,16 @@ class Efficiency {
         RATIOS inventory_turnover_ratio(T costGS , T avginventory){
             try
             {
-                if(avginventory == 0){
+                if(avginventory == 0.0){
                     throw std::invalid_argument("Undefined average inventory");
                     
                 }
                 
                 // xử lí kiểu dữ liệu
-                costGS = static_cast<double> (costGS);
-                avginventory = static_cast<double> (avginventory);
+                costGS = static_cast<float> (costGS);
+                avginventory = static_cast<float> (avginventory);
 
-                RATIOS ratio = static_cast<double>(costGS) / avginventory;
+                RATIOS ratio = static_cast<float>(costGS) / avginventory;
                 return ratio;
             }
             catch(const std::exception& e)
@@ -78,7 +78,7 @@ class Efficiency {
         
         DIO dio_stand(long long inventoryturnover, const int days = 365){
             try{
-                if(inventoryturnover == 0){
+                if(inventoryturnover == 0.0){
                     throw std::invalid_argument("Undefined inventory turnover");
                     
                 }
@@ -102,7 +102,7 @@ class Efficiency {
         TOV art_turnover(T netcreditsale, T avgaccountsrcv){
             try
             {
-                if(avgaccountsrcv == 0){
+                if(avgaccountsrcv == 0.0){
                     throw std::invalid_argument("undefined average account recieve");
                     // return 0.0f;
                 }
@@ -123,16 +123,16 @@ class Efficiency {
         TOV tta_turnover(T netsales, T avgttassets){
             try
             {
-                if(avgttassets == 0){
+                if(avgttassets == 0.0){
                     throw std::invalid_argument("undefined average total assets");
                     
                 }
 
                 // xử lí kiểu dữ liệu
-                netsales = static_cast<double> (netsales);
-                avgttassets = static_cast<double> (avgttassets);
+                netsales = static_cast<float> (netsales);
+                avgttassets = static_cast<float> (avgttassets);
 
-                TOV turnover = static_cast<double> (netsales) / avgttassets;
+                TOV turnover = static_cast<float> (netsales) / avgttassets;
                 return turnover;
             }
             catch(const std::exception& e)
@@ -148,17 +148,17 @@ class Efficiency {
         TOV apt_turnover(T costGS, T avgaccpay){
             try
             {
-                if(avgaccpay == 0){
+                if(avgaccpay == 0.0){
                     throw std::invalid_argument("Undefined average account payable");
                     
                 }
 
                 // xử lí kiểu dữ liệu
-                costGS = static_cast<double> (costGS);
-                avgaccpay = static_cast<double> (avgaccpay);
+                costGS = static_cast<float> (costGS);
+                avgaccpay = static_cast<float> (avgaccpay);
 
                 // giá trị vòng quay
-                TOV turnover = static_cast<double> (costGS) / avgaccpay;
+                TOV turnover = static_cast<float> (costGS) / avgaccpay;
                 return turnover;
             }
             catch(const std::exception& e)
@@ -174,7 +174,7 @@ class Efficiency {
         DPO dpo_outstanding(long long accpayturnover , const int days=365 ){
             try
             {
-                if(accpayturnover == 0){
+                if(accpayturnover == 0.0){
                     throw std::invalid_argument("Undefined account payable turnover");
                     
                 }

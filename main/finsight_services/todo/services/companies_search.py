@@ -24,10 +24,13 @@ import time
 CURRENT = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.join(CURRENT,'..','..','..','..')
 sys.path.append(ROOT)
-import finance_execute
-from finance_execute import get_finance_assets, get_finance_reports
-from finance_execute import get_ecn_reports, get_ecn_assets
-from finance_execute import run_procedure
+
+
+from .finance_execute import get_finance_assets, get_finance_reports
+from .finance_execute import get_ecn_reports, get_ecn_assets
+
+
+
 print(ROOT)
 
 # đồng bộ quá trình lấy danh sách kết quả tìm kiếm
@@ -78,6 +81,8 @@ async def get_ul_list_results(driver,result):
 # hàm đặc biệt trưng dụng khi gọi sang module Views của Django
 # kiểm soát driver và từng lần query
 
+
+
 async def search_result(query:str):
 
     options = Options() # tạo options
@@ -88,14 +93,15 @@ async def search_result(query:str):
     driver.get(url)
 
     try:
+        
         # results = asyncio.run(get_ul_list_results(driver,query))
+
         results = await get_ul_list_results(driver,query)
+
         return results
     except Exception as error:
         print('Search result error',f'{error}')
         return []
-    finally:
-        driver.quit()
 
 # options = Options() # tạo options
 # service = Service(ChromeDriverManager().install()) # lấy driver trình duyệt

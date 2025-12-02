@@ -119,7 +119,7 @@ function Analysis() {
       }
       try{
         const result = await axios.get(
-          `http://127.0.0.1:8080/api/search/suggestions/?query=${keyword}`
+          `http://127.0.0.1:8001/api/search/suggestions/?query=${keyword}`
         );
         // trả về kết quả dạng array list
         setCompanyList(result.data || []);
@@ -161,7 +161,7 @@ function Analysis() {
         console.log("unknown result during searching")
         return;
       }
-      const result = axios.get(`http://127.0.0.1:8080/api/analysis/?query=${result}`)
+      const result = axios.get(`http://127.0.0.1:8001/api/analysis/?query=${result}`)
 
     }catch(error){
       console.log(

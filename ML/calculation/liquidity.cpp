@@ -13,7 +13,7 @@ using namespace std;
 // đơn vị chuẩn : 1,000,000,000
 typedef long long SAMPLE;
 // current ratio
-typedef double CRT;
+typedef float CRT;
 // const SAMPLE sample = 1'000'000'000;
 
 
@@ -37,7 +37,7 @@ class Liquidity{
         double current_ratio(T current_assets, T liabilities){
             try
             {
-                if(liabilities == 0){
+                if(liabilities == 0.0){
                     if(current_assets > 0){
                         throw std::invalid_argument("liabilities is zero, undifined current assets");
                         return 1.0f;
@@ -50,7 +50,7 @@ class Liquidity{
                 // liabilities = static_cast<double>(liabilities);
 
                 /*Ratio*/
-                double ratio = static_cast<double> (current_assets) / liabilities;
+                double ratio = static_cast<float> (current_assets) / liabilities;
                 return ratio;
                 
 
@@ -66,10 +66,10 @@ class Liquidity{
         
         //Tỷ số Thanh toán Nhanh
         template<typename T>
-        double quick_ratio(T current_assets, T inventory, T liabilities ){
+        float quick_ratio(T current_assets, T inventory, T liabilities ){
             try
             {
-                if (liabilities == 0){
+                if (liabilities == 0.0){
                     if(current_assets > 0 || inventory > 0){
                         throw std::invalid_argument("liabilities is zero, undefined current assets and inventory");
                         return 1.0f;
@@ -82,7 +82,7 @@ class Liquidity{
                 // liabilities = static_cast<double>(liabilities);
 
                 /*Ratio*/
-                double ratio = static_cast<double>(current_assets - inventory) / liabilities;
+                double ratio = static_cast<float>(current_assets - inventory) / liabilities;
 
                 return ratio;
 
@@ -99,10 +99,10 @@ class Liquidity{
 
         // tỷ số thanh khoản bằng tiền
         template<typename T>
-        double cash_ratio(T cash, T liabilities){
+        float cash_ratio(T cash, T liabilities){
             try
             {
-                if (liabilities == 0){
+                if (liabilities == 0.0){
                     if(cash > 0 ){
                         throw std::invalid_argument("liabilities is zero, undefined cash and marketable security");
                         return 1.0f;

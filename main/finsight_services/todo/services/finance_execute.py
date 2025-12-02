@@ -41,7 +41,7 @@ from main.finsight_services.todo.services.fn_reports import get_ecn_reports,data
 
 
 # lấy báo cáo tài chính tổng thế
-def get_finance_reports(driver,result):
+async def get_finance_reports(driver,result):
     try:
         wait = WebDriverWait(driver,10)
 
@@ -99,7 +99,7 @@ def get_finance_reports(driver,result):
 
 
 # lấy báo cáo về mục tài sản
-def get_finance_assets(driver,result):
+async def get_finance_assets(driver,result):
     try:
         wait = WebDriverWait(driver,10)
 
@@ -163,7 +163,7 @@ async def run_procedure_collect(driver,result):
     driver.execute_script("window.open('about:blank','_blank');")
     driver.switch_to.window(driver.window_handles[-1])
     driver.get(url)
-    get_finance_reports(driver=driver,result=result)
+    await get_finance_reports(driver=driver,result=result)
 
 
     # assets
@@ -171,7 +171,7 @@ async def run_procedure_collect(driver,result):
     driver.execute_script("window.open('about:blank','_blank');")
     driver.switch_to.window(driver.window_handles[-1])
     driver.get(url)
-    get_finance_assets(driver=driver,result=result)
+    await get_finance_assets(driver=driver,result=result)
     
     
 
@@ -180,3 +180,8 @@ options = Options()
 service = Service(ChromeDriverManager().install())
 options.add_argument("--headless")
 driver = webdriver.Chrome(service=service,options=options)
+    
+    # result = "CTR"
+    
+    # run_procedure(driver,result=result)
+    # driver.quit()

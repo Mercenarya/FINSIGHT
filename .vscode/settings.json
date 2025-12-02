@@ -122,5 +122,6 @@
     "ranges": "cpp",
     "stop_token": "cpp"
   },
-  "cmake.sourceDirectory": "D:/FinSightData/ml_pipeline/calculation"
+  "cmake.sourceDirectory": "D:/FinSightData/ml_pipeline/calculation",
+  "git.ignoreLimitWarning": true
 }

@@ -1,5 +1,4 @@
 from django.db import models
-
 from mongoengine import (
     Document,
     StringField,
@@ -94,3 +93,4 @@ class Request(Document):
 class History(Document):
     request_id = ReferenceField(Request, required=True)
     output = StringField()
+

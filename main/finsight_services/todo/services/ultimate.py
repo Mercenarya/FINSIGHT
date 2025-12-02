@@ -13,26 +13,29 @@ from selenium.webdriver.common import keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.chrome.options import Options
-from .companies_search import search_result
-from .analysis import extract_finance_growth,extract_finance_liquidity,extract_finance_profitability
-from .analysis import read_data,RAW,ASSETS
+from companies_search import search_result
+from analysis import extract_finance_growth,extract_finance_liquidity,extract_finance_profitability
+from analysis import read_data,RAW,ASSETS
 
-from .finance_execute import run_procedure_collect
+from finance_execute import run_procedure_collect
 import json
 
 
+
+
+
 # cập nhật vào thư mục json đặc thù
-# async def updating_json_anylis(data,filename:str):
-#     try:
-#         with open(filename) as file:
-#             json.dump(
-#                 data, file, 
-#                 indent=4, ensure_ascii=False
-#             )
-#         print('Json updated')
-#     except Exception as dce:
-#         print("Error occured during updating json",dce)
-#         return {}
+async def updating_json_anylis(data,filename:str):
+    try:
+        with open(filename) as file:
+            json.dump(
+                data, file, 
+                indent=4, ensure_ascii=False
+            )
+        print('Json updated')
+    except Exception as dce:
+        print("Error occured during updating json",dce)
+        return {}
     
 
 
@@ -72,13 +75,13 @@ async def get_analysis(df,df2,**kwargs):
         return {}
     
 # chạy đồng bộ tất cả các chức năng trên
-async def run_procedure(result):
+async def run_procedure():
     options = Options()
     service = Service(ChromeDriverManager().install())
     options.add_argument("--headless")
     driver = webdriver.Chrome(service=service,options=options)
     # từ khóa - mã công ty 
-    # result = "VIC"
+    result = "VIC"
     await search_result(result)
     print("Starting collect data ... ")
     # asyncio.sleep(3)
@@ -100,9 +103,8 @@ async def run_procedure(result):
     result = await get_analysis(df=df,df2=df2,**template)
     # await updating_json(result,ANALYSISJS)
     print(result)
-    return json.dumps(result, ensure_ascii=False)
 
 
-# if __name__ == "__main__":
+if __name__ == "__main__":
     
-#     asyncio.run(run_procedure())
+    asyncio.run(run_procedure())
