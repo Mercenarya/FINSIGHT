@@ -17,7 +17,7 @@ typedef double CRT;
 // const SAMPLE sample = 1'000'000'000;
 
 
-// // khởi tạo giá trị 
+
 // struct datasheet
 // {
 //     long long current_assets;

@@ -3,7 +3,6 @@ import sys
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-<<<<<<< HEAD
 import sklearn
 import json
 from sklearn.preprocessing import StandardScaler
@@ -12,30 +11,26 @@ from sklearn.preprocessing import StandardScaler
 
 CURRENT = os.path.dirname(os.path.realpath(__file__))
 ROOT = os.path.abspath(os.path.join(CURRENT,'..'))
-=======
-import json
-import asyncio
+
 
 
 CURRENT = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.join(CURRENT)
->>>>>>> brch_main
+
 # MODULE_DIR là thư mục chứa file .pyd đã được đổi tên
 
 RAW_DIR = os.path.abspath(os.path.join(CURRENT,'..','..','..','..'))
 RAW = os.path.join(RAW_DIR,'data','raw','cleandpt001.csv')
 ASSETS = os.path.join(RAW_DIR,'data','raw','assets001.csv')
-<<<<<<< HEAD
+
 LIBS = os.path.join(ROOT, 'libs') 
-=======
 MODULE_DIR = os.path.join(ROOT, 'libs') 
 
->>>>>>> brch_main
+
 os.add_dll_directory('D:/Msys2/ucrt64/bin')
 
 print(CURRENT)
 print(ROOT)
-<<<<<<< HEAD
 print(LIBS)
 print(RAW)
 print(ASSETS)
@@ -47,7 +42,7 @@ from libs import evaluate_module_update as ev
 
 
 
-=======
+
 print(MODULE_DIR)
 print(RAW)
 
@@ -61,14 +56,14 @@ from libs import evaluate_module_update
 ef = evaluate_module_update.Efficiency()
 gr = evaluate_module_update.Growth()
 lq = evaluate_module_update.Liquidity()
->>>>>>> brch_main
+
 
 
 '''
 Mục tính mức độ lơi nhuận tài chính
 '''
 
-<<<<<<< HEAD
+
 
 # chuẩn hóa cụm
 def normalization(data):
@@ -86,12 +81,10 @@ def normalization(data):
 
 
 
-# đọc dữ liệu
-def read_data(filename:str):
-=======
+
 # đọc dữ liệu
 async def read_data(filename:str):
->>>>>>> brch_main
+
     try:
         if os.path.exists(filename):
             df = pd.read_csv(filename)
@@ -110,31 +103,6 @@ async def read_data(filename:str):
     except Exception as error:
         return f"General Error of data reader {error}"
 
-<<<<<<< HEAD
-# lấy thông tin tăng trưởng
-def extract_finance_growth(prev_quarter,current_quarter,years):
-    try:
-        growth = ev.Growth()
-        
-        current_quarter = int(current_quarter)
-        prev_quarter = int(prev_quarter)
-        # lấy chỉ số tăng trưởng đơn
-        single_growth_rate = growth.single_growth_rate(current_quarter,prev_quarter)
-
-        # lấy chỉ số tăng trưởng kép theo năm
-        cagr_growth_rate = growth.cagr_growth_rate(current_quarter,prev_quarter,years)
-
-        # không thể tính toán chỉ số tăng trưởng khi giá trị của mốc trước là 0
-        if prev_quarter == 0:
-            print("Previous quarter cannot be none")
-            return
-        if prev_quarter <= 0 or current_quarter <=0 or years <= 0:
-            cagr_growth_rate = 'N/A'
-
-
-
-        analysis_template = {
-=======
 
 
 # lấy thông tin tăng trưởng
@@ -167,7 +135,6 @@ async def extract_finance_growth(df,prev_quarter,current_quarter,years,major):
         analysis_template = {
             
             'Major':df.iloc[major]['Title'],
->>>>>>> brch_main
             'Year':years,
             'single growth rate':single_growth_rate,
             'compound annual growth rate':cagr_growth_rate
@@ -177,10 +144,7 @@ async def extract_finance_growth(df,prev_quarter,current_quarter,years,major):
     except Exception as error:
         return f"Extract finance growth problems set : {error}"
 
-<<<<<<< HEAD
-# lọc các nội dung tài chính từ Báo Cáo
-def extract_finance_profitability(df,df2):
-=======
+
 
 
 
@@ -188,7 +152,7 @@ def extract_finance_profitability(df,df2):
 
 # lọc các nội dung tài chính từ Báo Cáo
 async def extract_finance_profitability(df,df2,quarter):
->>>>>>> brch_main
+
     # tính lợi nhuận gộp
     # REVENUE = 27245717878312 # Doanh thu thuần
 
@@ -196,7 +160,7 @@ async def extract_finance_profitability(df,df2,quarter):
     # GROSS_PROFIT = REVENUE - COGS # Lợi nhuận gộp (GP)
     
     try:
-<<<<<<< HEAD
+
         pft = ev.Profitability()
         revenue = df.iloc[2]['Quarter 1']
 
@@ -222,7 +186,7 @@ async def extract_finance_profitability(df,df2,quarter):
 
         # lãi cơ bản trên cổ phiếu
         basis_share_holder = df.iloc[21]['Quarter 1']
-=======
+
         pft = evaluate_module_update.Profitability()
         revenue = df.iloc[2][quarter]
 
@@ -243,7 +207,7 @@ async def extract_finance_profitability(df,df2,quarter):
         equity = df2.iloc[93][quarter]
         print("Equity : ",equity)
 
->>>>>>> brch_main
+
 
         '''
         triển khai các phép phân tích tài chính từ pyd gồm:
@@ -264,16 +228,16 @@ async def extract_finance_profitability(df,df2,quarter):
         roa_percent = f"{roa_ratio:.7f} %"
         roe_percent = f"{roe_ratio:.7f} %"
 
-<<<<<<< HEAD
 
-        analysis_template = {
-=======
+
+   
+
         tta = df2.iloc[62]['Title'] + " : "+df2.iloc[62][quarter]
         print(tta)
 
         analysis_template = {
             "Quarter":quarter,
->>>>>>> brch_main
+
             "Gross marrgin":round(gross_margin,2),
             "Operating profit margin":round(operating_margin,2),
             "ROA Ratio value":round(roa_ratio,7) ,
@@ -281,11 +245,8 @@ async def extract_finance_profitability(df,df2,quarter):
             "ROE Profit":roe_ratio,
             "ROE Percent":roe_percent
         }
-<<<<<<< HEAD
-        return json.dumps(analysis_template)
-=======
+
         return analysis_template
->>>>>>> brch_main
 
 
 
@@ -293,8 +254,7 @@ async def extract_finance_profitability(df,df2,quarter):
         return f"Extract params errors : {error}"
 
 
-<<<<<<< HEAD
-=======
+
 # phân tích chỉ số thanh khoản tài chính
 async def extract_finance_liquidity(df,quarter):
     try:
@@ -362,17 +322,12 @@ async def extract_finance_efficiency(df,quarter):
         print("An error occured during extracting efficiency ", error)
         return {}
 
->>>>>>> brch_main
-
 
 
 # chuyển đổi dữ liệu bảo cáo đã được phân tích vào dữ liệu đặc thù riêng
-<<<<<<< HEAD
-def convert_reports(template,filename):
-=======
+
 async def convert_reports(template,filename):
-    
->>>>>>> brch_main
+
     try:
         
         title = [
@@ -390,7 +345,7 @@ async def convert_reports(template,filename):
 
 
 
-<<<<<<< HEAD
+
 # if __name__ == "__main__":
 
 #     df = read_data(RAW)
@@ -400,26 +355,26 @@ async def convert_reports(template,filename):
 #     tta = df2.iloc[62]['Title'] + " : "+df2.iloc[62]['Quarter 1']
 #     print(tta)
 #     print(extract_finance_profitability(df,df2))
-=======
 
-if __name__ == "__main__":
-    quarter = 'Quarter 3'
-    major = 0 #'1. Doanh thu bán hàng và cung cấp dịch vụ'
-    prev = 'Quarter 3'
-    current = 'Quarter 4'
 
-    df = read_data(RAW)
-    df2 = read_data(ASSETS)
-    print(df)
-    print("="*100)
+# if __name__ == "__main__":
+#     quarter = 'Quarter 3'
+#     major = 0 #'1. Doanh thu bán hàng và cung cấp dịch vụ'
+#     prev = 'Quarter 3'
+#     current = 'Quarter 4'
+
+#     df = read_data(RAW)
+#     df2 = read_data(ASSETS)
+#     print(df)
+#     print("="*100)
     
-    print('NỘI DUNG LỢI NHUẬN DOANH NGHIỆP - PROFITABILITY')
-    print(extract_finance_profitability(df,df2,quarter=quarter))
-    print('NỘI DUNG TĂNG TRƯỞNG MỐC - GROWTH')
+#     print('NỘI DUNG LỢI NHUẬN DOANH NGHIỆP - PROFITABILITY')
+#     print(extract_finance_profitability(df,df2,quarter=quarter))
+#     print('NỘI DUNG TĂNG TRƯỞNG MỐC - GROWTH')
     
     
     
-    print(extract_finance_growth(df=df,prev_quarter=prev,current_quarter=current,major=major,years=2024))
-    print("NỘI DUNG PHÂN TÍCH CHỈ SỐ THANH KHOẢN TÀI CHÍNH")
-    print(extract_finance_liquidity(df2,quarter=quarter))
->>>>>>> brch_main
+#     print(extract_finance_growth(df=df,prev_quarter=prev,current_quarter=current,major=major,years=2024))
+#     print("NỘI DUNG PHÂN TÍCH CHỈ SỐ THANH KHOẢN TÀI CHÍNH")
+#     print(extract_finance_liquidity(df2,quarter=quarter))
+
