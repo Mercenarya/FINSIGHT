@@ -1,0 +1,316 @@
+.comparison-page {
+  padding: 0;
+}
+
+.comparison-header {
+  margin-bottom: 24px;
+}
+
+.comparison-header .page-title {
+  font-size: 28px;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0;
+}
+
+/* Updated filters to match design */
+.comparison-filters {
+  display: grid;
+  /* four equal filter columns + action button */
+  grid-template-columns: repeat(4, 1fr) auto;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 32px;
+  padding: 24px;
+  background: #1e3a5f;
+  border-radius: 12px;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  max-width: 200px;
+}
+
+.filter-group label {
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 8px;
+}
+
+.filter-select {
+  padding: 10px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  font-size: 14px;
+  background: #1e3a5f;
+  color: white;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.small-input {
+  background: #1e3a5f;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  padding: 10px 12px;
+  border-radius: 6px;
+  height: 44px;
+}
+/* add subtle top-left highlight like the company select */
+.small-input {
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), inset -1px 0 0 rgba(255,255,255,0.02);
+}
+
+.small-input:focus,
+.filter-select:focus,
+.period-trigger:focus {
+  outline: none;
+  border-color: rgba(255,255,255,0.28);
+  box-shadow: 0 0 0 3px rgba(0,217,255,0.06);
+}
+
+/* custom period dropdown wrapper */
+.period-wrapper {
+  position: relative;
+}
+.period-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  cursor: pointer;
+}
+/* make the trigger/stretchable like a select */
+.period-trigger {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* dropdown list (reused for company, period, metric) */
+.search-dropdown {
+  position: absolute;
+  top: 48px;
+  left: 0;
+  width: 100%;
+  background: #0f1c2e;
+  border-radius: 0 0 6px 6px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  z-index: 20;
+  max-height: 220px;
+  overflow-y: auto;
+  padding: 6px 0;
+}
+.search-dropdown-item {
+  padding: 10px 18px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.18s, color 0.18s;
+}
+.search-dropdown-item:hover, .search-dropdown-item.active {
+  background: #00d9ff;
+  color: #0f1c2e;
+}
+
+/* dropdown list (option items) styling - may be limited by OS/browser UI */
+.filter-select option {
+  background: #0f1c2e;
+  color: white;
+}
+
+.btn-compare {
+  background: none;
+  color: #00d9ff;
+  border: none;
+  padding: 0 18px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  align-self: center;
+}
+.btn-compare:hover {
+  color: #fff;
+}
+
+/* Updated metrics summary */
+.metrics-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 20px;
+  margin-bottom: 32px;
+}
+
+.summary-metric {
+  background: #1e3a5f;
+  padding: 24px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.summary-label {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 8px;
+}
+
+.summary-value {
+  font-size: 32px;
+  font-weight: 700;
+  color: #00d9ff;
+}
+
+/* Chart sections */
+.chart-section {
+  background: #1e3a5f;
+  padding: 24px;
+  border-radius: 12px;
+  margin-bottom: 24px;
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: white;
+  margin: 0 0 20px 0;
+}
+
+.chart-placeholder-large {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  padding: 24px;
+  min-height: 300px;
+}
+
+.chart-legend-horizontal {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 20px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: white;
+}
+
+.legend-box {
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+}
+
+.bar-chart-area,
+.line-chart-area {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+  padding: 20px;
+  min-height: 250px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chart-note {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 13px;
+  margin: 0;
+}
+
+/* Comparison table */
+.comparison-table-section {
+  background: #1e3a5f;
+  padding: 24px;
+  border-radius: 12px;
+  margin-bottom: 24px;
+}
+
+.comparison-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 16px;
+}
+
+.comparison-table th {
+  background: rgba(0, 0, 0, 0.2);
+  color: rgba(255, 255, 255, 0.9);
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.comparison-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 14px;
+  color: white;
+}
+
+.comparison-table tbody tr:hover {
+  background: rgba(0, 217, 255, 0.05);
+}
+
+.value-green {
+  color: #10b981;
+  font-weight: 600;
+}
+
+.value-red {
+  color: #ef4444;
+  font-weight: 600;
+}
+
+/* AI Insight box */
+.ai-insight-box {
+  background: #1e3a5f;
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.insight-icon-large {
+  font-size: 40px;
+  flex-shrink: 0;
+}
+
+.insight-text-large {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 15px;
+  line-height: 1.6;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .comparison-filters {
+    grid-template-columns: 1fr;
+  }
+}
+
+.chart-card {
+  background: #1e3a5f;
+  padding: 12px;
+  border-radius: 8px;
+  height: 100%;
+}
+
+.chart-card .recharts-wrapper {
+  background: transparent;
+}
+
+.chart-card .recharts-cartesian-grid line {
+  stroke: rgba(255,255,255,0.06) !important;
+}
+
+.chart-card .recharts-legend-wrapper {
+  color: rgba(255,255,255,0.9);
+}
+
+.chart-card .recharts-label {
+  fill: rgba(255,255,255,0.9) !important;
+}

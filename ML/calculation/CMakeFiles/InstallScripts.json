@@ -1,0 +1,7 @@
+{
+	"InstallScripts" : 
+	[
+		"D:/FinSightData/ml_pipeline/calculation/cmake_install.cmake"
+	],
+	"Parallel" : false
+}
