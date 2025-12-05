@@ -1,36 +1,43 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import './Analysis.css';
-import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, Legend } from 'recharts';
+import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, Legend, CartesianGrid } from 'recharts';
 import axios from 'axios';
 
-
-
-
-
 function Analysis() {
-  
+  // ==================== STATE MANAGEMENT ====================
+  // Company search
   const [companyList, setCompanyList] = useState([]);
-  const [activeTab, setActiveTab] = useState('balance-sheet');
   const [searchValue, setSearchValue] = useState("");
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [dropdownIndex, setDropdownIndex] = useState(-1);
-  const [metricsOpen, setMetricsOpen] = useState(false);
-  const [selectedMetrics, setSelectedMetrics] = useState([]);
-  // metrics currently shown in the cards (decoupled from the dropdown selection)
-  const [displayedMetrics, setDisplayedMetrics] = useState(['revenue','profit','expenses','cash']);
-  const [period, setPeriod] = useState('1 Month');
+
+  // Analysis parameters
+  const [year, setYear] = useState("");
+  const [period, setPeriod] = useState('Quarter 1');
   const [periodOpen, setPeriodOpen] = useState(false);
 
-  // const filteredCompanies = companyList.filter(c =>
-  //   c.toLowerCase().includes(searchValue.toLowerCase())
-  // );
+  // Metrics selection
+  const [metricsOpen, setMetricsOpen] = useState(false);
+  const [selectedMetrics, setSelectedMetrics] = useState([]);
+  const [selectionsByCategory, setSelectionsByCategory] = useState({});
 
-  
-  // const handleSelectCompany = company => {
-  //   setSearchValue(company);
-  //   setDropdownOpen(false);
-  // };
+  // Modal for metric selection
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalCategory, setModalCategory] = useState(null);
+  const [modalSelected, setModalSelected] = useState([]);
 
+  // Analysis results
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [analysisData, setAnalysisData] = useState(null);
+  const [chartData, setChartData] = useState([]);
+  const [metricCards, setMetricCards] = useState([
+    { label: 'Revenue', value: '-', change: '-', positive: true },
+    { label: 'Profit', value: '-', change: '-', positive: true },
+    { label: 'Expenses', value: '-', change: '-', positive: false },
+    { label: 'Cash Flow', value: '-', change: '-', positive: true },
+  ]);
+
+  // ==================== METRIC OPTIONS ====================
   const metricOptions = [
     { key: 'profitability', label: 'Profitability' },
     { key: 'efficiency', label: 'Efficiency' },
@@ -38,7 +45,6 @@ function Analysis() {
     { key: 'liquidity', label: 'Liquidity' },
   ];
 
-  // detailed items per category for the modal
   const categoryItems = {
     liquidity: [
       { key: 'cash_ratio', label: 'Cash Ratio' },
@@ -46,12 +52,12 @@ function Analysis() {
       { key: 'current_ratio', label: 'Current Ratio' },
     ],
     profitability: [
-      { key: 'gross_profit_margin', label: 'Gross profit margin' },
+      { key: 'gross_profit_margin', label: 'Gross Profit Margin' },
       { key: 'opm_margin', label: 'Operating Profit Margin' },
       { key: 'npm_margin', label: 'Net Profit Margin' },
-      { key: 'roa_ratio', label: 'Return on Assets margin ratios' },
-      { key: 'roe_profit', label: 'Return on Equity ratios' },
-      { key: 'eps_ratios', label: 'Earnings Per Share ratios' },
+      { key: 'roa_ratio', label: 'Return on Assets' },
+      { key: 'roe_profit', label: 'Return on Equity' },
+      { key: 'eps_ratios', label: 'Earnings Per Share' },
     ],
     efficiency: [
       { key: 'inventory_turnover_ratio', label: 'Inventory Turnover Ratio' },
@@ -67,81 +73,29 @@ function Analysis() {
     ]
   };
 
-  const [modalOpen, setModalOpen] = useState(false);
-  const [modalCategory, setModalCategory] = useState(null);
-  const [modalSelected, setModalSelected] = useState([]);
-  // Persist selections per category so outside UI can reflect checked items
-  const [selectionsByCategory, setSelectionsByCategory] = useState({});
-
-  const openCategoryModal = (categoryKey) => {
-    setModalCategory(categoryKey);
-    // initialize modalSelected from previously saved selections for this category
-    const existing = selectionsByCategory[categoryKey] || [];
-    setModalSelected(Array.isArray(existing) ? [...existing] : []);
-    setModalOpen(true);
-  };
-
-  const toggleModalItem = (key) => {
-    const exists = modalSelected.includes(key);
-    if (!exists && modalSelected.length >= 4) {
-      // limit
+  // ==================== COMPANY SEARCH ====================
+  async function fetch_api_search(keyword) {
+    if (!keyword || keyword.trim().length === 0) {
+      setCompanyList([]);
       return;
     }
-    setModalSelected(prev => exists ? prev.filter(p => p !== key) : [...prev, key]);
-  };
+    try {
+      const result = await axios.get(
+        `http://127.0.0.1:8001/api/search/suggestions/?query=${keyword}`
+      );
+      setCompanyList(result.data || []);
+    } catch (error) {
+      console.error(`Error search: ${error}`);
+      setCompanyList([]);
+    }
+  }
 
-  const confirmModal = () => {
-    // persist modal selections for this category
-    const updated = { ...selectionsByCategory, [modalCategory]: [...modalSelected] };
-    setSelectionsByCategory(updated);
-    // compute which categories have at least one selection so the outside dropdown shows ticks
-    const categoriesSelected = metricOptions.map(o => o.key).filter(k => updated[k] && updated[k].length > 0);
-    setSelectedMetrics(categoriesSelected);
-    setModalOpen(false);
-  };
-
-  const closeModal = () => {
-    setModalOpen(false);
-  };
-
-  // switch to single-selection (radio) behavior: selecting a metric replaces previous selection
-  const selectMetric = (key) => {
-    setSelectedMetrics([key]);
-  };
-
-
-  //-------------------- chức năng lấy các thông tin đề xuất khi tìm kiếm  ------------------
-  // lấy api search
-  async function fetch_api_search(keyword){
-      if(!keyword || keyword.trim().length == 0){
-        setCompanyList([]);
-        return;
-      }
-      try{
-        const result = await axios.get(
-          `http://127.0.0.1:8001/api/search/suggestions/?query=${keyword}`
-        );
-        // trả về kết quả dạng array list
-        setCompanyList(result.data || []);
-      }
-      catch (error) {
-        console.log(`Error search ${error}`);
-        setCompanyList([]);
-      };
-  };
-
-  
-  // lấy các dữ liệu vào hàm 
-  const handleSearchChange = (e) =>{
+  const handleSearchChange = (e) => {
     const text = e.target.value;
     setSearchValue(text);
-
     fetch_api_search(text);
-
-    setDropdownIndex(-1);
     setDropdownOpen(true);
   };
-  // xử lí các kết quả gợi ý vào một list drop-downSỨ
 
   const handleSelectCompany = (company) => {
     setSearchValue(company);
@@ -152,50 +106,190 @@ function Analysis() {
     .map(c => c.result)
     .filter(name => name.toLowerCase().includes(searchValue.toLowerCase()));
 
-  
-  //-------------------- chức năng lấy các thông tin đề xuất khi tìm kiếm  ------------------
-  async function fetch_api_analysis(result){
-    try{
-      if (!result || result.trim().length == 0){
-        // chỉnh sửa sang dialog
-        console.log("unknown result during searching")
-        return;
-      }
-      const result = axios.get(`http://127.0.0.1:8001/api/analysis/?query=${result}`)
+  // ==================== METRICS MODAL ====================
+  const openCategoryModal = (categoryKey) => {
+    setModalCategory(categoryKey);
+    const existing = selectionsByCategory[categoryKey] || [];
+    setModalSelected(Array.isArray(existing) ? [...existing] : []);
+    setModalOpen(true);
+  };
 
-    }catch(error){
-      console.log(
-        {
-          message:"an error occured during fetch point",
-          detail:`${error}`
+  const toggleModalItem = (key) => {
+    const exists = modalSelected.includes(key);
+    if (!exists && modalSelected.length >= 4) {
+      return;
+    }
+    setModalSelected(prev => exists ? prev.filter(p => p !== key) : [...prev, key]);
+  };
+
+  const confirmModal = () => {
+    const updated = { ...selectionsByCategory, [modalCategory]: [...modalSelected] };
+    setSelectionsByCategory(updated);
+    const categoriesSelected = metricOptions.map(o => o.key).filter(k => updated[k] && updated[k].length > 0);
+    setSelectedMetrics(categoriesSelected);
+    setModalOpen(false);
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+  };
+
+  // ==================== ANALYZE FUNCTION ====================
+  const handleAnalyze = async () => {
+    // Validation
+    if (!searchValue || searchValue.trim().length === 0) {
+      setError("Please select a company");
+      return;
+    }
+    if (!year || year.trim().length === 0) {
+      setError("Please enter a year");
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      // Gather all selected metric keys
+      const allSelectedMetrics = [];
+      Object.keys(selectionsByCategory).forEach(category => {
+        if (selectionsByCategory[category] && selectionsByCategory[category].length > 0) {
+          allSelectedMetrics.push(...selectionsByCategory[category]);
         }
-      )
+      });
+
+      // Convert period from "Quarter 1" to "1"
+      const quarterNumber = period.replace('Quarter ', '');
+
+      // Build API request parameters
+      const params = {
+        company: searchValue,
+        year: year,
+        period: quarterNumber,
+      };
+
+      // Add metrics if any selected
+      if (allSelectedMetrics.length > 0) {
+        params.metrics = allSelectedMetrics.join(',');
+      }
+
+      console.log('Analyzing with params:', params);
+
+      // Call backend API
+      const response = await axios.get('http://127.0.0.1:8001/api/analysis/', {
+        params: params
+      });
+
+      console.log('Analysis response:', response.data);
+
+      // Process the response
+      const data = response.data;
+      setAnalysisData(data);
+
+      // Update metric cards with 4 default metrics
+      if (data.metrics) {
+        const cards = [
+          {
+            label: 'Revenue',
+            value: formatValue(data.metrics.revenue?.value),
+            change: formatChange(data.metrics.revenue?.change),
+            positive: (data.metrics.revenue?.change || 0) >= 0
+          },
+          {
+            label: 'Profit',
+            value: formatValue(data.metrics.profit?.value),
+            change: formatChange(data.metrics.profit?.change),
+            positive: (data.metrics.profit?.change || 0) >= 0
+          },
+          {
+            label: 'Expenses',
+            value: formatValue(data.metrics.expenses?.value),
+            change: formatChange(data.metrics.expenses?.change),
+            positive: (data.metrics.expenses?.change || 0) < 0 // Lower is better
+          },
+          {
+            label: 'Cash Flow',
+            value: formatValue(data.metrics.cashflow?.value),
+            change: formatChange(data.metrics.cashflow?.change),
+            positive: (data.metrics.cashflow?.change || 0) >= 0
+          }
+        ];
+        setMetricCards(cards);
+      }
+
+      // Update chart data - combine default metrics + selected metrics
+      if (data.timeSeries) {
+        setChartData(data.timeSeries);
+      }
+
+    } catch (error) {
+      console.error('Analysis error:', error);
+      setError(error.response?.data?.error || error.response?.data?.detail || 'Failed to fetch analysis data. Please try again.');
+    } finally {
+      setLoading(false);
     }
-  }
-
-  
-
-  
-//  ------------------------------------------------------------------------------------------
-  const metricDataMap = {
-    profitability: { label: 'Profitability', value: '18%', change: '+8%', positive: true },
-    efficiency: { label: 'Efficiency', value: '1.8', change: '-3%', positive: false },
-    growth: { label: 'Growth', value: '+12%', change: '+12%', positive: true },
-    liquidity: { label: 'Liquidity', value: '2.5', change: '+1%', positive: true },
-    revenue: { label: 'Revenue', value: '$1,250,000', change: '+5%', positive: true },
-    profit: { label: 'Profit', value: '$320,000', change: '+8%', positive: true },
-    expenses: { label: 'Expenses', value: '$185,000', change: '-3%', positive: false },
-    cash: { label: 'Cash Flow', value: '$150,000', change: '+2%', positive: true },
   };
 
-  const getMetricCards = () => {
-    if (displayedMetrics && displayedMetrics.length > 0) {
-      return displayedMetrics.map(k => metricDataMap[k] || { label: k, value: '-', change: '' });
+  // ==================== HELPER FUNCTIONS ====================
+  const formatValue = (value) => {
+    if (value === null || value === undefined) return '-';
+    if (typeof value === 'number') {
+      return value >= 1000000
+        ? `$${(value / 1000000).toFixed(2)}M`
+        : value >= 1000
+          ? `$${(value / 1000).toFixed(2)}K`
+          : `$${value.toFixed(2)}`;
     }
-    // fallback default cards
-    return [metricDataMap.revenue, metricDataMap.profit, metricDataMap.expenses, metricDataMap.cash];
+    return value;
   };
 
+  const formatChange = (change) => {
+    if (change === null || change === undefined) return '-';
+    const num = typeof change === 'number' ? change : parseFloat(change);
+    return `${num >= 0 ? '+' : ''}${num.toFixed(1)}%`;
+  };
+
+  // Get all metric keys for chart lines
+  const getChartMetrics = () => {
+    const metrics = ['revenue', 'profit', 'expenses', 'cashflow'];
+
+    // Add selected custom metrics
+    Object.keys(selectionsByCategory).forEach(category => {
+      if (selectionsByCategory[category]) {
+        metrics.push(...selectionsByCategory[category]);
+      }
+    });
+
+    return metrics;
+  };
+
+  // Color palette for chart lines
+  const metricColors = {
+    revenue: '#00d9ff',
+    profit: '#4aa3ff',
+    expenses: '#ef4444',
+    cashflow: '#10b981',
+    // Additional metrics
+    cash_ratio: '#f59e0b',
+    quick_ratio: '#8b5cf6',
+    current_ratio: '#ec4899',
+    gross_profit_margin: '#14b8a6',
+    opm_margin: '#f97316',
+    npm_margin: '#06b6d4',
+    roa_ratio: '#84cc16',
+    roe_profit: '#eab308',
+    single_growth_rate: '#6366f1',
+    cagr_growth_rate: '#a855f7',
+  };
+
+  // Get human-readable label for metric key
+  const getMetricLabel = (key) => {
+    const allItems = Object.values(categoryItems).flat();
+    const item = allItems.find(i => i.key === key);
+    return item?.label || key;
+  };
+
+  // ==================== RENDER ====================
   return (
     <div className="analysis-page">
       {/* Header */}
@@ -203,6 +297,7 @@ function Analysis() {
         <h2 className="page-title">Analysis</h2>
       </div>
 
+      {/* Controls Section */}
       <div className="analysis-controls">
         <div className="search-box">
           <input
@@ -216,8 +311,8 @@ function Analysis() {
           />
           <button className="search-btn" aria-label="Search">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M11 19a8 8 0 1 1 0-16 8 8 0 0 1 0 16z" stroke="#0f1724" strokeWidth="1.5" fill="#00d9ff"/>
-              <path d="M21 21l-4.35-4.35" stroke="#0f1724" strokeWidth="1.6" strokeLinecap="round"/>
+              <path d="M11 19a8 8 0 1 1 0-16 8 8 0 0 1 0 16z" stroke="#0f1724" strokeWidth="1.5" fill="#00d9ff" />
+              <path d="M21 21l-4.35-4.35" stroke="#0f1724" strokeWidth="1.6" strokeLinecap="round" />
             </svg>
           </button>
           {dropdownOpen && filteredCompanies.length > 0 && (
@@ -225,7 +320,7 @@ function Analysis() {
               {filteredCompanies.map((company, idx) => (
                 <div
                   key={company}
-                  className={`search-dropdown-item${idx === dropdownIndex ? ' active' : ''}`}
+                  className={`search-dropdown-item`}
                   onMouseDown={() => handleSelectCompany(company)}
                 >
                   {company}
@@ -235,12 +330,14 @@ function Analysis() {
           )}
         </div>
 
-        {/* New small controls: Year input and Period select */}
+        {/* Year and Period controls */}
         <div className="search-extras">
           <input
             className="small-input"
             type="text"
             placeholder="Year"
+            value={year}
+            onChange={(e) => setYear(e.target.value)}
           />
           <div
             className="period-wrapper"
@@ -259,7 +356,7 @@ function Analysis() {
 
             {periodOpen && (
               <div className="search-dropdown" style={{ width: 150 }}>
-                {['1 Month','4 Month','6 Month','First Quarter','Second Quarter','Third Quarter','Fourth Quarter'].map((p) => (
+                {['Quarter 1', 'Quarter 2', 'Quarter 3', 'Quarter 4'].map((p) => (
                   <div
                     key={p}
                     className={`search-dropdown-item${p === period ? ' active' : ''}`}
@@ -273,6 +370,7 @@ function Analysis() {
           </div>
         </div>
 
+        {/* Action Buttons */}
         <div className="controls-group">
           <div
             className="metrics-wrapper"
@@ -295,7 +393,10 @@ function Analysis() {
                     <div
                       key={opt.key}
                       className={`metrics-item${active ? ' active' : ''}`}
-                      onMouseDown={() => { setSelectedMetrics(prev => (Array.isArray(prev) && prev.includes(opt.key)) ? prev : [...(Array.isArray(prev) ? prev : []), opt.key]); openCategoryModal(opt.key); }}
+                      onMouseDown={() => {
+                        setSelectedMetrics(prev => (Array.isArray(prev) && prev.includes(opt.key)) ? prev : [...(Array.isArray(prev) ? prev : []), opt.key]);
+                        openCategoryModal(opt.key);
+                      }}
                     >
                       <span className="metrics-label">{opt.label}</span>
                       {active ? <span className="metrics-check">✓</span> : <span className="metrics-box" />}
@@ -307,12 +408,26 @@ function Analysis() {
           </div>
 
           <button className="control-btn">Exchange Rate</button>
-          <button className="btn-analyze">Analyze</button>
+          <button
+            className="btn-analyze"
+            onClick={handleAnalyze}
+            disabled={loading}
+          >
+            {loading ? 'Analyzing...' : 'Analyze'}
+          </button>
         </div>
       </div>
 
+      {/* Error Message */}
+      {error && (
+        <div style={{ padding: '10px', margin: '10px 0', backgroundColor: '#fee', color: '#c00', borderRadius: '4px' }}>
+          {error}
+        </div>
+      )}
+
+      {/* Metric Cards */}
       <div className="metrics-grid">
-        {getMetricCards().map((m) => (
+        {metricCards.map((m) => (
           <div className="metric-card" key={m.label}>
             <div className="metric-header">
               <span className="metric-label">{m.label}</span>
@@ -323,84 +438,116 @@ function Analysis() {
         ))}
       </div>
 
+      {/* Chart Section */}
       <div className="chart-section">
-        <h3 className="section-title">Revenue Trend</h3>
+        <h3 className="section-title">Financial Metrics Trend</h3>
         <div className="chart-container">
-          {/* Line chart showing 4 series: Revenue, Profit, Expenses, Cash Flow */}
           <div className="chart-placeholder">
             <ResponsiveContainer width="100%" height={300}>
-              <LineChart
-                data={[
-                  { name: 'Jan', revenue: 1000, profit: 200, expenses: 150, cash: 120 },
-                  { name: 'Feb', revenue: 1200, profit: 240, expenses: 160, cash: 140 },
-                  { name: 'Mar', revenue: 1400, profit: 260, expenses: 180, cash: 150 },
-                  { name: 'Apr', revenue: 1300, profit: 250, expenses: 170, cash: 160 },
-                  { name: 'May', revenue: 1500, profit: 300, expenses: 190, cash: 170 },
-                  { name: 'Jun', revenue: 1700, profit: 340, expenses: 200, cash: 180 },
-                ]}
-              >
-                <XAxis dataKey="name" stroke="#9aa4b2" />
+              <LineChart data={chartData.length > 0 ? chartData : [
+                { period: 'Q1', revenue: 0, profit: 0, expenses: 0, cashflow: 0 },
+                { period: 'Q2', revenue: 0, profit: 0, expenses: 0, cashflow: 0 },
+                { period: 'Q3', revenue: 0, profit: 0, expenses: 0, cashflow: 0 },
+                { period: 'Q4', revenue: 0, profit: 0, expenses: 0, cashflow: 0 },
+              ]}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#2a3441" />
+                <XAxis dataKey="period" stroke="#9aa4b2" />
                 <YAxis stroke="#9aa4b2" />
-                <Tooltip />
+                <Tooltip
+                  contentStyle={{ backgroundColor: '#1a2332', border: '1px solid #2a3441' }}
+                  labelStyle={{ color: '#fff' }}
+                />
                 <Legend verticalAlign="top" align="right" />
-                  <Line type="linear" dataKey="revenue" name="Revenue" stroke="#00d9ff" strokeWidth={2} dot={false} />
-                  <Line type="linear" dataKey="profit" name="Profit" stroke="#4aa3ff" strokeWidth={2} dot={false} />
-                  <Line type="linear" dataKey="expenses" name="Expenses" stroke="#ef4444" strokeWidth={2} dot={false} />
-                  <Line type="linear" dataKey="cash" name="Cash Flow" stroke="#10b981" strokeWidth={2} dot={false} />
+
+                {/* Default metric lines */}
+                {chartData.length > 0 && (
+                  <>
+                    <Line type="monotone" dataKey="revenue" name="Revenue" stroke={metricColors.revenue} strokeWidth={2} dot={false} />
+                    <Line type="monotone" dataKey="profit" name="Profit" stroke={metricColors.profit} strokeWidth={2} dot={false} />
+                    <Line type="monotone" dataKey="expenses" name="Expenses" stroke={metricColors.expenses} strokeWidth={2} dot={false} />
+                    <Line type="monotone" dataKey="cashflow" name="Cash Flow" stroke={metricColors.cashflow} strokeWidth={2} dot={false} />
+
+                    {/* Dynamically add selected metric lines */}
+                    {Object.keys(selectionsByCategory).map(category =>
+                      selectionsByCategory[category]?.map(metricKey => (
+                        <Line
+                          key={metricKey}
+                          type="monotone"
+                          dataKey={metricKey}
+                          name={getMetricLabel(metricKey)}
+                          stroke={metricColors[metricKey] || '#999'}
+                          strokeWidth={2}
+                          dot={false}
+                        />
+                      ))
+                    )}
+                  </>
+                )}
               </LineChart>
             </ResponsiveContainer>
           </div>
         </div>
       </div>
 
+      {/* Data Table */}
       <div className="ratios-container">
         <div className="ratios-section">
-          <h3 className="section-title">Financial Ratios</h3>
+          <h3 className="section-title">Financial Data by Period</h3>
           <table className="ratios-table">
             <thead>
               <tr>
-                <th>Category</th>
-                <th>Ratio</th>
-                <th>Value</th>
+                <th>Period</th>
+                <th>Revenue</th>
+                <th>Profit</th>
+                <th>Expenses</th>
+                <th>Cash Flow</th>
+                {/* Dynamic columns for selected metrics */}
+                {Object.keys(selectionsByCategory).map(category =>
+                  selectionsByCategory[category]?.map(metricKey => (
+                    <th key={metricKey}>{getMetricLabel(metricKey)}</th>
+                  ))
+                )}
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>Liquidity Ratio</td>
-                <td>Current Ratio</td>
-                <td>2.5</td>
-              </tr>
-              <tr>
-                <td>Profitability</td>
-                <td>Net Profit Margin</td>
-                <td>18%</td>
-              </tr>
-              <tr>
-                <td>Efficiency</td>
-                <td>Leverage Ratio</td>
-                <td>1.8</td>
-              </tr>
-              <tr>
-                <td>Solvency</td>
-                <td>Debt-to-Equity</td>
-                <td>0.45</td>
-              </tr>
+              {chartData.length > 0 ? chartData.map((row, idx) => (
+                <tr key={idx}>
+                  <td>{row.period}</td>
+                  <td>{formatValue(row.revenue)}</td>
+                  <td>{formatValue(row.profit)}</td>
+                  <td>{formatValue(row.expenses)}</td>
+                  <td>{formatValue(row.cashflow)}</td>
+                  {/* Dynamic cells for selected metrics */}
+                  {Object.keys(selectionsByCategory).map(category =>
+                    selectionsByCategory[category]?.map(metricKey => (
+                      <td key={metricKey}>{row[metricKey] !== undefined ? formatValue(row[metricKey]) : '-'}</td>
+                    ))
+                  )}
+                </tr>
+              )) : (
+                <tr>
+                  <td colSpan="5" style={{ textAlign: 'center', padding: '20px', color: '#9aa4b2' }}>
+                    No data available. Click "Analyze" to fetch data.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
 
+        {/* AI Insight Section */}
         <div className="insight-section">
           <h3 className="section-title">AI Insight</h3>
           <div className="insight-box">
             <div className="insight-icon">💡</div>
             <p className="insight-text">
-              The company has strong short-term liquidity, 
-              but profit margins are decreasing.
+              {analysisData?.insight || 'Run analysis to see AI-generated insights about the company\'s financial health.'}
             </p>
           </div>
         </div>
       </div>
 
+      {/* Metric Selection Modal */}
       {modalOpen && (
         <div className="metric-modal-overlay" onMouseDown={closeModal}>
           <div className="metric-modal" onMouseDown={e => e.stopPropagation()} role="dialog" aria-modal="true">
