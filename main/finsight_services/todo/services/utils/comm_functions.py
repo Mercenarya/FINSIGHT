@@ -9,22 +9,17 @@ import numpy as np
 
 
 CURRENT = os.path.dirname(os.path.abspath(__file__))
-ROOT = os.path.join(CURRENT,'..','..','..','..','..')
+ROOT = os.path.join(CURRENT,'..')
+RAW_DIR = os.path.abspath(os.path.join(ROOT))
 # MODULE_DIR là thư mục chứa file .pyd đã được đổi tên
-sys.path.append(ROOT)
+# sys.path.append(ROOT)
 
-
-# RAW_DIR = os.path.abspath(os.path.join(ROOT,'..','..','..','..','..'))
-# RAW = os.path.join(RAW_DIR,'data','raw','cleandpt001.csv')
-# ASSETS = os.path.join(RAW_DIR,'data','raw','assets001.csv')
-
-
-RAW = os.path.join(ROOT,'data','raw','cleandpt001.csv')
-JSR = os.path.join(ROOT,'data','json','reports.json')
-ASSETSJS = os.path.join(ROOT,'data','json','assets.json')
-ASSETS = os.path.join(ROOT,'data','raw','assets001.csv')
+RAW = os.path.join('services','data','raw','cleandpt001.csv')
+JSR = os.path.join(R'services','data','json','reports.json')
+ASSETSJS = os.path.join('services','data','json','assets.json')
+ASSETS = os.path.join('services','data','raw','assets001.csv')
 # lấy dữ liệu kết quả sau khi phân tích lưu vào json 
-ANALYSISJS = os.path.join(ROOT,'data','json','analysis.json')
+ANALYSISJS = os.path.join('services','data','json','analysis.json')
 
 
 
@@ -221,7 +216,13 @@ def release_csv(filename:str):
 
 
 
-PATH = get_path(RAW)
+RP = get_path(RAW)
 JSNRP = get_path(JSR)
 JSNAS = get_path(ASSETSJS)
 ASSET = get_path(ASSETS)
+
+print(RP)
+print(JSNRP)
+
+print(JSNAS)
+print(ASSET)

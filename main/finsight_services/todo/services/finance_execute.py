@@ -30,11 +30,11 @@ from utils.comm_functions import looping_json,save_to_json,seed_path
 from utils.comm_functions import JSNAS,ASSETS
 from utils.comm_functions import JSNRP,RAW
 # lấy các hàm xử lí từ ASSETS
-from todo.services.fn_assets import assets_id_class,renew_string_data
-from todo.services.fn_assets import get_ecn_assets,data_loops_assets,looping_json,seed_path
+from .fn_assets import assets_id_class,renew_string_data
+from .fn_assets import get_ecn_assets,data_loops_assets,looping_json,seed_path
 # lấy các hàm xử lí từ BCTC
-from todo.services.fn_reports import reports_id_class,convert_sales_service_data_reports,current_timeline_reports
-from todo.services.fn_reports import get_ecn_reports,data_loops_reports,looping_json,seed_path
+from .fn_reports import reports_id_class,convert_sales_service_data_reports,current_timeline_reports
+from .fn_reports import get_ecn_reports,data_loops_reports,looping_json,seed_path
 
 
 
@@ -147,7 +147,7 @@ async def get_finance_assets(driver,result,year,quarter):
         time.sleep(3)
         print("Starting convert and divide data ... ")
         time.sleep(3)
-        await convert_data_frame(tt,qq1,qq2,qq3,qq4,ASSETS)
+        convert_data_frame(tt,qq1,qq2,qq3,qq4,ASSETS)
     except asyncio.TimeoutError:
         print("Async timeout")
         return

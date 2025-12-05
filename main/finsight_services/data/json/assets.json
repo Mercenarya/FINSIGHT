@@ -1,0 +1,807 @@
+[
+    {
+        "title": "A- TÀI SẢN NGẮN HẠN",
+        "First_quarter": "372,183,892,897,525",
+        "Second_quarter": "528,475,505,000,000",
+        "Third_quarter": "590,641,891,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "I. Tiền và các khoản tương đương tiền",
+        "First_quarter": "32,491,937,779,707",
+        "Second_quarter": "74,760,020,000,000",
+        "Third_quarter": "72,150,719,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "1. Tiền",
+        "First_quarter": "30,776,594,793,826",
+        "Second_quarter": "47,085,523,000,000",
+        "Third_quarter": "52,451,984,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "2. Các khoản tương đương tiền",
+        "First_quarter": "1,715,342,985,881",
+        "Second_quarter": "27,674,497,000,000",
+        "Third_quarter": "19,698,735,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "II. Các khoản đầu tư tài chính ngắn hạn",
+        "First_quarter": "7,480,259,555,230",
+        "Second_quarter": "9,589,777,000,000",
+        "Third_quarter": "7,918,430,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "1. Chứng khoán kinh doanh",
+        "First_quarter": "1,500,000,000,000",
+        "Second_quarter": "1,999,420,000,000",
+        "Third_quarter": "",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "2. Dự phòng giảm giá chứng khoán kinh doanh",
+        "First_quarter": "",
+        "Second_quarter": "",
+        "Third_quarter": "",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "3. Đầu tư nắm giữ đến ngày đáo hạn",
+        "First_quarter": "5,980,259,555,230",
+        "Second_quarter": "7,590,357,000,000",
+        "Third_quarter": "7,918,430,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "III. Các khoản phải thu ngắn hạn",
+        "First_quarter": "179,643,131,579,091",
+        "Second_quarter": "253,684,821,000,000",
+        "Third_quarter": "267,274,537,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "1. Phải thu ngắn hạn của khách hàng",
+        "First_quarter": "32,791,294,909,830",
+        "Second_quarter": "29,449,203,000,000",
+        "Third_quarter": "29,339,826,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "2. Trả trước cho người bán ngắn hạn",
+        "First_quarter": "52,193,587,950,627",
+        "Second_quarter": "60,173,975,000,000",
+        "Third_quarter": "72,962,931,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "4. Phải thu theo tiến độ kế hoạch hợp đồng xây dựng",
+        "First_quarter": "",
+        "Second_quarter": "",
+        "Third_quarter": "",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "5. Phải thu về cho vay ngắn hạn",
+        "First_quarter": "512,205,972,510",
+        "Second_quarter": "20,008,181,000,000",
+        "Third_quarter": "24,092,071,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "6. Phải thu ngắn hạn khác",
+        "First_quarter": "95,554,819,787,920",
+        "Second_quarter": "145,066,446,000,000",
+        "Third_quarter": "141,791,491,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "7. Dự phòng phải thu ngắn hạn khó đòi",
+        "First_quarter": "-1,408,777,041,796",
+        "Second_quarter": "-1,012,984,000,000",
+        "Third_quarter": "-911,782,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "8. Tài sản Thiếu chờ xử lý",
+        "First_quarter": "",
+        "Second_quarter": "",
+        "Third_quarter": "",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "IV. Hàng tồn kho",
+        "First_quarter": "110,814,852,366,380",
+        "Second_quarter": "137,089,793,000,000",
+        "Third_quarter": "185,624,958,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "1. Hàng tồn kho",
+        "First_quarter": "124,925,405,372,955",
+        "Second_quarter": "151,189,475,000,000",
+        "Third_quarter": "199,871,279,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "2. Dự phòng giảm giá hàng tồn kho",
+        "First_quarter": "-14,110,553,006,575",
+        "Second_quarter": "-14,099,682,000,000",
+        "Third_quarter": "-14,246,321,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "V.Tài sản ngắn hạn khác",
+        "First_quarter": "41,753,711,617,117",
+        "Second_quarter": "53,351,094,000,000",
+        "Third_quarter": "57,673,247,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "1. Chi phí trả trước ngắn hạn",
+        "First_quarter": "2,872,465,441,646",
+        "Second_quarter": "4,115,108,000,000",
+        "Third_quarter": "4,878,936,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "2. Thuế GTGT được khấu trừ",
+        "First_quarter": "10,777,099,232,963",
+        "Second_quarter": "12,672,516,000,000",
+        "Third_quarter": "13,202,119,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "3. Thuế và các khoản khác phải thu Nhà nước",
+        "First_quarter": "300,974,338,905",
+        "Second_quarter": "204,862,000,000",
+        "Third_quarter": "207,729,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "4. Giao dịch mua bán lại trái phiếu Chính phủ",
+        "First_quarter": "",
+        "Second_quarter": "",
+        "Third_quarter": "",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "5. Tài sản ngắn hạn khác",
+        "First_quarter": "27,803,172,603,603",
+        "Second_quarter": "36,358,608,000,000",
+        "Third_quarter": "39,384,463,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "B. TÀI SẢN DÀI HẠN",
+        "First_quarter": "451,086,356,055,364",
+        "Second_quarter": "435,963,354,000,000",
+        "Third_quarter": "497,228,434,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "I. Các khoản phải thu dài hạn",
+        "First_quarter": "89,374,814,578,823",
+        "Second_quarter": "34,341,114,000,000",
+        "Third_quarter": "25,550,797,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "1. Phải thu dài hạn của khách hàng",
+        "First_quarter": "1,500,641,705,638",
+        "Second_quarter": "1,061,395,000,000",
+        "Third_quarter": "924,390,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "2. Trả trước cho người bán dài hạn",
+        "First_quarter": "",
+        "Second_quarter": "",
+        "Third_quarter": "",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "3. Vốn kinh doanh ở đơn vị trực thuộc",
+        "First_quarter": "",
+        "Second_quarter": "",
+        "Third_quarter": "",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "4. Phải thu nội bộ dài hạn",
+        "First_quarter": "",
+        "Second_quarter": "",
+        "Third_quarter": "",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "5. Phải thu về cho vay dài hạn",
+        "First_quarter": "29,615,229,683,904",
+        "Second_quarter": "23,053,046,000,000",
+        "Third_quarter": "11,892,765,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "6. Phải thu dài hạn khác",
+        "First_quarter": "58,258,943,189,281",
+        "Second_quarter": "10,226,673,000,000",
+        "Third_quarter": "12,733,642,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "7. Dự phòng phải thu dài hạn khó đòi",
+        "First_quarter": "",
+        "Second_quarter": "",
+        "Third_quarter": "",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "II.Tài sản cố định",
+        "First_quarter": "180,969,752,686,948",
+        "Second_quarter": "185,019,974,000,000",
+        "Third_quarter": "185,370,711,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "1. Tài sản cố định hữu hình",
+        "First_quarter": "144,075,535,135,254",
+        "Second_quarter": "147,886,934,000,000",
+        "Third_quarter": "147,679,518,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "- Nguyên giá",
+        "First_quarter": "199,766,964,122,065",
+        "Second_quarter": "206,357,725,000,000",
+        "Third_quarter": "212,719,637,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "- Giá trị hao mòn lũy kế",
+        "First_quarter": "-55,691,428,986,811",
+        "Second_quarter": "-58,470,791,000,000",
+        "Third_quarter": "-65,040,119,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "2. Tài sản cố định thuê tài chính",
+        "First_quarter": "269,765,567,919",
+        "Second_quarter": "276,902,000,000",
+        "Third_quarter": "827,506,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "- Nguyên giá",
+        "First_quarter": "499,845,270,772",
+        "Second_quarter": "559,672,000,000",
+        "Third_quarter": "1,118,414,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "- Giá trị hao mòn lũy kế",
+        "First_quarter": "-230,079,702,853",
+        "Second_quarter": "-282,770,000,000",
+        "Third_quarter": "-290,908,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "3. Tài sản cố định vô hình",
+        "First_quarter": "36,624,451,983,775",
+        "Second_quarter": "36,856,138,000,000",
+        "Third_quarter": "36,863,687,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "- Nguyên giá",
+        "First_quarter": "62,845,056,683,582",
+        "Second_quarter": "64,561,220,000,000",
+        "Third_quarter": "66,574,477,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "- Giá trị hao mòn lũy kế",
+        "First_quarter": "-26,220,604,699,807",
+        "Second_quarter": "-27,705,082,000,000",
+        "Third_quarter": "-29,710,790,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "III. Bất động sản đầu tư",
+        "First_quarter": "12,770,850,478,753",
+        "Second_quarter": "11,547,003,000,000",
+        "Third_quarter": "18,934,011,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "- Nguyên giá",
+        "First_quarter": "15,858,043,894,299",
+        "Second_quarter": "14,619,767,000,000",
+        "Third_quarter": "22,089,314,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "- Giá trị hao mòn lũy kế",
+        "First_quarter": "-3,087,193,415,546",
+        "Second_quarter": "-3,072,764,000,000",
+        "Third_quarter": "-3,155,303,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "IV. Tài sản dở dang dài hạn",
+        "First_quarter": "115,225,458,426,557",
+        "Second_quarter": "125,710,304,000,000",
+        "Third_quarter": "124,736,532,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "1. Chi phí sản xuất, kinh doanh dở dang dài hạn",
+        "First_quarter": "",
+        "Second_quarter": "",
+        "Third_quarter": "",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "2. Chi phí xây dựng cơ bản dở dang",
+        "First_quarter": "115,225,458,426,557",
+        "Second_quarter": "125,710,304,000,000",
+        "Third_quarter": "124,736,532,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "V. Đầu tư tài chính dài hạn",
+        "First_quarter": "26,832,751,786,159",
+        "Second_quarter": "31,409,490,000,000",
+        "Third_quarter": "32,709,444,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "1. Đầu tư vào công ty con",
+        "First_quarter": "",
+        "Second_quarter": "",
+        "Third_quarter": "",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "2. Đầu tư vào công ty liên kết, liên doanh",
+        "First_quarter": "9,479,573,252,418",
+        "Second_quarter": "9,572,464,000,000",
+        "Third_quarter": "9,783,132,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "3. Đầu tư góp vốn vào đơn vị khác",
+        "First_quarter": "19,407,043,750,427",
+        "Second_quarter": "23,152,166,000,000",
+        "Third_quarter": "24,743,866,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "4. Dự phòng đầu tư tài chính dài hạn",
+        "First_quarter": "-2,076,051,109,050",
+        "Second_quarter": "-2,081,180,000,000",
+        "Third_quarter": "-2,210,613,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "5. Đầu tư nắm giữ đến ngày đáo hạn",
+        "First_quarter": "22,185,892,364",
+        "Second_quarter": "766,040,000,000",
+        "Third_quarter": "393,059,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "VI. Tài sản dài hạn khác",
+        "First_quarter": "25,912,728,098,124",
+        "Second_quarter": "47,935,469,000,000",
+        "Third_quarter": "109,926,939,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "1. Chi phí trả trước dài hạn",
+        "First_quarter": "8,468,210,273,727",
+        "Second_quarter": "8,913,400,000,000",
+        "Third_quarter": "9,212,159,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "2. Tài sản thuế thu nhập hoãn lại",
+        "First_quarter": "1,871,592,597,999",
+        "Second_quarter": "2,031,637,000,000",
+        "Third_quarter": "2,085,179,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "3. Thiết bị, vật tư, phụ tùng thay thế dài hạn",
+        "First_quarter": "",
+        "Second_quarter": "",
+        "Third_quarter": "",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "4. Tài sản dài hạn khác",
+        "First_quarter": "11,193,990,807,962",
+        "Second_quarter": "32,751,516,000,000",
+        "Third_quarter": "94,532,242,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "5. Lợi thế thương mại",
+        "First_quarter": "4,378,934,418,436",
+        "Second_quarter": "4,238,916,000,000",
+        "Third_quarter": "4,097,359,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "TỔNG CỘNG TÀI SẢN",
+        "First_quarter": "823,270,248,952,889",
+        "Second_quarter": "964,438,859,000,000",
+        "Third_quarter": "1,087,870,325,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "C. NỢ PHẢI TRẢ",
+        "First_quarter": "665,817,662,239,778",
+        "Second_quarter": "805,820,866,000,000",
+        "Third_quarter": "925,966,426,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "I. Nợ ngắn hạn",
+        "First_quarter": "440,710,636,344,670",
+        "Second_quarter": "506,624,303,000,000",
+        "Third_quarter": "557,896,380,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "1. Phải trả người bán ngắn hạn",
+        "First_quarter": "41,203,072,992,031",
+        "Second_quarter": "45,739,148,000,000",
+        "Third_quarter": "50,212,831,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "2. Người mua trả tiền trước ngắn hạn",
+        "First_quarter": "90,162,798,252,159",
+        "Second_quarter": "106,527,243,000,000",
+        "Third_quarter": "154,865,321,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "3. Thuế và các khoản phải nộp nhà nước",
+        "First_quarter": "25,673,027,688,026",
+        "Second_quarter": "18,686,956,000,000",
+        "Third_quarter": "21,849,512,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "4. Phải trả người lao động",
+        "First_quarter": "907,631,623,035",
+        "Second_quarter": "1,079,008,000,000",
+        "Third_quarter": "1,412,424,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "5. Chi phí phải trả ngắn hạn",
+        "First_quarter": "65,097,658,313,310",
+        "Second_quarter": "66,935,969,000,000",
+        "Third_quarter": "74,468,946,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "6. Phải trả nội bộ ngắn hạn",
+        "First_quarter": "",
+        "Second_quarter": "",
+        "Third_quarter": "",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "7. Phải trả theo tiến độ kế hoạch hợp đồng xây dựng",
+        "First_quarter": "",
+        "Second_quarter": "",
+        "Third_quarter": "",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "8. Doanh thu chưa thực hiện ngắn hạn",
+        "First_quarter": "3,041,628,515,852",
+        "Second_quarter": "5,938,701,000,000",
+        "Third_quarter": "5,987,007,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "9. Phải trả ngắn hạn khác",
+        "First_quarter": "108,794,956,453,388",
+        "Second_quarter": "129,500,698,000,000",
+        "Third_quarter": "123,210,070,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "10. Vay và nợ thuê tài chính ngắn hạn",
+        "First_quarter": "98,216,346,690,062",
+        "Second_quarter": "125,295,999,000,000",
+        "Third_quarter": "117,122,101,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "11. Dự phòng phải trả ngắn hạn",
+        "First_quarter": "7,613,515,816,807",
+        "Second_quarter": "6,920,581,000,000",
+        "Third_quarter": "8,768,168,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "12. Quỹ khen thưởng phúc lợi",
+        "First_quarter": "",
+        "Second_quarter": "",
+        "Third_quarter": "",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "13. Quỹ bình ổn giá",
+        "First_quarter": "",
+        "Second_quarter": "",
+        "Third_quarter": "",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "14. Giao dịch mua bán lại trái phiếu Chính phủ",
+        "First_quarter": "",
+        "Second_quarter": "",
+        "Third_quarter": "",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "II. Nợ dài hạn",
+        "First_quarter": "225,107,025,895,108",
+        "Second_quarter": "299,196,563,000,000",
+        "Third_quarter": "368,070,046,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "1. Phải trả người bán dài hạn",
+        "First_quarter": "",
+        "Second_quarter": "",
+        "Third_quarter": "",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "2. Người mua trả tiền trước dài hạn",
+        "First_quarter": "",
+        "Second_quarter": "3,273,144,000,000",
+        "Third_quarter": "2,489,870,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "3. Chi phí phải trả dài hạn",
+        "First_quarter": "1,024,618,102,026",
+        "Second_quarter": "3,068,863,000,000",
+        "Third_quarter": "2,804,726,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "4. Phải trả nội bộ về vốn kinh doanh",
+        "First_quarter": "",
+        "Second_quarter": "",
+        "Third_quarter": "",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "5. Phải trả nội bộ dài hạn",
+        "First_quarter": "",
+        "Second_quarter": "",
+        "Third_quarter": "",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "6. Doanh thu chưa thực hiện dài hạn",
+        "First_quarter": "4,616,976,019,689",
+        "Second_quarter": "4,564,987,000,000",
+        "Third_quarter": "4,813,003,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "7. Phải trả dài hạn khác",
+        "First_quarter": "53,685,454,784,106",
+        "Second_quarter": "116,414,354,000,000",
+        "Third_quarter": "136,097,023,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "8. Vay và nợ thuê tài chính dài hạn",
+        "First_quarter": "149,589,086,540,770",
+        "Second_quarter": "153,635,167,000,000",
+        "Third_quarter": "204,805,693,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "9. Trái phiếu chuyển đổi",
+        "First_quarter": "3,720,189,015,522",
+        "Second_quarter": "3,806,580,000,000",
+        "Third_quarter": "3,411,935,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "10. Cổ phiếu ưu đãi",
+        "First_quarter": "",
+        "Second_quarter": "",
+        "Third_quarter": "",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "11. Thuế thu nhập hoãn lại phải trả",
+        "First_quarter": "2,090,054,016,955",
+        "Second_quarter": "2,343,677,000,000",
+        "Third_quarter": "2,250,144,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "12. Dự phòng phải trả dài hạn",
+        "First_quarter": "10,380,647,416,040",
+        "Second_quarter": "12,089,791,000,000",
+        "Third_quarter": "11,397,652,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "13. Quỹ phát triển khoa học và công nghệ",
+        "First_quarter": "",
+        "Second_quarter": "",
+        "Third_quarter": "",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "D.VỐN CHỦ SỞ HỮU",
+        "First_quarter": "157,452,586,713,111",
+        "Second_quarter": "158,617,993,000,000",
+        "Third_quarter": "161,903,899,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "1. Vốn góp của chủ sở hữu",
+        "First_quarter": "38,785,833,060,001",
+        "Second_quarter": "38,785,833,000,000",
+        "Third_quarter": "38,804,764,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "- Cổ phiếu phổ thông có quyền biểu quyết",
+        "First_quarter": "38,236,615,610,001",
+        "Second_quarter": "38,236,616,000,000",
+        "Third_quarter": "38,530,155,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "- Cổ phiếu ưu đãi",
+        "First_quarter": "549,217,450,000",
+        "Second_quarter": "549,217,000,000",
+        "Third_quarter": "274,609,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "2. Thặng dư vốn cổ phần",
+        "First_quarter": "40,308,020,278,070",
+        "Second_quarter": "40,354,024,000,000",
+        "Third_quarter": "40,335,093,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "3. Quyền chọn chuyển đổi trái phiếu",
+        "First_quarter": "",
+        "Second_quarter": "",
+        "Third_quarter": "",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "4. Vốn khác của chủ sở hữu",
+        "First_quarter": "15,306,529,791,581",
+        "Second_quarter": "15,306,530,000,000",
+        "Third_quarter": "15,306,530,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "5. Cổ phiếu quỹ",
+        "First_quarter": "-1,344,123,457,547",
+        "Second_quarter": "-1,344,123,000,000",
+        "Third_quarter": "-1,344,123,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "6. Chênh lệch đánh giá lại tài sản",
+        "First_quarter": "",
+        "Second_quarter": "",
+        "Third_quarter": "",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "7. Chênh lệch tỷ giá hối đoái",
+        "First_quarter": "-185,234,174,903",
+        "Second_quarter": "121,502,000,000",
+        "Third_quarter": "-15,464,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "8. Quỹ đầu tư phát triển",
+        "First_quarter": "",
+        "Second_quarter": "",
+        "Third_quarter": "",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "9. Quỹ hỗ trợ sắp xếp doanh nghiệp",
+        "First_quarter": "",
+        "Second_quarter": "",
+        "Third_quarter": "",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "10. Quỹ khác thuộc vốn chủ sở hữu",
+        "First_quarter": "107,845,114,930",
+        "Second_quarter": "117,845,000,000",
+        "Third_quarter": "117,845,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "11. Lợi nhuận sau thuế chưa phân phối",
+        "First_quarter": "51,447,112,751,734",
+        "Second_quarter": "51,412,450,000,000",
+        "Third_quarter": "52,505,390,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "- LNST chưa phân phối lũy kế đến cuối kỳ trước",
+        "First_quarter": "44,468,350,113,428",
+        "Second_quarter": "44,459,675,000,000",
+        "Third_quarter": "44,459,675,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "- LNST chưa phân phối kỳ này",
+        "First_quarter": "6,978,762,638,306",
+        "Second_quarter": "6,952,775,000,000",
+        "Third_quarter": "8,045,715,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "12. Nguồn vốn đầu tư XDCB",
+        "First_quarter": "",
+        "Second_quarter": "",
+        "Third_quarter": "",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "13. Lợi ích cổ đông không kiểm soát",
+        "First_quarter": "13,026,603,349,245",
+        "Second_quarter": "13,863,932,000,000",
+        "Third_quarter": "16,193,864,000,000",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "II. Nguồn kinh phí và quỹ khác",
+        "First_quarter": "",
+        "Second_quarter": "",
+        "Third_quarter": "",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "1. Nguồn kinh phí",
+        "First_quarter": "",
+        "Second_quarter": "",
+        "Third_quarter": "",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "2. Nguồn kinh phí đã hình thành TSCĐ",
+        "First_quarter": "",
+        "Second_quarter": "",
+        "Third_quarter": "",
+        "Fourth_quarter": ""
+    },
+    {
+        "title": "TỔNG CỘNG NGUỒN VỐN",
+        "First_quarter": "823,270,248,952,889",
+        "Second_quarter": "964,438,859,000,000",
+        "Third_quarter": "1,087,870,325,000,000",
+        "Fourth_quarter": ""
+    }
+]

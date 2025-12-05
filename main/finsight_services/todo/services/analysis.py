@@ -10,16 +10,16 @@ from sklearn.preprocessing import StandardScaler
 
 
 CURRENT = os.path.dirname(os.path.realpath(__file__))
-ROOT = os.path.abspath(os.path.join(CURRENT,'..'))
+ROOT = os.path.abspath(os.path.join(CURRENT,'..','..'))
 
 
 
-CURRENT = os.path.dirname(os.path.abspath(__file__))
-ROOT = os.path.join(CURRENT)
+# CURRENT = os.path.dirname(os.path.abspath(__file__))
+# ROOT = os.path.join(CURRENT)
 sys.path.append(ROOT)
 # MODULE_DIR là thư mục chứa file .pyd đã được đổi tên
 
-RAW_DIR = os.path.abspath(os.path.join(CURRENT,'..','..','..','..'))
+RAW_DIR = os.path.abspath(os.path.join(ROOT))
 RAW = os.path.join(RAW_DIR,'data','raw','cleandpt001.csv')
 ASSETS = os.path.join(RAW_DIR,'data','raw','assets001.csv')
 
@@ -28,12 +28,14 @@ MODULE_DIR = os.path.join(ROOT, 'libs')
 
 
 os.add_dll_directory('D:/Msys2/ucrt64/bin')
-
+print("LIST DIRECTORY ***")
+print("=="*20)
 print(CURRENT)
 print(ROOT)
 print(LIBS)
 print(RAW)
 print(ASSETS)
+print("=="*20)
 # Thêm đường dẫn thư mục vào sys.path
 sys.path.append(LIBS)
 
@@ -43,8 +45,7 @@ from libs import evaluate_module_update as ev
 
 
 
-print(MODULE_DIR)
-print(RAW)
+
 
 # Thêm đường dẫn thư mục vào sys.path
 sys.path.append(MODULE_DIR)
@@ -84,14 +85,17 @@ async def normalization(data):
 
 # đọc dữ liệu
 async def read_data(filename:str):
-
+    df = pd.read_csv(filename)
+    all_quarter = ['Quarter 1','Quarter 2','Quarter 3','Quarter 4']
     try:
+        
         if os.path.exists(filename):
-            df = pd.read_csv(filename)
-            df['Quarter 1'] = df['Quarter 1'].str.replace(',','')
-            df['Quarter 2'] = df['Quarter 2'].str.replace(',','')
-            df['Quarter 3'] = df['Quarter 3'].str.replace(',','')
-            df['Quarter 4'] = df['Quarter 4'].str.replace(',','')
+            for quarter in all_quarter:
+
+                df[quarter] = df[quarter].astype(str)
+                df[quarter] = df[quarter].str.replace(',','')
+                df[quarter] = df[quarter].str.replace(',','')
+                df[quarter] = df[quarter].replace(['nan', 'NaN'],0)
             df = df.replace(np.nan,0)
             return df
         else: 
@@ -117,15 +121,20 @@ async def extract_finance_growth(df,prev_quarter,current_quarter,years,major):
         
         
         # lấy chỉ số tăng trưởng đơn
-        single_growth_rate = growth.single_growth_rate(int(business_net_profit_current),int(business_net_profit_prev))
+        single_growth_rate = growth.single_growth_rate(business_net_profit_current,business_net_profit_prev)
 
         # lấy chỉ số tăng trưởng kép theo năm
-        cagr_growth_rate = growth.cagr_growth_rate(int(business_net_profit_current),int(business_net_profit_prev),years)
+        cagr_growth_rate = growth.cagr_growth_rate(business_net_profit_current,business_net_profit_prev,years)
 
         # không thể tính toán chỉ số tăng trưởng khi giá trị của mốc trước là 0
         if business_net_profit_prev == 0:
             print("Previous quarter cannot be none")
-            return
+            return {
+                'Major': df.iloc[major]['Title'],
+                'Year': years,
+                'single growth rate': 'N/A (Previous = 0)',
+                'compound annual growth rate': 'N/A (Previous = 0)'
+            }
         if business_net_profit_prev <= 0 or business_net_profit_current <=0 or years <= 0:
             cagr_growth_rate = 'N/A'
 

@@ -8,7 +8,8 @@ from django.views.decorators.csrf import csrf_exempt #skip csrf của react đ�
 from django.views.decorators.http import require_http_methods
 import json
 import asyncio
-
+import os
+import sys
 
 # Create your views here.
 def clients(request):
@@ -20,6 +21,8 @@ def clients(request):
 @require_http_methods(['GET'])
 async def analysis_api(request):
     try:
+        
+
         if request.method == 'GET':
             
             df_reports = await an.read_data(an.RAW)

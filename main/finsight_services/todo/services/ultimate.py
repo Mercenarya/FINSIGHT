@@ -13,14 +13,15 @@ from selenium.webdriver.common import keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.chrome.options import Options
+
+
+
 from .companies_search import search_result
 from .analysis import extract_finance_growth,extract_finance_liquidity,extract_finance_profitability
 from .analysis import read_data,RAW,ASSETS
 
 from .finance_execute import run_procedure_collect
 import json
-
-
 
 
 
@@ -62,13 +63,14 @@ async def get_analysis(df,df2,**kwargs):
             df2,
             kwargs['quarter_selection']
         )
-        
-        return {
+
+        result = {
             "Growth":growth,
             "Profitability":profitability,
             "Liquidity":liquidity,
-            # "Efficiency":efficiency
         }
+        
+        return result
         
     except Exception as error:
         print("An error occured during analytics ",error)
@@ -78,7 +80,7 @@ async def get_analysis(df,df2,**kwargs):
 async def run_procedure_ultimate(result,year,quarter):
     options = Options()
     service = Service(ChromeDriverManager().install())
-    options.add_argument("--headless")
+    # options.add_argument("--headless")
     driver = webdriver.Chrome(service=service,options=options)
     # từ khóa - mã công ty 
     # result = "VIC"
@@ -100,6 +102,7 @@ async def run_procedure_ultimate(result,year,quarter):
         "major":0,
         "years":year
     }
+
     result = await get_analysis(df=df,df2=df2,**template)
     # await updating_json(result,ANALYSISJS)
     print(result)
@@ -107,6 +110,6 @@ async def run_procedure_ultimate(result,year,quarter):
     return result
 
 
-# if __name__ == "__main__":
+if __name__ == "__main__":
     
-#     asyncio.run(run_procedure())
+    asyncio.run(run_procedure_ultimate('HTV',2024,4))

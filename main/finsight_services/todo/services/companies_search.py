@@ -22,7 +22,7 @@ import asyncio
 import time
 
 CURRENT = os.path.dirname(os.path.abspath(__file__))
-ROOT = os.path.join(CURRENT,'..','..','..','..')
+ROOT = os.path.join(CURRENT,'..')
 sys.path.append(ROOT)
 
 
