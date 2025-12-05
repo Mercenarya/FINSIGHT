@@ -8,7 +8,7 @@ import axios from 'axios';
 
 
 function Analysis() {
-  
+
   const [companyList, setCompanyList] = useState([]);
   const [activeTab, setActiveTab] = useState('balance-sheet');
   const [searchValue, setSearchValue] = useState("");
@@ -17,7 +17,7 @@ function Analysis() {
   const [metricsOpen, setMetricsOpen] = useState(false);
   const [selectedMetrics, setSelectedMetrics] = useState([]);
   // metrics currently shown in the cards (decoupled from the dropdown selection)
-  const [displayedMetrics, setDisplayedMetrics] = useState(['revenue','profit','expenses','cash']);
+  const [displayedMetrics, setDisplayedMetrics] = useState(['revenue', 'profit', 'expenses', 'cash']);
   const [period, setPeriod] = useState('1 Month');
   const [periodOpen, setPeriodOpen] = useState(false);
 
@@ -25,7 +25,7 @@ function Analysis() {
   //   c.toLowerCase().includes(searchValue.toLowerCase())
   // );
 
-  
+
   // const handleSelectCompany = company => {
   //   setSearchValue(company);
   //   setDropdownOpen(false);
@@ -112,27 +112,27 @@ function Analysis() {
 
   //-------------------- chức năng lấy các thông tin đề xuất khi tìm kiếm  ------------------
   // lấy api search
-  async function fetch_api_search(keyword){
-      if(!keyword || keyword.trim().length == 0){
-        setCompanyList([]);
-        return;
-      }
-      try{
-        const result = await axios.get(
-          `http://127.0.0.1:8001/api/search/suggestions/?query=${keyword}`
-        );
-        // trả về kết quả dạng array list
-        setCompanyList(result.data || []);
-      }
-      catch (error) {
-        console.log(`Error search ${error}`);
-        setCompanyList([]);
-      };
+  async function fetch_api_search(keyword) {
+    if (!keyword || keyword.trim().length == 0) {
+      setCompanyList([]);
+      return;
+    }
+    try {
+      const result = await axios.get(
+        `http://127.0.0.1:8001/api/search/suggestions/?query=${keyword}`
+      );
+      // trả về kết quả dạng array list
+      setCompanyList(result.data || []);
+    }
+    catch (error) {
+      console.log(`Error search ${error}`);
+      setCompanyList([]);
+    };
   };
 
-  
+
   // lấy các dữ liệu vào hàm 
-  const handleSearchChange = (e) =>{
+  const handleSearchChange = (e) => {
     const text = e.target.value;
     setSearchValue(text);
 
@@ -152,31 +152,31 @@ function Analysis() {
     .map(c => c.result)
     .filter(name => name.toLowerCase().includes(searchValue.toLowerCase()));
 
-  
+
   //-------------------- chức năng lấy các thông tin đề xuất khi tìm kiếm  ------------------
-  async function fetch_api_analysis(result){
-    try{
-      if (!result || result.trim().length == 0){
+  async function fetch_api_analysis(result) {
+    try {
+      if (!result || result.trim().length == 0) {
         // chỉnh sửa sang dialog
         console.log("unknown result during searching")
         return;
       }
       const result = axios.get(`http://127.0.0.1:8001/api/analysis/?query=${result}`)
 
-    }catch(error){
+    } catch (error) {
       console.log(
         {
-          message:"an error occured during fetch point",
-          detail:`${error}`
+          message: "an error occured during fetch point",
+          detail: `${error}`
         }
       )
     }
   }
 
-  
 
-  
-//  ------------------------------------------------------------------------------------------
+
+
+  //  ------------------------------------------------------------------------------------------
   const metricDataMap = {
     profitability: { label: 'Profitability', value: '18%', change: '+8%', positive: true },
     efficiency: { label: 'Efficiency', value: '1.8', change: '-3%', positive: false },
@@ -216,8 +216,8 @@ function Analysis() {
           />
           <button className="search-btn" aria-label="Search">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M11 19a8 8 0 1 1 0-16 8 8 0 0 1 0 16z" stroke="#0f1724" strokeWidth="1.5" fill="#00d9ff"/>
-              <path d="M21 21l-4.35-4.35" stroke="#0f1724" strokeWidth="1.6" strokeLinecap="round"/>
+              <path d="M11 19a8 8 0 1 1 0-16 8 8 0 0 1 0 16z" stroke="#0f1724" strokeWidth="1.5" fill="#00d9ff" />
+              <path d="M21 21l-4.35-4.35" stroke="#0f1724" strokeWidth="1.6" strokeLinecap="round" />
             </svg>
           </button>
           {dropdownOpen && filteredCompanies.length > 0 && (
@@ -259,7 +259,7 @@ function Analysis() {
 
             {periodOpen && (
               <div className="search-dropdown" style={{ width: 150 }}>
-                {['1 Month','4 Month','6 Month','First Quarter','Second Quarter','Third Quarter','Fourth Quarter'].map((p) => (
+                {['1 Month', '4 Month', '6 Month', 'First Quarter', 'Second Quarter', 'Third Quarter', 'Fourth Quarter'].map((p) => (
                   <div
                     key={p}
                     className={`search-dropdown-item${p === period ? ' active' : ''}`}
@@ -343,10 +343,10 @@ function Analysis() {
                 <YAxis stroke="#9aa4b2" />
                 <Tooltip />
                 <Legend verticalAlign="top" align="right" />
-                  <Line type="linear" dataKey="revenue" name="Revenue" stroke="#00d9ff" strokeWidth={2} dot={false} />
-                  <Line type="linear" dataKey="profit" name="Profit" stroke="#4aa3ff" strokeWidth={2} dot={false} />
-                  <Line type="linear" dataKey="expenses" name="Expenses" stroke="#ef4444" strokeWidth={2} dot={false} />
-                  <Line type="linear" dataKey="cash" name="Cash Flow" stroke="#10b981" strokeWidth={2} dot={false} />
+                <Line type="linear" dataKey="revenue" name="Revenue" stroke="#00d9ff" strokeWidth={2} dot={false} />
+                <Line type="linear" dataKey="profit" name="Profit" stroke="#4aa3ff" strokeWidth={2} dot={false} />
+                <Line type="linear" dataKey="expenses" name="Expenses" stroke="#ef4444" strokeWidth={2} dot={false} />
+                <Line type="linear" dataKey="cash" name="Cash Flow" stroke="#10b981" strokeWidth={2} dot={false} />
               </LineChart>
             </ResponsiveContainer>
           </div>
@@ -394,7 +394,7 @@ function Analysis() {
           <div className="insight-box">
             <div className="insight-icon">💡</div>
             <p className="insight-text">
-              The company has strong short-term liquidity, 
+              The company has strong short-term liquidity,
               but profit margins are decreasing.
             </p>
           </div>
