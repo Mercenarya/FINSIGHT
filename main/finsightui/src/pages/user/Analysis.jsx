@@ -176,8 +176,13 @@ function Analysis() {
       console.log('Analyzing with params:', params);
 
       // Call backend API
-      const response = await axios.get('http://127.0.0.1:8001/api/analysis/', {
-        params: params
+      const response = await axios.get(`http://127.0.0.1:8001/api/analysis/`, {
+        params: {
+          company: searchValue,
+          year,
+          period: quarterNumber,
+          metrics: allSelectedMetrics.join(",")
+        }
       });
 
       console.log('Analysis response:', response.data);

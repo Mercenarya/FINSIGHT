@@ -88,6 +88,9 @@ async def search_result(query:str):
     options = Options() # tạo options
     service = Service(ChromeDriverManager().install()) # lấy driver trình duyệt
     options.add_argument("--headless") # dấu trình duyệt
+    options.add_argument('--no-sandbox') # Quan trọng cho môi trường Linux/Container
+    options.add_argument('--disable-dev-shm-usage')
+
     driver = webdriver.Chrome(service=service,options=options)
     url = 'https://cafef.vn/du-lieu.chn'
     driver.get(url)
@@ -95,13 +98,13 @@ async def search_result(query:str):
     try:
         
         # results = asyncio.run(get_ul_list_results(driver,query))
-
         results = await get_ul_list_results(driver,query)
-
         return results
     except Exception as error:
         print('Search result error',f'{error}')
         return []
+    finally:
+        driver.quit()
 
 # options = Options() # tạo options
 # service = Service(ChromeDriverManager().install()) # lấy driver trình duyệt

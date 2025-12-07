@@ -41,7 +41,7 @@ async def updating_json_anylis(data,filename:str):
 
 
 # đồng bộ quá trình lấy dữ liệu của 4 chuyên mục
-async def get_analysis(df,df2,**kwargs):
+async def get_analysis(df,df2,metrics,**kwargs):
     
     try:
 
@@ -64,11 +64,21 @@ async def get_analysis(df,df2,**kwargs):
             kwargs['quarter_selection']
         )
 
-        result = {
-            "Growth":growth,
-            "Profitability":profitability,
-            "Liquidity":liquidity,
-        }
+        result = {}
+        if metrics == 'Growth':
+            result = {
+                "growth":growth
+            }
+        if metrics == 'Profitability':
+            result = {
+                "Profitability":profitability
+            }
+
+        if metrics == "Liquidity":
+            result = {
+                "Liquidity":liquidity
+            }
+
         
         return result
         
@@ -77,10 +87,10 @@ async def get_analysis(df,df2,**kwargs):
         return {}
     
 # chạy đồng bộ tất cả các chức năng trên
-async def run_procedure_ultimate(result,year,quarter):
+async def run_procedure_ultimate(result,metrics,year,quarter,prev_quarter,current_quarter,major):
     options = Options()
     service = Service(ChromeDriverManager().install())
-    # options.add_argument("--headless")
+    options.add_argument("--headless")
     driver = webdriver.Chrome(service=service,options=options)
     # từ khóa - mã công ty 
     # result = "VIC"
@@ -96,20 +106,20 @@ async def run_procedure_ultimate(result,year,quarter):
     print(df2)
 
     template = {
-        "quarter_selection":'Quarter 3',
-        "quarter_prev":'Quarter 2',
-        "quarter_current":'Quarter 3',
-        "major":0,
+        "quarter_selection":quarter,
+        "quarter_prev":prev_quarter,
+        "quarter_current":current_quarter,
+        "major":major,
         "years":year
     }
 
-    result = await get_analysis(df=df,df2=df2,**template)
+    result = await get_analysis(df=df,df2=df2,metrics=metrics,**template)
     # await updating_json(result,ANALYSISJS)
     print(result)
     # driver.quit()
     return result
 
 
-if __name__ == "__main__":
+# if __name__ == "__main__":
     
-    asyncio.run(run_procedure_ultimate('HTV',2024,4))
+#     asyncio.run(run_procedure_ultimate('HTV',2024,4))
