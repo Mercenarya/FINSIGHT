@@ -23,7 +23,6 @@ function LandingPage() {
                 <div className="landing-logo">FinSight</div>
                 <nav className="landing-nav">
                     <a href="#features" className="nav-link">Features</a>
-                    <a href="#demo" className="nav-link">Demo</a>
                     <a href="#contact" className="nav-link">Contact</a>
                 </nav>
             </header>

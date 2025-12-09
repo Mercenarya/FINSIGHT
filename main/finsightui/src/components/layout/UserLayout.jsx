@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import './UserLayout.css';
 
 function UserLayout() {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
   const location = useLocation();
 
   const menuItems = [
@@ -16,12 +15,9 @@ function UserLayout() {
 
   return (
     <div className="user-layout">
-      <aside className={`sidebar ${sidebarOpen ? 'open' : 'closed'}`}>
+      <aside className="sidebar">
         <div className="sidebar-header">
           <h2 className="sidebar-logo">FinSight</h2>
-          <button onClick={() => setSidebarOpen(!sidebarOpen)} className="toggle-btn">
-            {sidebarOpen ? '◀' : '▶'}
-          </button>
         </div>
         <nav className="sidebar-nav">
           {menuItems.map((item) => (
@@ -31,18 +27,18 @@ function UserLayout() {
               className={`nav-item ${location.pathname === item.path ? 'active' : ''}`}
             >
               <span className="nav-icon">{item.icon}</span>
-              {sidebarOpen && <span className="nav-label">{item.label}</span>}
+              <span className="nav-label">{item.label}</span>
             </Link>
           ))}
         </nav>
         <div className="sidebar-footer">
           <Link to="/login" className="logout-btn">
             <span className="nav-icon">🚪</span>
-            {sidebarOpen && <span>Logout</span>}
+            <span>Logout</span>
           </Link>
         </div>
       </aside>
-      <main className={`main-content ${sidebarOpen ? 'sidebar-open' : 'sidebar-closed'}`}>
+      <main className="main-content">
         <header className="main-header">
           <h1>Dashboard</h1>
           <div className="user-info">

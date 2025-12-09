@@ -27,7 +27,7 @@ LIBS = os.path.join(ROOT, 'libs')
 MODULE_DIR = os.path.join(ROOT, 'libs') 
 
 
-os.add_dll_directory('D:/Msys2/ucrt64/bin')
+os.add_dll_directory('C:/minh/PROJECT_CAP/CAP_1/msys/Msys2/ucrt64/bin')
 
 print(CURRENT)
 print(ROOT)
@@ -136,8 +136,8 @@ async def extract_finance_growth(df,prev_quarter,current_quarter,years,major):
             
             'Major':df.iloc[major]['Title'],
             'Year':years,
-            'single growth rate':single_growth_rate,
-            'compound annual growth rate':cagr_growth_rate
+            'single_growth_rate':single_growth_rate,
+            'cagr_growth_rate':cagr_growth_rate
         }
         return analysis_template
 
@@ -238,12 +238,10 @@ async def extract_finance_profitability(df,df2,quarter):
         analysis_template = {
             "Quarter":quarter,
 
-            "Gross marrgin":round(gross_margin,2),
-            "Operating profit margin":round(operating_margin,2),
-            "ROA Ratio value":round(roa_ratio,7) ,
-            "ROA Percent": roa_percent,
-            "ROE Profit":roe_ratio,
-            "ROE Percent":roe_percent
+            "gross_profit_margin":round(gross_margin,2),
+            "opm_margin":round(operating_margin,2),
+            "roa_ratio":round(roa_ratio,7),
+            "roe_profit":roe_ratio
         }
 
         return analysis_template
@@ -276,12 +274,12 @@ async def extract_finance_liquidity(df,quarter):
         # chỉ số thanh khoản current ratio
         current_ratio = lq.current_ratio(int(current_assest), int(liabilities))
 
-        # template kết quả
+        # template kết quả - key phải khớp với Frontend
         template = {
             'Quarter':quarter,
-            'cash ratio': cash_ratio,
-            'quick ratio': quick_ratio,
-            'current ratio': current_ratio
+            'cash_ratio': cash_ratio,
+            'quick_ratio': quick_ratio,
+            'current_ratio': current_ratio
         }
         return template
 

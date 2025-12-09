@@ -1,43 +1,38 @@
 import React, { useState } from 'react';
 import './Analysis.css';
-import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, Legend, CartesianGrid } from 'recharts';
+import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, Cell } from 'recharts';
 import axios from 'axios';
 
 function Analysis() {
-  // ==================== STATE MANAGEMENT ====================
-  // Company search
+  // ==================== QUẢN LÝ STATE ====================
+  // Tìm kiếm công ty
   const [companyList, setCompanyList] = useState([]);
   const [searchValue, setSearchValue] = useState("");
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  // Analysis parameters
+  // Tham số phân tích
   const [year, setYear] = useState("");
   const [period, setPeriod] = useState('Quarter 1');
   const [periodOpen, setPeriodOpen] = useState(false);
 
-  // Metrics selection
+  // Chọn chỉ số
   const [metricsOpen, setMetricsOpen] = useState(false);
   const [selectedMetrics, setSelectedMetrics] = useState([]);
   const [selectionsByCategory, setSelectionsByCategory] = useState({});
 
-  // Modal for metric selection
+  // Modal chọn chỉ số
   const [modalOpen, setModalOpen] = useState(false);
   const [modalCategory, setModalCategory] = useState(null);
   const [modalSelected, setModalSelected] = useState([]);
 
-  // Analysis results
+  // Kết quả phân tích
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [analysisData, setAnalysisData] = useState(null);
   const [chartData, setChartData] = useState([]);
-  const [metricCards, setMetricCards] = useState([
-    { label: 'Revenue', value: '-', change: '-', positive: true },
-    { label: 'Profit', value: '-', change: '-', positive: true },
-    { label: 'Expenses', value: '-', change: '-', positive: false },
-    { label: 'Cash Flow', value: '-', change: '-', positive: true },
-  ]);
+  const [metricCards, setMetricCards] = useState([]);
 
-  // ==================== METRIC OPTIONS ====================
+  // ==================== TÙY CHỌN CHỈ SỐ ====================
   const metricOptions = [
     { key: 'profitability', label: 'Profitability' },
     { key: 'efficiency', label: 'Efficiency' },
@@ -73,7 +68,7 @@ function Analysis() {
     ]
   };
 
-  // ==================== COMPANY SEARCH ====================
+  // ==================== TÌM KIẾM CÔNG TY ====================
   async function fetch_api_search(keyword) {
     if (!keyword || keyword.trim().length === 0) {
       setCompanyList([]);
@@ -106,7 +101,7 @@ function Analysis() {
     .map(c => c.result)
     .filter(name => name.toLowerCase().includes(searchValue.toLowerCase()));
 
-  // ==================== METRICS MODAL ====================
+  // ==================== MODAL CHỈ SỐ ====================
   const openCategoryModal = (categoryKey) => {
     setModalCategory(categoryKey);
     const existing = selectionsByCategory[categoryKey] || [];
@@ -134,9 +129,9 @@ function Analysis() {
     setModalOpen(false);
   };
 
-  // ==================== ANALYZE FUNCTION ====================
+  // ==================== HÀM PHÂN TÍCH ====================
   const handleAnalyze = async () => {
-    // Validation
+    // Kiểm tra dữ liệu
     if (!searchValue || searchValue.trim().length === 0) {
       setError("Please select a company");
       return;
@@ -150,7 +145,7 @@ function Analysis() {
     setError(null);
 
     try {
-      // Gather all selected metric keys
+      // Thu thập tất cả key chỉ số đã chọn
       const allSelectedMetrics = [];
       Object.keys(selectionsByCategory).forEach(category => {
         if (selectionsByCategory[category] && selectionsByCategory[category].length > 0) {
@@ -158,66 +153,53 @@ function Analysis() {
         }
       });
 
-      // Convert period from "Quarter 1" to "1"
+      // Chuyển đổi kỳ từ "Quarter 1" sang "1"
       const quarterNumber = period.replace('Quarter ', '');
 
-      // Build API request parameters
+      // Tạo tham số gọi API
       const params = {
         company: searchValue,
         year: year,
         period: quarterNumber,
       };
 
-      // Add metrics if any selected
+      // Thêm chỉ số nếu có chọn
       if (allSelectedMetrics.length > 0) {
         params.metrics = allSelectedMetrics.join(',');
       }
 
       console.log('Analyzing with params:', params);
 
-      // Call backend API
+      // Gọi API backend
       const response = await axios.get('http://127.0.0.1:8001/api/analysis/', {
         params: params
       });
 
       console.log('Analysis response:', response.data);
 
-      // Process the response
+      // Xử lý phản hồi
       const data = response.data;
       setAnalysisData(data);
 
-      // Update metric cards with 4 default metrics
-      if (data.metrics) {
-        const cards = [
-          {
-            label: 'Revenue',
-            value: formatValue(data.metrics.revenue?.value),
-            change: formatChange(data.metrics.revenue?.change),
-            positive: (data.metrics.revenue?.change || 0) >= 0
-          },
-          {
-            label: 'Profit',
-            value: formatValue(data.metrics.profit?.value),
-            change: formatChange(data.metrics.profit?.change),
-            positive: (data.metrics.profit?.change || 0) >= 0
-          },
-          {
-            label: 'Expenses',
-            value: formatValue(data.metrics.expenses?.value),
-            change: formatChange(data.metrics.expenses?.change),
-            positive: (data.metrics.expenses?.change || 0) < 0 // Lower is better
-          },
-          {
-            label: 'Cash Flow',
-            value: formatValue(data.metrics.cashflow?.value),
-            change: formatChange(data.metrics.cashflow?.change),
-            positive: (data.metrics.cashflow?.change || 0) >= 0
-          }
-        ];
+      // Cập nhật thẻ chỉ số dựa trên các metric đã chọn từ Change Metrics
+      if (data.metrics && allSelectedMetrics.length > 0) {
+        const cards = allSelectedMetrics.map(metricKey => {
+          const metricData = data.metrics[metricKey];
+          return {
+            key: metricKey,
+            label: getMetricLabel(metricKey),
+            value: metricData?.value !== undefined ? formatMetricValue(metricData.value, metricKey) : '-',
+            change: formatChange(metricData?.change),
+            positive: (metricData?.change || 0) >= 0,
+            color: metricColors[metricKey] || '#999'
+          };
+        });
         setMetricCards(cards);
+      } else {
+        setMetricCards([]);
       }
 
-      // Update chart data - combine default metrics + selected metrics
+      // Cập nhật dữ liệu biểu đồ - kết hợp chỉ số mặc định + chỉ số đã chọn
       if (data.timeSeries) {
         setChartData(data.timeSeries);
       }
@@ -230,7 +212,7 @@ function Analysis() {
     }
   };
 
-  // ==================== HELPER FUNCTIONS ====================
+  // ==================== HÀM HỖ TRỢ ====================
   const formatValue = (value) => {
     if (value === null || value === undefined) return '-';
     if (typeof value === 'number') {
@@ -243,17 +225,49 @@ function Analysis() {
     return value;
   };
 
+  // Format giá trị metric dựa vào loại metric (ratio, percentage, etc.)
+  const formatMetricValue = (value, metricKey) => {
+    if (value === null || value === undefined) return '-';
+    if (typeof value !== 'number') return value;
+
+    // Các metric là tỷ lệ (ratio) - hiển thị dạng số thập phân
+    const ratioMetrics = ['cash_ratio', 'quick_ratio', 'current_ratio', 'inventory_turnover_ratio', 'art_turnover', 'tta_turnover', 'apt_turnover'];
+    if (ratioMetrics.includes(metricKey)) {
+      return value.toFixed(2);
+    }
+
+    // Các metric là phần trăm (margin, ROA, ROE, growth rate)
+    const percentMetrics = ['gross_profit_margin', 'opm_margin', 'npm_margin', 'roa_ratio', 'roe_profit', 'single_growth_rate', 'cagr_growth_rate'];
+    if (percentMetrics.includes(metricKey)) {
+      return `${value.toFixed(2)}%`;
+    }
+
+    // Các metric là số ngày
+    const dayMetrics = ['dio_stand', 'dpo_outstanding'];
+    if (dayMetrics.includes(metricKey)) {
+      return `${value.toFixed(0)} days`;
+    }
+
+    // EPS - hiển thị đơn vị tiền tệ
+    if (metricKey === 'eps_ratios') {
+      return `$${value.toFixed(2)}`;
+    }
+
+    // Mặc định
+    return value.toFixed(2);
+  };
+
   const formatChange = (change) => {
     if (change === null || change === undefined) return '-';
     const num = typeof change === 'number' ? change : parseFloat(change);
     return `${num >= 0 ? '+' : ''}${num.toFixed(1)}%`;
   };
 
-  // Get all metric keys for chart lines
+  // Lấy tất cả key chỉ số cho đường biểu đồ
   const getChartMetrics = () => {
     const metrics = ['revenue', 'profit', 'expenses', 'cashflow'];
 
-    // Add selected custom metrics
+    // Thêm các chỉ số tùy chỉnh đã chọn
     Object.keys(selectionsByCategory).forEach(category => {
       if (selectionsByCategory[category]) {
         metrics.push(...selectionsByCategory[category]);
@@ -263,13 +277,13 @@ function Analysis() {
     return metrics;
   };
 
-  // Color palette for chart lines
+  // Bảng màu cho đường biểu đồ
   const metricColors = {
     revenue: '#00d9ff',
     profit: '#4aa3ff',
     expenses: '#ef4444',
     cashflow: '#10b981',
-    // Additional metrics
+    // Chỉ số bổ sung
     cash_ratio: '#f59e0b',
     quick_ratio: '#8b5cf6',
     current_ratio: '#ec4899',
@@ -278,26 +292,33 @@ function Analysis() {
     npm_margin: '#06b6d4',
     roa_ratio: '#84cc16',
     roe_profit: '#eab308',
+    eps_ratios: '#22c55e',
+    inventory_turnover_ratio: '#3b82f6',
+    dio_stand: '#f472b6',
+    art_turnover: '#fb923c',
+    tta_turnover: '#a3e635',
+    apt_turnover: '#2dd4bf',
+    dpo_outstanding: '#c084fc',
     single_growth_rate: '#6366f1',
     cagr_growth_rate: '#a855f7',
   };
 
-  // Get human-readable label for metric key
+  // Lấy nhãn dễ đọc cho key chỉ số
   const getMetricLabel = (key) => {
     const allItems = Object.values(categoryItems).flat();
     const item = allItems.find(i => i.key === key);
     return item?.label || key;
   };
 
-  // ==================== RENDER ====================
+  // ==================== HIỂN THỊ ====================
   return (
     <div className="analysis-page">
-      {/* Header */}
+      {/* Tiêu đề */}
       <div className="analysis-header">
         <h2 className="page-title">Analysis</h2>
       </div>
 
-      {/* Controls Section */}
+      {/* Phần điều khiển */}
       <div className="analysis-controls">
         <div className="search-box">
           <input
@@ -330,7 +351,7 @@ function Analysis() {
           )}
         </div>
 
-        {/* Year and Period controls */}
+        {/* Điều khiển Năm và Kỳ */}
         <div className="search-extras">
           <input
             className="small-input"
@@ -370,7 +391,7 @@ function Analysis() {
           </div>
         </div>
 
-        {/* Action Buttons */}
+        {/* Các nút hành động */}
         <div className="controls-group">
           <div
             className="metrics-wrapper"
@@ -418,124 +439,211 @@ function Analysis() {
         </div>
       </div>
 
-      {/* Error Message */}
+      {/* Thông báo lỗi */}
       {error && (
         <div style={{ padding: '10px', margin: '10px 0', backgroundColor: '#fee', color: '#c00', borderRadius: '4px' }}>
           {error}
         </div>
       )}
 
-      {/* Metric Cards */}
+      {/* Thẻ chỉ số - chỉ hiển thị các metric đã chọn */}
       <div className="metrics-grid">
-        {metricCards.map((m) => (
-          <div className="metric-card" key={m.label}>
-            <div className="metric-header">
-              <span className="metric-label">{m.label}</span>
+        {metricCards.length > 0 ? (
+          metricCards.map((m) => (
+            <div className="metric-card" key={m.key || m.label} style={{ borderTop: `3px solid ${m.color || '#00d9ff'}` }}>
+              <div className="metric-header">
+                <span className="metric-label">{m.label}</span>
+                <span className="metric-color-dot" style={{ backgroundColor: m.color || '#00d9ff' }}></span>
+              </div>
+              <div className="metric-value">{m.value}</div>
+              <div className={`metric-change ${m.positive ? 'positive' : 'negative'}`}>{m.change}</div>
             </div>
-            <div className="metric-value">{m.value}</div>
-            <div className={`metric-change ${m.positive ? 'positive' : 'negative'}`}>{m.change}</div>
+          ))
+        ) : (
+          <div className="metrics-empty-message">
+            <p>📊 Select metrics from "Change Metrics" and click "Analyze" to view data.</p>
           </div>
-        ))}
+        )}
       </div>
 
-      {/* Chart Section */}
+      {/* Phần biểu đồ */}
       <div className="chart-section">
         <h3 className="section-title">Financial Metrics Trend</h3>
         <div className="chart-container">
           <div className="chart-placeholder">
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={chartData.length > 0 ? chartData : [
-                { period: 'Q1', revenue: 0, profit: 0, expenses: 0, cashflow: 0 },
-                { period: 'Q2', revenue: 0, profit: 0, expenses: 0, cashflow: 0 },
-                { period: 'Q3', revenue: 0, profit: 0, expenses: 0, cashflow: 0 },
-                { period: 'Q4', revenue: 0, profit: 0, expenses: 0, cashflow: 0 },
-              ]}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#2a3441" />
-                <XAxis dataKey="period" stroke="#9aa4b2" />
-                <YAxis stroke="#9aa4b2" />
-                <Tooltip
-                  contentStyle={{ backgroundColor: '#1a2332', border: '1px solid #2a3441' }}
-                  labelStyle={{ color: '#fff' }}
-                />
-                <Legend verticalAlign="top" align="right" />
+            {/* Lấy danh sách các metric đã chọn để hiển thị */}
+            {(() => {
+              // Thu thập tất cả metric đã chọn từ các category
+              const selectedMetricKeys = [];
+              Object.keys(selectionsByCategory).forEach(category => {
+                if (selectionsByCategory[category] && selectionsByCategory[category].length > 0) {
+                  selectedMetricKeys.push(...selectionsByCategory[category]);
+                }
+              });
 
-                {/* Default metric lines */}
-                {chartData.length > 0 && (
-                  <>
-                    <Line type="monotone" dataKey="revenue" name="Revenue" stroke={metricColors.revenue} strokeWidth={2} dot={false} />
-                    <Line type="monotone" dataKey="profit" name="Profit" stroke={metricColors.profit} strokeWidth={2} dot={false} />
-                    <Line type="monotone" dataKey="expenses" name="Expenses" stroke={metricColors.expenses} strokeWidth={2} dot={false} />
-                    <Line type="monotone" dataKey="cashflow" name="Cash Flow" stroke={metricColors.cashflow} strokeWidth={2} dot={false} />
+              // Tạo dữ liệu cho BarChart với 4 quarters
+              const barChartData = ['Quarter 1', 'Quarter 2', 'Quarter 3', 'Quarter 4'].map((quarter, idx) => {
+                const dataPoint = { quarter };
+                selectedMetricKeys.forEach(metricKey => {
+                  // Lấy giá trị từ chartData nếu có, nếu không thì dùng giá trị mặc định
+                  if (chartData.length > idx && chartData[idx][metricKey] !== undefined) {
+                    dataPoint[metricKey] = chartData[idx][metricKey];
+                  } else {
+                    dataPoint[metricKey] = 0;
+                  }
+                });
+                return dataPoint;
+              });
 
-                    {/* Dynamically add selected metric lines */}
-                    {Object.keys(selectionsByCategory).map(category =>
-                      selectionsByCategory[category]?.map(metricKey => (
-                        <Line
+              return (
+                <div className="bar-chart-wrapper">
+                  <ResponsiveContainer width="100%" height={300}>
+                    <BarChart
+                      data={barChartData}
+                      margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" stroke="#2a3441" />
+                      <XAxis
+                        dataKey="quarter"
+                        stroke="#9aa4b2"
+                        tick={{ fill: '#9aa4b2', fontSize: 12 }}
+                        axisLine={{ stroke: '#2a3441' }}
+                      />
+                      <YAxis
+                        stroke="#9aa4b2"
+                        tick={{ fill: '#9aa4b2', fontSize: 12 }}
+                        axisLine={{ stroke: '#2a3441' }}
+                        tickFormatter={(value) => {
+                          if (value >= 1000000) return `${(value / 1000000).toFixed(1)}M`;
+                          if (value >= 1000) return `${(value / 1000).toFixed(1)}K`;
+                          return value;
+                        }}
+                      />
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: '#1a2332',
+                          border: '1px solid #2a3441',
+                          borderRadius: '8px',
+                          color: '#fff'
+                        }}
+                        labelStyle={{ color: '#00d9ff', fontWeight: 'bold' }}
+                        formatter={(value, name) => [
+                          typeof value === 'number' ? value.toLocaleString() : value,
+                          getMetricLabel(name)
+                        ]}
+                      />
+
+                      {/* Render Bar cho mỗi metric đã chọn */}
+                      {selectedMetricKeys.map((metricKey) => (
+                        <Bar
                           key={metricKey}
-                          type="monotone"
                           dataKey={metricKey}
-                          name={getMetricLabel(metricKey)}
-                          stroke={metricColors[metricKey] || '#999'}
-                          strokeWidth={2}
-                          dot={false}
+                          name={metricKey}
+                          fill={metricColors[metricKey] || '#999'}
+                          radius={[4, 4, 0, 0]}
                         />
-                      ))
-                    )}
-                  </>
-                )}
-              </LineChart>
-            </ResponsiveContainer>
+                      ))}
+                    </BarChart>
+                  </ResponsiveContainer>
+
+                  {/* Legend tùy chỉnh - nằm bên trong chart section nhưng tách biệt */}
+                  {selectedMetricKeys.length > 0 && (
+                    <div className="custom-chart-legend">
+                      <div className="legend-title">Selected Metrics</div>
+                      <div className="legend-items">
+                        {selectedMetricKeys.map((metricKey) => (
+                          <div key={metricKey} className="legend-item">
+                            <span
+                              className="legend-color"
+                              style={{ backgroundColor: metricColors[metricKey] || '#999' }}
+                            ></span>
+                            <span className="legend-label">{getMetricLabel(metricKey)}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Thông báo khi chưa chọn metric nào */}
+                  {selectedMetricKeys.length === 0 && (
+                    <div className="chart-empty-message">
+                      <p>📊 No metrics selected. Please select metrics from "Change Metrics" and click "Analyze" to view the chart.</p>
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
           </div>
         </div>
       </div>
 
-      {/* Data Table */}
+      {/* Bảng dữ liệu - Key Financial Metric */}
       <div className="ratios-container">
         <div className="ratios-section">
-          <h3 className="section-title">Financial Data by Period</h3>
-          <table className="ratios-table">
-            <thead>
-              <tr>
-                <th>Period</th>
-                <th>Revenue</th>
-                <th>Profit</th>
-                <th>Expenses</th>
-                <th>Cash Flow</th>
-                {/* Dynamic columns for selected metrics */}
-                {Object.keys(selectionsByCategory).map(category =>
-                  selectionsByCategory[category]?.map(metricKey => (
-                    <th key={metricKey}>{getMetricLabel(metricKey)}</th>
-                  ))
-                )}
-              </tr>
-            </thead>
-            <tbody>
-              {chartData.length > 0 ? chartData.map((row, idx) => (
-                <tr key={idx}>
-                  <td>{row.period}</td>
-                  <td>{formatValue(row.revenue)}</td>
-                  <td>{formatValue(row.profit)}</td>
-                  <td>{formatValue(row.expenses)}</td>
-                  <td>{formatValue(row.cashflow)}</td>
-                  {/* Dynamic cells for selected metrics */}
-                  {Object.keys(selectionsByCategory).map(category =>
-                    selectionsByCategory[category]?.map(metricKey => (
-                      <td key={metricKey}>{row[metricKey] !== undefined ? formatValue(row[metricKey]) : '-'}</td>
-                    ))
-                  )}
-                </tr>
-              )) : (
-                <tr>
-                  <td colSpan="5" style={{ textAlign: 'center', padding: '20px', color: '#9aa4b2' }}>
-                    No data available. Click "Analyze" to fetch data.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+          <h3 className="section-title">Key Financial Metric</h3>
+          {(() => {
+            // Thu thập tất cả metric đã chọn
+            const selectedMetricKeys = [];
+            Object.keys(selectionsByCategory).forEach(category => {
+              if (selectionsByCategory[category] && selectionsByCategory[category].length > 0) {
+                selectedMetricKeys.push(...selectionsByCategory[category]);
+              }
+            });
+
+            // Tạo dữ liệu bảng với 4 quarters
+            const tableData = ['Quarter 1', 'Quarter 2', 'Quarter 3', 'Quarter 4'].map((quarter, idx) => {
+              const rowData = { period: quarter };
+              selectedMetricKeys.forEach(metricKey => {
+                if (chartData.length > idx && chartData[idx][metricKey] !== undefined) {
+                  rowData[metricKey] = chartData[idx][metricKey];
+                } else {
+                  rowData[metricKey] = null;
+                }
+              });
+              return rowData;
+            });
+
+            if (selectedMetricKeys.length === 0) {
+              return (
+                <div className="table-empty-message">
+                  <p>📊 No metrics selected. Please select metrics from "Change Metrics" and click "Analyze" to view data.</p>
+                </div>
+              );
+            }
+
+            return (
+              <table className="ratios-table">
+                <thead>
+                  <tr>
+                    <th>Period</th>
+                    {selectedMetricKeys.map(metricKey => (
+                      <th key={metricKey}>
+                        <div className="table-header-cell">
+                          <span className="table-header-color" style={{ backgroundColor: metricColors[metricKey] || '#999' }}></span>
+                          {getMetricLabel(metricKey)}
+                        </div>
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {tableData.map((row, idx) => (
+                    <tr key={idx}>
+                      <td className="period-cell">{row.period}</td>
+                      {selectedMetricKeys.map(metricKey => (
+                        <td key={metricKey}>
+                          {row[metricKey] !== null ? formatMetricValue(row[metricKey], metricKey) : '-'}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            );
+          })()}
         </div>
 
-        {/* AI Insight Section */}
+        {/* Phần phân tích AI */}
         <div className="insight-section">
           <h3 className="section-title">AI Insight</h3>
           <div className="insight-box">
@@ -547,7 +655,7 @@ function Analysis() {
         </div>
       </div>
 
-      {/* Metric Selection Modal */}
+      {/* Modal chọn chỉ số */}
       {modalOpen && (
         <div className="metric-modal-overlay" onMouseDown={closeModal}>
           <div className="metric-modal" onMouseDown={e => e.stopPropagation()} role="dialog" aria-modal="true">
