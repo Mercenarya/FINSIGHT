@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import sklearn
 import json
 from sklearn.preprocessing import StandardScaler
-
+import asyncio
 
 
 CURRENT = os.path.dirname(os.path.realpath(__file__))
@@ -85,18 +85,24 @@ async def normalization(data):
 
 # đọc dữ liệu
 async def read_data(filename:str):
-    df = pd.read_csv(filename)
+    df = pd.read_csv(filename, dtype=str)
     all_quarter = ['Quarter 1','Quarter 2','Quarter 3','Quarter 4']
     try:
         
         if os.path.exists(filename):
             for quarter in all_quarter:
 
-                df[quarter] = df[quarter].astype(str)
-                df[quarter] = df[quarter].str.replace(',','')
-                df[quarter] = df[quarter].str.replace(',','')
-                df[quarter] = df[quarter].replace(['nan', 'NaN'],0)
+                df[quarter] = (
+                    df[quarter].astype(str)
+                    .str.replace(',','')
+                    .str.replace(' ','')
+                    .str.replace('-','0')
+                    .str.replace('nan','0', case=False)
+                )
+                
+
             df = df.replace(np.nan,0)
+            
             return df
         else: 
             print("Dataset is not exists")
@@ -269,21 +275,21 @@ async def extract_finance_liquidity(df,quarter):
     try:
         
         # lấy thông tin cho các phép thanh khoản tài chính
-        cash = df.iloc[1][quarter] # tiền và các khoản tương đương
-        liabilities = df.iloc[65][quarter] # nợ phải trả
-        current_assest = df.iloc[0][quarter] # tài sản ngắn hạn
-        inventory = df.iloc[17][quarter] # hàng tồn kho
+        cash = int(df.iloc[1][quarter]) # tiền và các khoản tương đương
+        liabilities = int(df.iloc[65][quarter]) # nợ phải trả
+        current_assest = int(df.iloc[0][quarter]) # tài sản ngắn hạn
+        inventory = int(df.iloc[17][quarter]) # hàng tồn kho
 
 
 
         # chỉ số thanh khoản cash ratio
-        cash_ratio = lq.cash_ratio(int(cash),int(liabilities))
+        cash_ratio = lq.cash_ratio(cash,liabilities)
 
         # chỉ số thanh khoản quick ratio
-        quick_ratio = lq.quick_ratio(int(current_assest),int(inventory),int(liabilities))
+        quick_ratio = lq.quick_ratio(current_assest,inventory,liabilities)
 
         # chỉ số thanh khoản current ratio
-        current_ratio = lq.current_ratio(int(current_assest), int(liabilities))
+        current_ratio = lq.current_ratio(current_assest, liabilities)
 
         # template kết quả
         template = {
@@ -352,38 +358,30 @@ async def convert_reports(template,filename):
         return f"Reports general errors : {error}"
     
 
+async def main():
+    quarter = 'Quarter 3'
+    major = 0 #'1. Doanh thu bán hàng và cung cấp dịch vụ'
+    prev = 'Quarter 3'
+    current = 'Quarter 4'
 
-
-
-# if __name__ == "__main__":
-
-#     df = read_data(RAW)
-#     df2 = read_data(ASSETS)
-#     print(df)
-#     print("="*100)
-#     tta = df2.iloc[62]['Title'] + " : "+df2.iloc[62]['Quarter 1']
-#     print(tta)
-#     print(extract_finance_profitability(df,df2))
-
-
-# if __name__ == "__main__":
-#     quarter = 'Quarter 3'
-#     major = 0 #'1. Doanh thu bán hàng và cung cấp dịch vụ'
-#     prev = 'Quarter 3'
-#     current = 'Quarter 4'
-
-#     df = read_data(RAW)
-#     df2 = read_data(ASSETS)
-#     print(df)
-#     print("="*100)
+    df = await read_data(RAW)
+    df2 = await read_data(ASSETS)
+    print(df)#
+    print("="*100)
     
-#     print('NỘI DUNG LỢI NHUẬN DOANH NGHIỆP - PROFITABILITY')
-#     print(extract_finance_profitability(df,df2,quarter=quarter))
-#     print('NỘI DUNG TĂNG TRƯỞNG MỐC - GROWTH')
+    print('NỘI DUNG LỢI NHUẬN DOANH NGHIỆP - PROFITABILITY')
+    await extract_finance_profitability(df,df2,quarter=quarter)
+    print('NỘI DUNG TĂNG TRƯỞNG MỐC - GROWTH')
     
     
     
-#     print(extract_finance_growth(df=df,prev_quarter=prev,current_quarter=current,major=major,years=2024))
-#     print("NỘI DUNG PHÂN TÍCH CHỈ SỐ THANH KHOẢN TÀI CHÍNH")
-#     print(extract_finance_liquidity(df2,quarter=quarter))
+    await extract_finance_growth(df=df,prev_quarter=prev,current_quarter=current,major=major,years=2024)
+    print("NỘI DUNG PHÂN TÍCH CHỈ SỐ THANH KHOẢN TÀI CHÍNH")
+    await extract_finance_liquidity(df2,quarter=quarter)
 
+
+
+
+
+if __name__ == "__main__":
+    asyncio.run(main())

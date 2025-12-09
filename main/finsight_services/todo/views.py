@@ -24,11 +24,11 @@ def clients(request):
 async def analysis_api(request):
     try:
         
-
+        # http://127.0.0.1:8001/api/analysis/?company=VIC&year=2025&period=4&metrics=cash_ratio,quick_ratio,current_ratio
         if request.method == 'GET':
             
-            df_reports = await sync_to_async(an.read_data)(an.RAW)
-            df_assets = await sync_to_async(an.read_data)(an.ASSETS)
+            df_reports = await an.read_data(an.RAW)
+            df_assets = await an.read_data(an.ASSETS)
 
 
             if df_reports is None or df_assets is None or isinstance(df_reports, str) or isinstance(df_assets,str):
@@ -39,24 +39,114 @@ async def analysis_api(request):
                     },
                     status = 500
                 )
-            # thực hiện phân tích tính toán 
-            # query = request.GET.get('query','')
-            # year = 2025
-            # quarter = 4
-            # metrics = "Liquidity"
-
-            analysis_selection = ['Liquidity','Profitability','Growth','Efficiency']
-            # quarter_selection = ['Quarter 1', 'Quarter 2', 'Quarter 3', 'Quarter 4']
-
-            query = request.GET.get('company')
-            year = request.GET.get('year')
-            quarter = request.GET.get('period')
-            metrics = request.GET.get('metrics')
 
 
+            company = request.GET.get('company','')
+            year = request.GET.get('year','')
+            quarter = request.GET.get('period','')
+            metrics = request.GET.get('metrics','')
+
+            
+
+            # kết quả phân tích (dict result chính cho đối số hiển thị và dữ liệu biểu đồ)
+            analysis_result = {}
+
+            # danh sách các quarter
+            quarter = ['Quarter 1', 'Quarter 2', 'Quarter 3','Quarter 4']
+
+            # đồng thời, lấy dữ liệu khi fetch về cho biểu đồ
+            chart_data = []
+            quarter_num = 1
+
+            if quarter == 'Quarter 1':
+                quarter_num = 1
+            if quarter == 'Quarter 2':
+                quarter_num = 2
+            if quarter == 'Quarter 3':
+                quarter_num = 3
+            if quarter == 'Quarter 4':
+                quarter_num = 4
+
+            await ulti.run_procedure_ultimate(
+                result=company,
+                metrics=metrics,
+                year=int(year),
+                quarter=int(quarter_num),
+                prev_quarter='Quarter 2',
+                current_quarter='Quarter 4',
+                major=0
+            )
 
 
-            if not query or not year or not quarter or not metrics:
+
+            # lấy dữ liệu theo 4 quý
+            for q in quarter:
+                
+                quarter_data = {
+                    'quarter':q
+                }
+
+                '''
+                Hiển thị các mục nội dung tính toán
+                đã được chọn và phân tích
+                '''
+                # profitability
+                try:
+                    prof = await an.extract_finance_profitability(
+                        df=df_reports,
+                        df2=df_assets,
+                        quarter=q
+                    )
+
+                    if isinstance(prof, dict):
+                        quarter_data.update(prof)
+
+                except: pass
+                
+                # liquidity
+                try:
+                    liq = await an.extract_finance_liquidity(
+                        df=df_assets,
+                        quarter=q
+                    )
+                    if isinstance(liq, dict):
+                        quarter_data.update(liq)
+
+                except: pass
+
+                chart_data.append(quarter_data)
+
+            # thêm dữ liệu của chart vào dict result chính
+            analysis_result['chart_data'] = chart_data
+            
+            # thực hiện phân tích các quarter được chọn
+            
+
+            pft = await an.extract_finance_profitability(
+                df=df_reports,
+                df2=df_assets,
+                quarter=quarter
+            )
+            if isinstance(pft, dict):
+                analysis_result['profitability'] = pft
+
+            lq = await an.extract_finance_liquidity(
+                df=df_assets,
+                quarter=quarter,
+
+            )
+
+            if isinstance(lq, dict):
+                analysis_result['liquidity'] = lq
+
+            analysis_result['request_info'] = {
+                'company': company,
+                'year':year,
+                'quarter':quarter,
+                'metrics':metrics
+            }
+
+            if not company or not year or not quarter or not metrics:
                 return JsonResponse(
                     {
                         "error":'Missing parameters: result, metrics , quarter or timeline'
@@ -64,23 +154,10 @@ async def analysis_api(request):
                     status=400
                 )
             
-            try:
-                quarter_value = int(quarter)
-            except Exception as error:
-                return JsonResponse(
-                    {
-                        'error':'quarter value must be a valid number'
-                    }
-                )
-           
-                
-            result = await sync_to_async(ulti.run_procedure_ultimate)(query,metrics=metrics,year=year,quarter=quarter_value)
-           
-            # kiểm tra kết quả và điều kiện đầu ra:
-            if isinstance(result, str):
-                result = json.loads(result)
+            if isinstance(analysis_result, str):
+                analysis_result = json.loads(analysis_result)
             
-            return JsonResponse(result,safe=False)
+            return JsonResponse(analysis_result,safe=False)
 
         if request.method == 'POST':
             try:
@@ -126,7 +203,7 @@ async def companies_search(request):
             # nếu không có query nào thì trả về kết quả rỗng
             return JsonResponse([],safe=False)
 
-        suggestions = await sync_to_async(cpn.search_result)(query)
+        suggestions = await cpn.search_result(query)
         if isinstance(suggestions,str):
             result = json.loads(suggestions)
         else:
