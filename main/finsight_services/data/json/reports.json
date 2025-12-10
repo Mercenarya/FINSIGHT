@@ -1,157 +1,157 @@
 [
     {
         "title": "1. Doanh thu bán hàng và cung cấp dịch vụ",
-        "First_quarter": "",
-        "Second_quarter": "76,371,303,274",
-        "Third_quarter": "63,193,537,687",
-        "Fourth_quarter": "60,180,794,217"
+        "First_quarter": "13,854,110,552,126",
+        "Second_quarter": "28,791,593,756,012",
+        "Third_quarter": "41,172,042,654,108",
+        "Fourth_quarter": "38,974,697,766,325"
     },
     {
         "title": "2. Các khoản giảm trừ doanh thu",
-        "First_quarter": "",
-        "Second_quarter": "",
-        "Third_quarter": "",
-        "Fourth_quarter": ""
+        "First_quarter": "291,868,537",
+        "Second_quarter": "49,238,278,010",
+        "Third_quarter": "4,189,163,758",
+        "Fourth_quarter": "11,323,235,715"
     },
     {
         "title": "3. Doanh thu thuần về bán hàng và cung cấp dịch vụ (10 = 01 - 02)",
-        "First_quarter": "",
-        "Second_quarter": "76,371,303,274",
-        "Third_quarter": "63,193,537,687",
-        "Fourth_quarter": "60,180,794,217"
+        "First_quarter": "13,853,818,683,589",
+        "Second_quarter": "28,742,355,478,002",
+        "Third_quarter": "41,167,853,490,350",
+        "Fourth_quarter": "38,963,374,530,610"
     },
     {
         "title": "4. Giá vốn hàng bán",
-        "First_quarter": "",
-        "Second_quarter": "68,636,798,523",
-        "Third_quarter": "59,122,684,721",
-        "Fourth_quarter": "53,755,296,488"
+        "First_quarter": "18,421,092,751,861",
+        "Second_quarter": "22,984,051,913,807",
+        "Third_quarter": "28,363,382,723,758",
+        "Fourth_quarter": "34,528,470,114,466"
     },
     {
         "title": "5. Lợi nhuận gộp về bán hàng và cung cấp dịch vụ(20=10-11)",
-        "First_quarter": "",
-        "Second_quarter": "7,734,504,751",
-        "Third_quarter": "4,070,852,966",
-        "Fourth_quarter": "6,425,497,729"
+        "First_quarter": "-4,567,274,068,272",
+        "Second_quarter": "5,758,303,564,195",
+        "Third_quarter": "12,804,470,766,592",
+        "Fourth_quarter": "4,434,904,416,144"
     },
     {
         "title": "6. Doanh thu hoạt động tài chính",
-        "First_quarter": "",
-        "Second_quarter": "2,518,334,319",
-        "Third_quarter": "2,271,401,371",
-        "Fourth_quarter": "2,710,131,167"
+        "First_quarter": "10,665,717,530,521",
+        "Second_quarter": "9,998,675,299,537",
+        "Third_quarter": "2,529,340,759,105",
+        "Fourth_quarter": "10,066,515,609,815"
     },
     {
         "title": "7. Chi phí tài chính",
-        "First_quarter": "",
-        "Second_quarter": "",
-        "Third_quarter": "",
-        "Fourth_quarter": ""
+        "First_quarter": "4,259,434,537,560",
+        "Second_quarter": "5,064,995,178,164",
+        "Third_quarter": "2,269,395,923,032",
+        "Fourth_quarter": "3,794,874,408,262"
     },
     {
         "title": "- Trong đó: Chi phí lãi vay",
-        "First_quarter": "",
-        "Second_quarter": "",
-        "Third_quarter": "",
-        "Fourth_quarter": ""
+        "First_quarter": "2,782,425,342,765",
+        "Second_quarter": "3,036,936,274,216",
+        "Third_quarter": "2,953,960,570,955",
+        "Fourth_quarter": "3,331,489,083,311"
     },
     {
         "title": "8. Phần lãi lỗ trong công ty liên doanh, liên kết",
-        "First_quarter": "",
-        "Second_quarter": "",
-        "Third_quarter": "",
-        "Fourth_quarter": ""
+        "First_quarter": "-42,079,116,404",
+        "Second_quarter": "-31,135,660,267",
+        "Third_quarter": "-3,359,532,192",
+        "Fourth_quarter": "-110,626,993,555"
     },
     {
         "title": "9. Chi phí bán hàng",
-        "First_quarter": "",
-        "Second_quarter": "",
-        "Third_quarter": "",
-        "Fourth_quarter": ""
+        "First_quarter": "1,972,316,989,545",
+        "Second_quarter": "1,914,860,664,450",
+        "Third_quarter": "3,683,344,001,275",
+        "Fourth_quarter": "2,581,035,825,263"
     },
     {
         "title": "10. Chi phí quản lý doanh nghiệp",
-        "First_quarter": "",
-        "Second_quarter": "7,107,147,764",
-        "Third_quarter": "9,022,650,348",
-        "Fourth_quarter": "7,002,982,192"
+        "First_quarter": "3,575,385,896,529",
+        "Second_quarter": "3,756,099,658,037",
+        "Third_quarter": "5,170,071,183,784",
+        "Fourth_quarter": "3,213,035,219,500"
     },
     {
         "title": "11. Lợi nhuận thuần từ hoạt động kinh doanh{30=20+(21-22) + 24 - (25+26)}",
-        "First_quarter": "",
-        "Second_quarter": "3,145,691,306",
-        "Third_quarter": "-2,680,396,011",
-        "Fourth_quarter": "2,132,646,704"
+        "First_quarter": "-3,750,773,077,789",
+        "Second_quarter": "4,989,887,702,814",
+        "Third_quarter": "4,207,640,885,414",
+        "Fourth_quarter": "4,801,847,579,379"
     },
     {
         "title": "12. Thu nhập khác",
-        "First_quarter": "",
-        "Second_quarter": "238,442,743",
-        "Third_quarter": "6,644,816,204",
-        "Fourth_quarter": "2,342,708,780"
+        "First_quarter": "5,711,142,360,509",
+        "Second_quarter": "500,369,339,884",
+        "Third_quarter": "186,298,343,188",
+        "Fourth_quarter": "220,710,418,965"
     },
     {
         "title": "13. Chi phí khác",
-        "First_quarter": "",
-        "Second_quarter": "-93,440,829",
-        "Third_quarter": "120,506,403",
-        "Fourth_quarter": "4,251,960"
+        "First_quarter": "554,986,170,809",
+        "Second_quarter": "237,936,241,759",
+        "Third_quarter": "439,198,195,386",
+        "Fourth_quarter": "758,271,083,160"
     },
     {
         "title": "14. Lợi nhuận khác(40=31-32)",
-        "First_quarter": "",
-        "Second_quarter": "331,883,572",
-        "Third_quarter": "6,524,309,801",
-        "Fourth_quarter": "2,338,456,820"
+        "First_quarter": "5,156,156,189,700",
+        "Second_quarter": "262,433,098,125",
+        "Third_quarter": "-252,899,852,198",
+        "Fourth_quarter": "-537,560,664,195"
     },
     {
         "title": "15. Tổng lợi nhuận kế toán trước thuế(50=30+40)",
-        "First_quarter": "",
-        "Second_quarter": "3,477,574,878",
-        "Third_quarter": "3,843,913,790",
-        "Fourth_quarter": "4,471,103,524"
+        "First_quarter": "1,405,383,111,911",
+        "Second_quarter": "5,252,320,800,939",
+        "Third_quarter": "3,954,741,033,216",
+        "Fourth_quarter": "4,264,286,915,184"
     },
     {
         "title": "16. Chi phí thuế TNDN hiện hành",
-        "First_quarter": "",
-        "Second_quarter": "695,514,975",
-        "Third_quarter": "1,148,656,910",
-        "Fourth_quarter": "878,430,846"
+        "First_quarter": "874,771,774,717",
+        "Second_quarter": "4,731,400,416,772",
+        "Third_quarter": "3,618,125,430,345",
+        "Fourth_quarter": "3,604,349,603,621"
     },
     {
         "title": "17. Chi phí thuế TNDN hoãn lại",
-        "First_quarter": "",
-        "Second_quarter": "",
-        "Third_quarter": "",
-        "Fourth_quarter": ""
+        "First_quarter": "14,955,644,075",
+        "Second_quarter": "14,573,676,744",
+        "Third_quarter": "-73,705,837,903",
+        "Fourth_quarter": "70,788,361,082"
     },
     {
         "title": "18. Lợi nhuận sau thuế thu nhập doanh nghiệp(60=50-51-52)",
-        "First_quarter": "",
-        "Second_quarter": "2,782,059,903",
-        "Third_quarter": "2,695,256,880",
-        "Fourth_quarter": "3,592,672,678"
+        "First_quarter": "515,655,693,119",
+        "Second_quarter": "506,346,707,423",
+        "Third_quarter": "410,321,440,774",
+        "Fourth_quarter": "589,148,950,481"
     },
     {
         "title": "19. Lợi nhuận sau thuế công ty mẹ",
-        "First_quarter": "",
-        "Second_quarter": "2,695,739,001",
-        "Third_quarter": "2,697,768,110",
-        "Fourth_quarter": "3,565,040,425"
+        "First_quarter": "3,190,695,602,994",
+        "Second_quarter": "946,780,920,767",
+        "Third_quarter": "1,558,987,034,231",
+        "Fourth_quarter": "1,066,234,558,673"
     },
     {
         "title": "20. Lợi nhuận sau thuế công ty mẹ không kiểm soát",
-        "First_quarter": "",
-        "Second_quarter": "86,320,902",
-        "Third_quarter": "-2,511,230",
-        "Fourth_quarter": "27,632,253"
+        "First_quarter": "-2,675,039,909,875",
+        "Second_quarter": "-440,434,213,344",
+        "Third_quarter": "-1,148,665,593,457",
+        "Fourth_quarter": "-477,085,608,192"
     },
     {
         "title": "21. Lãi cơ bản trên cổ phiếu(*)",
         "First_quarter": "",
-        "Second_quarter": "206",
-        "Third_quarter": "206",
-        "Fourth_quarter": "272"
+        "Second_quarter": "",
+        "Third_quarter": "",
+        "Fourth_quarter": ""
     },
     {
         "title": "22. Lãi suy giảm trên cổ phiếu (*)",
