@@ -1,0 +1,41 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 19,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "default-config",
+      "displayName": "Default Configuration",
+      "description": "Default configuration for the project",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/default",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "name": "release-config",
+      "displayName": "Release Configuration",
+      "description": "Release configuration for the project",
+      "inherits": "default-config",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "default-build",
+      "displayName": "Default Build",
+      "configurePreset": "default-config"
+    },
+    {
+      "name": "release-build",
+      "displayName": "Release Build",
+      "configurePreset": "release-config"
+    }
+  ]
+}

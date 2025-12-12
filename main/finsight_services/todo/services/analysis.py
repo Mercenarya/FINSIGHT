@@ -1,0 +1,410 @@
+import os
+import sys
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import sklearn
+import json
+from sklearn.preprocessing import StandardScaler
+import asyncio
+
+
+CURRENT = os.path.dirname(os.path.realpath(__file__))
+ROOT = os.path.abspath(os.path.join(CURRENT,'..','..'))
+
+
+
+# CURRENT = os.path.dirname(os.path.abspath(__file__))
+# ROOT = os.path.join(CURRENT)
+sys.path.append(ROOT)
+# MODULE_DIR là thư mục chứa file .pyd đã được đổi tên
+
+RAW_DIR = os.path.abspath(os.path.join(ROOT))
+RAW = os.path.join(RAW_DIR,'data','raw','cleandpt001.csv')
+ASSETS = os.path.join(RAW_DIR,'data','raw','assets001.csv')
+
+LIBS = os.path.join(ROOT, 'libs') 
+MODULE_DIR = os.path.join(ROOT, 'libs') 
+
+
+os.add_dll_directory('D:/Msys2/ucrt64/bin')
+print("LIST DIRECTORY ***")
+print("=="*20)
+print(CURRENT)
+print(ROOT)
+print(LIBS)
+print(RAW)
+print(ASSETS)
+print("=="*20)
+# Thêm đường dẫn thư mục vào sys.path
+sys.path.append(LIBS)
+
+# Sử dụng cú pháp import trực tiếp
+from libs import evaluate_module_update as ev 
+
+
+
+
+
+
+# Thêm đường dẫn thư mục vào sys.path
+sys.path.append(MODULE_DIR)
+
+# Sử dụng cú pháp import trực tiếp
+from libs import evaluate_module_update
+
+
+ef = evaluate_module_update.Efficiency()
+gr = evaluate_module_update.Growth()
+lq = evaluate_module_update.Liquidity()
+
+
+
+'''
+Mục tính mức độ lơi nhuận tài chính
+'''
+
+
+
+# chuẩn hóa cụm
+async def normalization(data):
+    try:
+        '''
+        Thực hiện quá trình chuẩn hóa 
+        theo từng cụm
+        '''
+        std = StandardScaler()
+        nml_data = std.fit_transform(data)
+        return nml_data
+    except Exception as error:
+        return f"Normalization errors : {error}"
+
+
+
+
+
+# đọc dữ liệu
+async def read_data(filename:str):
+    df = pd.read_csv(filename, dtype=str)
+    all_quarter = ['Quarter 1','Quarter 2','Quarter 3','Quarter 4']
+    try:
+        
+        if os.path.exists(filename):
+            for quarter in all_quarter:
+
+                df[quarter] = (
+                    df[quarter].astype(str)
+                    .str.replace(',','')
+                    .str.replace(' ','')
+                    .str.replace('-','0')
+                    .str.replace('nan','0', case=False)
+                )
+                
+
+            df = df.replace(np.nan,0)
+            
+            return df
+        else: 
+            print("Dataset is not exists")
+            return None
+
+    except OSError as oserr:
+        return f"OS errors : {oserr}"
+    except Exception as error:
+        return f"General Error of data reader {error}"
+
+
+
+# lấy thông tin tăng trưởng
+async def extract_finance_growth(df,prev_quarter,current_quarter,years,major):
+  
+    try:
+        
+        business_net_profit_prev = int(df.iloc[major][prev_quarter])
+        business_net_profit_current = int(df.iloc[major][current_quarter])
+
+        growth = evaluate_module_update.Growth()
+        
+        
+        # lấy chỉ số tăng trưởng đơn
+        single_growth_rate = growth.single_growth_rate(business_net_profit_current,business_net_profit_prev)
+
+        # lấy chỉ số tăng trưởng kép theo năm
+        cagr_growth_rate = growth.cagr_growth_rate(business_net_profit_current,business_net_profit_prev,years)
+
+        # không thể tính toán chỉ số tăng trưởng khi giá trị của mốc trước là 0
+        if business_net_profit_prev == 0:
+            print("Previous quarter cannot be none")
+            return {
+                'Major': df.iloc[major]['Title'],
+                'Year': years,
+                'single growth rate': 'N/A (Previous = 0)',
+                'compound annual growth rate': 'N/A (Previous = 0)'
+            }
+        if business_net_profit_prev <= 0 or business_net_profit_current <=0 or years <= 0:
+            cagr_growth_rate = 'N/A'
+
+
+        print('QUÝ trước : ',business_net_profit_prev)
+        print('Quý hiện tại : ',business_net_profit_current)
+        analysis_template = {
+            
+            'Major':df.iloc[major]['Title'],
+            'Year':years,
+            'single growth rate':single_growth_rate,
+            'compound annual growth rate':cagr_growth_rate
+        }
+        return analysis_template
+
+    except Exception as error:
+        return f"Extract finance growth problems set : {error}"
+
+
+
+
+
+
+
+# lọc các nội dung tài chính từ Báo Cáo
+async def extract_finance_profitability(df,df2,quarter):
+
+    # tính lợi nhuận gộp
+    # REVENUE = 27245717878312 # Doanh thu thuần
+
+    # COGS = 2818409788534    # Giá vốn hàng bán
+    # GROSS_PROFIT = REVENUE - COGS # Lợi nhuận gộp (GP)
+    
+    try:
+
+        pft = ev.Profitability()
+        revenue = df.iloc[2]['Quarter 1']
+
+        # lợi nhuận gộp, doanh thu thuần (cho gross margin)
+        gross_profit = df.iloc[4]['Quarter 1']
+        
+
+        # lợi nhuận từ hoạt động kinh doanh (cho operating profit margin)
+        business_net_profit = df.iloc[11]['Quarter 1']
+
+        # lợi nhuận sau thuế thu nhập, lợi nhuận kế toán trước thuế 
+        # Net profit margin , ROA Ratio (cần lợi nhuận sau thuế thu nhập)
+        after_income_profit = df.iloc[18]['Quarter 1']
+        print("Profit after tax: ",after_income_profit)
+        tta = df2.iloc[62]['Quarter 1'] # tương đương tổng tài sản
+
+        # vốn chủ sở hữu
+        equity = df2.iloc[93]['Quarter 1']
+        print("Equity : ",equity)
+
+        # lợi nhuận sau thuế công ty mẹ (ROE Profit)
+        hqt_income_profit = df.iloc[19]['Quarter 1']
+
+        # lãi cơ bản trên cổ phiếu
+        basis_share_holder = df.iloc[21]['Quarter 1']
+
+        pft = evaluate_module_update.Profitability()
+        revenue = df.iloc[2][quarter]
+
+        # lợi nhuận gộp, doanh thu thuần (cho gross margin)
+        gross_profit = df.iloc[4][quarter]
+        
+
+        # lợi nhuận từ hoạt động kinh doanh (cho operating profit margin)
+        business_net_profit = df.iloc[11][quarter]
+
+        # lợi nhuận sau thuế thu nhập, lợi nhuận kế toán trước thuế 
+        # Net profit margin , ROA Ratio (cần lợi nhuận sau thuế thu nhập)
+        after_income_profit = df.iloc[18][quarter]
+        print("Profit after tax: ",after_income_profit)
+        tta = df2.iloc[62][quarter] # tương đương tổng tài sản
+
+        # vốn chủ sở hữu
+        equity = df2.iloc[93][quarter]
+        print("Equity : ",equity)
+
+
+
+        '''
+        triển khai các phép phân tích tài chính từ pyd gồm:
+        - gross margin
+        - ROA Ratios
+        - Net profit margin
+        - ROE Profit
+        - EPS ratios
+        '''
+        #biểu thị giá trị sử dụng
+        gross_margin = pft.gross_margin(int(gross_profit),int(revenue))
+        operating_margin = pft.opm_margin(int(business_net_profit),int(revenue))
+        roa_ratio = pft.roa_ratio(int(tta),int(after_income_profit))
+        roe_ratio = pft.roe_profit(int(equity),int(after_income_profit))
+        # eps_ratios = pft.eps_ratio
+
+        # biểu thị giá trị minh họa 
+        roa_percent = f"{roa_ratio:.7f} %"
+        roe_percent = f"{roe_ratio:.7f} %"
+
+
+
+   
+
+        tta = df2.iloc[62]['Title'] + " : "+df2.iloc[62][quarter]
+        print(tta)
+
+        analysis_template = {
+            "Quarter":quarter,
+
+            "Gross marrgin":round(gross_margin,2),
+            "Operating profit margin":round(operating_margin,2),
+            "ROA Ratio value":round(roa_ratio,7) ,
+            "ROA Percent": roa_percent,
+            "ROE Profit":roe_ratio,
+            "ROE Percent":roe_percent
+        }
+
+        return analysis_template
+
+
+
+    except Exception as error :
+        return f"Extract params errors : {error}"
+
+
+
+# phân tích chỉ số thanh khoản tài chính
+async def extract_finance_liquidity(df,quarter):
+    try:
+        
+        # lấy thông tin cho các phép thanh khoản tài chính
+        cash = int(df.iloc[1][quarter]) # tiền và các khoản tương đương
+        liabilities = int(df.iloc[65][quarter]) # nợ phải trả
+        current_assest = int(df.iloc[0][quarter]) # tài sản ngắn hạn
+        inventory = int(df.iloc[17][quarter]) # hàng tồn kho
+
+
+
+        # chỉ số thanh khoản cash ratio
+        cash_ratio = lq.cash_ratio(cash,liabilities)
+
+        # chỉ số thanh khoản quick ratio
+        quick_ratio = lq.quick_ratio(current_assest,inventory,liabilities)
+
+        # chỉ số thanh khoản current ratio
+        current_ratio = lq.current_ratio(current_assest, liabilities)
+
+        # template kết quả
+        template = {
+            'Quarter':quarter,
+            'cash ratio': cash_ratio,
+            'quick ratio': quick_ratio,
+            'current ratio': current_ratio
+        }
+        return template
+
+
+
+    except Exception as error:
+        print("Error occured during extracting liquidity result: ",error)
+        return {}
+
+# phân tích và đánh giá mức hiệu quả tài chính 
+async def extract_finance_efficiency(df, df2, quarter):
+    '''
+    Phân tích hiệu quả tài chính bao gồm:
+    - Inventory Turnover (Vòng quay hàng tồn kho)
+    - Asset Turnover (Vòng quay tài sản)
+    - Receivables Turnover (Vòng quay khoản phải thu)
+    '''
+    ef = evaluate_module_update.Efficiency()
+    try:
+        # Lấy dữ liệu từ báo cáo tài chính
+        # Doanh thu thuần
+        revenue = int(df.iloc[2][quarter])
+        
+        # Giá vốn hàng bán
+        cost_of_goods_sold = int(df.iloc[3][quarter])
+        
+        # Hàng tồn kho (từ bảng cân đối)
+        inventory = int(df2.iloc[17][quarter])
+        
+        # Tổng tài sản
+        total_assets = int(df2.iloc[62][quarter])
+        
+        # Khoản phải thu
+        receivables = int(df2.iloc[10][quarter])
+        
+        # Tính các chỉ số hiệu quả
+        # 1. Inventory Turnover = Cost of Goods Sold / Average Inventory
+        inventory_turnover = ef.inventory_TOR(cost_of_goods_sold, inventory) if inventory > 0 else 0
+        
+        # 2. Days Inventory Outstanding (DIO)
+        dio = ef.dio_stand(365, inventory_turnover) if inventory_turnover > 0 else 0
+        
+        # 3. Asset Turnover = Revenue / Total Assets
+        asset_turnover = ef.tta_turnover(revenue, total_assets) if total_assets > 0 else 0
+        
+        # 4. Receivables Turnover = Revenue / Receivables
+        receivables_turnover = ef.art_turnover(revenue, receivables) if receivables > 0 else 0
+        
+        # Template kết quả
+        template = {
+            'Quarter': quarter,
+            'inventory_turnover': round(inventory_turnover, 2),
+            'days_inventory_outstanding': round(dio, 2),
+            'asset_turnover': round(asset_turnover, 2),
+            'receivables_turnover': round(receivables_turnover, 2)
+        }
+        
+        return template
+
+    except Exception as error:
+        print("An error occurred during extracting efficiency:", error)
+        return {}
+
+
+
+# chuyển đổi dữ liệu bảo cáo đã được phân tích vào dữ liệu đặc thù riêng
+
+async def convert_reports(template,filename):
+
+    try:
+        
+        title = [
+            'Gross margin',
+            'Operating profit margin',
+            'ROA ratio'
+        ]
+        # chuyển đổi dữ liệu
+        df = pd.DataFrame(title,template)
+        df.to_csv(filename)
+        return df
+    except Exception as error:
+        return f"Reports general errors : {error}"
+    
+
+async def main():
+    quarter = 'Quarter 3'
+    major = 0 #'1. Doanh thu bán hàng và cung cấp dịch vụ'
+    prev = 'Quarter 3'
+    current = 'Quarter 4'
+
+    df = await read_data(RAW)
+    df2 = await read_data(ASSETS)
+    print(df)#
+    print("="*100)
+    
+    print('NỘI DUNG LỢI NHUẬN DOANH NGHIỆP - PROFITABILITY')
+    await extract_finance_profitability(df,df2,quarter=quarter)
+    print('NỘI DUNG TĂNG TRƯỞNG MỐC - GROWTH')
+    
+    
+    
+    await extract_finance_growth(df=df,prev_quarter=prev,current_quarter=current,major=major,years=2024)
+    print("NỘI DUNG PHÂN TÍCH CHỈ SỐ THANH KHOẢN TÀI CHÍNH")
+    await extract_finance_liquidity(df2,quarter=quarter)
+
+
+
+
+
+if __name__ == "__main__":
+    asyncio.run(main())

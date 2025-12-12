@@ -1,0 +1,250 @@
+{
+    "name": "Financial Analysis AI Agent",
+    "nodes": [
+        {
+            "parameters": {
+                "path": "compare-companies",
+                "responseMode": "lastNode",
+                "options": {}
+            },
+            "type": "n8n-nodes-base.webhook",
+            "typeVersion": 1,
+            "position": [
+                688,
+                -144
+            ],
+            "id": "webhook-node",
+            "name": "Webhook: User Request",
+            "webhookId": "a42cb041-b8dc-42e0-acac-2174b24a84c5"
+        },
+        {
+            "parameters": {
+                "options": {
+                    "systemMessage": "Bạn là trợ lý phân tích tài chính chuyên nghiệp. Nhiệm vụ của bạn là:\n\n1. Hiểu yêu cầu của người dùng về việc so sánh các công ty\n2. Trích xuất mã cổ phiếu (ticker) từ câu hỏi\n3. Gọi API phân tích tài chính để lấy dữ liệu\n4. Giải thích kết quả một cách dễ hiểu\n\nCác chỉ số bạn có thể phân tích:\n- Profitability (Khả năng sinh lời): Gross Margin, Net Margin, ROA, ROE\n- Liquidity (Thanh khoản): Current Ratio, Quick Ratio, Cash Ratio\n- Efficiency (Hiệu quả): Asset Turnover, Inventory Turnover, Receivables Turnover\n\nKhi trả lời, hãy:\n- Giải thích ý nghĩa của từng chỉ số\n- So sánh và đưa ra nhận xét\n- Đề xuất công ty nào tốt hơn dựa trên từng khía cạnh"
+                }
+            },
+            "type": "@n8n/n8n-nodes-langchain.agent",
+            "typeVersion": 3,
+            "position": [
+                1008,
+                -144
+            ],
+            "id": "ai-agent-node",
+            "name": "AI Agent"
+        },
+        {
+            "parameters": {
+                "options": {
+                    "modelName": "gemini-1.5-flash"
+                }
+            },
+            "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+            "typeVersion": 1,
+            "position": [
+                880,
+                64
+            ],
+            "id": "gemini-model-node",
+            "name": "Google Gemini Chat Model",
+            "credentials": {
+                "googlePalmApi": {
+                    "id": "DDfkcuagZP1wRhvm",
+                    "name": "Google Gemini(PaLM) Api account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "sessionIdOption": "customKey",
+                "sessionKey": "={{ $json.query.sessionId || 'default' }}",
+                "contextWindowLength": 10
+            },
+            "type": "@n8n/n8n-nodes-langchain.memoryMongoDbChat",
+            "typeVersion": 1,
+            "position": [
+                1024,
+                64
+            ],
+            "id": "memory-node",
+            "name": "MongoDB Chat Memory",
+            "credentials": {
+                "mongoDb": {
+                    "id": "gbPwptrALcFiAkJF",
+                    "name": "MongoDB account 2"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "name": "compare_companies",
+                "description": "So sánh hai công ty về các chỉ số tài chính: Profitability (lợi nhuận), Liquidity (thanh khoản), và Efficiency (hiệu quả). Sử dụng tool này khi người dùng muốn so sánh, phân tích hoặc đánh giá hai công ty.",
+                "method": "POST",
+                "url": "http://localhost:8001/api/v1/compare/",
+                "sendBody": true,
+                "specifyBody": "json",
+                "jsonBody": "={\n  \"ticker1\": \"{ticker1}\",\n  \"ticker2\": \"{ticker2}\",\n  \"quarter\": \"{quarter}\"\n}",
+                "placeholderDefinitions": {
+                    "values": [
+                        {
+                            "name": "ticker1",
+                            "description": "Mã cổ phiếu công ty thứ nhất (ví dụ: VIC, VNM, FPT)",
+                            "type": "string"
+                        },
+                        {
+                            "name": "ticker2",
+                            "description": "Mã cổ phiếu công ty thứ hai (ví dụ: VIC, VNM, FPT)",
+                            "type": "string"
+                        },
+                        {
+                            "name": "quarter",
+                            "description": "Quý cần phân tích. Mặc định là Third_quarter. Các giá trị: First_quarter, Second_quarter, Third_quarter, Fourth_quarter",
+                            "type": "string"
+                        }
+                    ]
+                }
+            },
+            "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+            "typeVersion": 1.1,
+            "position": [
+                1160,
+                64
+            ],
+            "id": "tool-compare-node",
+            "name": "Compare Companies Tool"
+        },
+        {
+            "parameters": {
+                "name": "get_single_analysis",
+                "description": "Lấy thông tin phân tích tài chính của một công ty đơn lẻ. Sử dụng khi người dùng chỉ hỏi về một công ty.",
+                "method": "GET",
+                "url": "=http://localhost:8001/api/analysis/?company={company}&year={year}&period={period}&metrics={metrics}",
+                "placeholderDefinitions": {
+                    "values": [
+                        {
+                            "name": "company",
+                            "description": "Mã cổ phiếu công ty (ví dụ: VIC, VNM, FPT)",
+                            "type": "string"
+                        },
+                        {
+                            "name": "year",
+                            "description": "Năm cần phân tích (ví dụ: 2024, 2025)",
+                            "type": "string"
+                        },
+                        {
+                            "name": "period",
+                            "description": "Quý cần phân tích (1, 2, 3, hoặc 4)",
+                            "type": "string"
+                        },
+                        {
+                            "name": "metrics",
+                            "description": "Các chỉ số cần phân tích, phân cách bằng dấu phẩy (cash_ratio,quick_ratio,current_ratio,gross_margin,net_margin,roa)",
+                            "type": "string"
+                        }
+                    ]
+                }
+            },
+            "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+            "typeVersion": 1.1,
+            "position": [
+                1300,
+                64
+            ],
+            "id": "tool-single-analysis-node",
+            "name": "Single Company Analysis Tool"
+        },
+        {
+            "parameters": {
+                "respondWith": "json",
+                "responseBody": "={{ $json }}",
+                "options": {}
+            },
+            "type": "n8n-nodes-base.respondToWebhook",
+            "typeVersion": 1,
+            "position": [
+                1392,
+                -144
+            ],
+            "id": "respond-node",
+            "name": "Respond to Webhook"
+        }
+    ],
+    "connections": {
+        "Webhook: User Request": {
+            "main": [
+                [
+                    {
+                        "node": "AI Agent",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "AI Agent": {
+            "main": [
+                [
+                    {
+                        "node": "Respond to Webhook",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Google Gemini Chat Model": {
+            "ai_languageModel": [
+                [
+                    {
+                        "node": "AI Agent",
+                        "type": "ai_languageModel",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "MongoDB Chat Memory": {
+            "ai_memory": [
+                [
+                    {
+                        "node": "AI Agent",
+                        "type": "ai_memory",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Compare Companies Tool": {
+            "ai_tool": [
+                [
+                    {
+                        "node": "AI Agent",
+                        "type": "ai_tool",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Single Company Analysis Tool": {
+            "ai_tool": [
+                [
+                    {
+                        "node": "AI Agent",
+                        "type": "ai_tool",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "pinData": {},
+    "settings": {
+        "executionOrder": "v1",
+        "callerPolicy": "workflowsFromSameOwner",
+        "executionTimeout": -1,
+        "availableInMCP": true
+    },
+    "meta": {
+        "templateCredsSetupCompleted": true,
+        "instanceId": "41546303997a2ff5e72dc30b33c53839524e5063a06af52d6ba3380514d7cdd8"
+    }
+}

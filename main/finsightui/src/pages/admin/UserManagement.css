@@ -1,0 +1,64 @@
+.user-management {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.user-panel {
+  background: #1e3a5f;
+  padding: 24px;
+  border-radius: 12px;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.panel-header h2 {
+  font-size: 20px;
+  color: white;
+  margin: 0;
+  font-weight: 600;
+}
+
+.system-health-panel {
+  background: #1e3a5f;
+  padding: 24px;
+  border-radius: 12px;
+}
+
+.system-health-panel h3 {
+  font-size: 18px;
+  color: white;
+  margin: 0 0 20px 0;
+  font-weight: 600;
+}
+
+.health-chart {
+  margin-bottom: 24px;
+}
+
+.health-metrics {
+  display: flex;
+  gap: 32px;
+}
+
+.health-metric {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.health-metric .metric-label {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.health-metric .metric-value {
+  font-size: 18px;
+  font-weight: 600;
+  color: white;
+}

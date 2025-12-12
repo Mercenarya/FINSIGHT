@@ -1,0 +1,102 @@
+{
+    "name": "Financial Comparison Workflow (Updated)",
+    "nodes": [
+        {
+            "parameters": {
+                "path": "compare-companies",
+                "responseMode": "lastNode",
+                "options": {}
+            },
+            "type": "n8n-nodes-base.webhook",
+            "typeVersion": 1,
+            "position": [
+                624,
+                -112
+            ],
+            "id": "webhook-node",
+            "name": "Webhook: Receive Request",
+            "webhookId": "a42cb041-b8dc-42e0-acac-2174b24a84c5"
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "http://localhost:8001/api/v1/compare/",
+                "authentication": "none",
+                "sendBody": true,
+                "bodyParameters": {
+                    "parameters": [
+                        {
+                            "name": "ticker1",
+                            "value": "={{ $json.query.ticker1 }}"
+                        },
+                        {
+                            "name": "ticker2",
+                            "value": "={{ $json.query.ticker2 }}"
+                        },
+                        {
+                            "name": "quarter",
+                            "value": "={{ $json.query.quarter || 'Third_quarter' }}"
+                        }
+                    ]
+                },
+                "options": {
+                    "timeout": 30000
+                }
+            },
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 4.2,
+            "position": [
+                864,
+                -112
+            ],
+            "name": "HTTP Request: Django Comparison API",
+            "id": "http-request-node"
+        },
+        {
+            "parameters": {
+                "respondWith": "json",
+                "responseBody": "={{ $json }}",
+                "options": {}
+            },
+            "type": "n8n-nodes-base.respondToWebhook",
+            "typeVersion": 1,
+            "position": [
+                1088,
+                -112
+            ],
+            "id": "respond-node",
+            "name": "Respond to Webhook"
+        }
+    ],
+    "connections": {
+        "Webhook: Receive Request": {
+            "main": [
+                [
+                    {
+                        "node": "HTTP Request: Django Comparison API",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "HTTP Request: Django Comparison API": {
+            "main": [
+                [
+                    {
+                        "node": "Respond to Webhook",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "active": true,
+    "settings": {
+        "executionOrder": "v1",
+        "callerPolicy": "workflowsFromSameOwner",
+        "executionTimeout": -1,
+        "availableInMCP": true
+    }
+}
