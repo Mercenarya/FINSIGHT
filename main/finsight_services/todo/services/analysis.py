@@ -7,12 +7,15 @@ import sklearn
 import json
 from sklearn.preprocessing import StandardScaler
 import asyncio
-
+from pymongo import MongoClient
 
 CURRENT = os.path.dirname(os.path.realpath(__file__))
 ROOT = os.path.abspath(os.path.join(CURRENT,'..','..'))
 
-
+# MongoDB Configuration
+MONGO_URI = os.getenv('MONGO_URI', 'mongodb://localhost:27017/')
+MONGO_DB = os.getenv('MONGO_DB', 'dataset')
+MONGO_COLLECTION = os.getenv('MONGO_COLLECTION', 'companies')
 
 # CURRENT = os.path.dirname(os.path.abspath(__file__))
 # ROOT = os.path.join(CURRENT)

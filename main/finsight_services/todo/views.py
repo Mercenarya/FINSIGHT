@@ -360,3 +360,123 @@ async def companies_list_api(request):
             },
             status=500
         )
+
+
+@csrf_exempt
+@require_http_methods(['GET'])
+async def dashboard_data_api(request):
+    """
+    API endpoint to fetch dashboard data with company metrics
+    
+    GET /api/v1/dashboard/
+    
+    Returns:
+        JSON response with company metrics for dashboard table
+    """
+    try:
+        from pymongo import MongoClient
+        import os
+        
+        MONGO_URI = os.getenv('MONGO_URI', 'mongodb://localhost:27017/')
+        MONGO_DB = os.getenv('MONGO_DB', 'dataset')
+        MONGO_COLLECTION = os.getenv('MONGO_COLLECTION', 'companies')
+        
+        client = MongoClient(MONGO_URI)
+        db = client[MONGO_DB]
+        collection = db[MONGO_COLLECTION]
+        
+        # Get quarter parameter (default to Third_quarter)
+        quarter = request.GET.get('quarter', 'Third_quarter')
+        
+        # Fetch all companies
+        companies = list(collection.find())
+        client.close()
+        
+        # Process each company data
+        dashboard_data = []
+        
+        for company in companies:
+            ticker = company.get('ticker', 'Unknown')
+            reports = company.get('reports', [])
+            assets = company.get('assets', [])
+            
+            # Helper function to get value from data array
+            def get_value(data_array, keyword, quarter_key):
+                import math
+                if not data_array:
+                    return 0
+                for item in data_array:
+                    if 'title' in item and keyword.lower() in item['title'].lower():
+                        val = item.get(quarter_key, 0)
+                        if val is None or val == '':
+                            return 0
+                        if isinstance(val, str):
+                            try:
+                                return float(val.replace(',', '').strip()) if val.strip() else 0
+                            except:
+                                return 0
+                        try:
+                            result = float(val)
+                            return 0 if math.isnan(result) else result
+                        except:
+                            return 0
+                return 0
+            
+            # Extract metrics
+            revenue = get_value(reports, "1. Doanh thu bán hàng", quarter)
+            net_profit = get_value(reports, "18. Lợi nhuận sau thuế", quarter)
+            total_assets = get_value(assets, "TỔNG CỘNG TÀI SẢN", quarter)
+            equity = get_value(assets, "D. VỐN CHỦ SỞ HỮU", quarter)
+            total_liabilities = get_value(assets, "C- NỢ PHẢI TRẢ", quarter)
+            
+            # Calculate ratios with NaN protection
+            import math
+            roi = round((net_profit / total_assets * 100), 2) if total_assets > 0 else 0
+            debt_ratio = round((total_liabilities / total_assets), 2) if total_assets > 0 else 0
+            growth = round((net_profit / revenue * 100), 2) if revenue > 0 else 0
+            
+            # Ensure no NaN values
+            roi = 0 if math.isnan(roi) else roi
+            debt_ratio = 0 if math.isnan(debt_ratio) else debt_ratio
+            growth = 0 if math.isnan(growth) else growth
+            
+            # Format large numbers
+            def format_number(num):
+                import math
+                if num is None or (isinstance(num, float) and math.isnan(num)):
+                    return "0"
+                if num >= 1000000000:
+                    return f"{num/1000000000:.1f}B"
+                elif num >= 1000000:
+                    return f"{num/1000000:.0f}M"
+                elif num >= 1000:
+                    return f"{num/1000:.0f}K"
+                return str(int(num)) if num >= 0 else "0"
+            
+            dashboard_data.append({
+                'company': ticker,
+                'industry': 'Finance',  # Default - can be extended with industry data
+                'revenue': format_number(revenue),
+                'netProfit': format_number(net_profit),
+                'roi': f"{roi}%",
+                'debtRatio': debt_ratio,
+                'growth': growth
+            })
+        
+        # Sort by revenue (highest first)
+        dashboard_data.sort(key=lambda x: float(x['revenue'].replace('B', '000').replace('M', '').replace('K', '')) if x['revenue'] else 0, reverse=True)
+        
+        return JsonResponse({
+            'data': dashboard_data[:10],  # Return top 10
+            'quarter': quarter,
+            'count': len(dashboard_data)
+        })
+    
+    except Exception as error:
+        return JsonResponse(
+            {
+                'error': 'Failed to fetch dashboard data',
+                'detail': str(error)
+            },
+            status=500
+        )
