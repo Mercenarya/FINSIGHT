@@ -26,15 +26,17 @@ import Report from './pages/expert/Report';
 import KnowledgeBase from './pages/expert/KnowledgeBase';
 import Settings from './pages/expert/Settings';
 import './App.css';
+import LandingPage from './pages/auth/LandingPage';
 
 function App() {
   console.log('[v0] App component loaded');
-  
+
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Navigate to="/login" replace />} />
-        
+        <Route path="/" element={<Navigate to="/landing" replace />} />
+        <Route path="/landing" element={<LandingPage />} />
+
         <Route element={<AuthLayout />}>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />

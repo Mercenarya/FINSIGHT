@@ -314,3 +314,133 @@
 .chart-card .recharts-label {
   fill: rgba(255,255,255,0.9) !important;
 }
+
+/* Company Search */
+.search-wrapper {
+  position: relative;
+}
+
+.company-search {
+  background: #1e3a5f !important;
+  border: 1px solid rgba(255,255,255,0.18) !important;
+  border-radius: 8px;
+  padding: 12px 16px;
+  color: #fff;
+  font-size: 14px;
+  width: 100%;
+  box-sizing: border-box;
+  outline: none;
+}
+
+.company-search::placeholder {
+  color: rgba(255,255,255,0.5);
+}
+
+.company-search:focus {
+  border-color: rgba(0, 217, 255, 0.5) !important;
+  box-shadow: 0 0 0 3px rgba(0, 217, 255, 0.1);
+}
+
+/* Metric Multi-Select */
+.metric-select {
+  min-width: 150px;
+}
+
+.metrics-dropdown {
+  min-width: 180px;
+}
+
+.metric-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.metric-item.selected {
+  background: rgba(0, 217, 255, 0.15);
+}
+
+.metric-item:hover {
+  background: rgba(0, 217, 255, 0.25);
+}
+
+.metric-checkbox {
+  font-size: 16px;
+}
+
+/* Info Banner */
+.info-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #1e3a5f;
+  padding: 16px 20px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 14px;
+}
+
+.info-icon {
+  font-size: 18px;
+}
+
+/* Main Chart Section */
+.main-chart {
+  margin-bottom: 24px;
+}
+
+.main-chart .chart-placeholder-large {
+  min-height: 350px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Chart Empty State */
+.chart-empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 14px;
+  text-align: center;
+}
+
+/* Filter group adjustments */
+.filter-group {
+  max-width: none;
+  min-width: 140px;
+}
+
+.filter-group label {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 6px;
+}
+
+@media (max-width: 1024px) {
+  .comparison-filters {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .btn-compare {
+    grid-column: span 2;
+    justify-self: end;
+  }
+}
+
+@media (max-width: 768px) {
+  .comparison-filters {
+    grid-template-columns: 1fr;
+  }
+  
+  .btn-compare {
+    grid-column: span 1;
+    justify-self: stretch;
+    text-align: center;
+  }
+}

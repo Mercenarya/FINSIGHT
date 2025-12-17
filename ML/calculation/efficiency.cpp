@@ -200,8 +200,6 @@ class Efficiency {
             return dpo_outstanding(accpayturnover, days);
         }
 
-
-
 };
 
 

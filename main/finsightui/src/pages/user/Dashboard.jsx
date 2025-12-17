@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './Dashboard.css';
 import {
   ResponsiveContainer,
@@ -12,18 +12,32 @@ import {
   Line,
 } from 'recharts';
 
-const ComparisonBlock = () => {
-  const revenueData = [
-    { name: 'Tesla', revenue: 850, netProfit: 104 },
-    { name: 'Apple', revenue: 710, netProfit: 131 },
-    { name: 'Microsoft', revenue: 794, netProfit: 152 },
-  ];
+const API_BASE_URL = 'http://localhost:8001';
 
-  const growthData = [
-    { name: 'Tesla', growth: 10, roi: 15 },
-    { name: 'Apple', growth: -5, roi: 12 },
-    { name: 'Microsoft', growth: 8, roi: 14 },
-  ];
+const ComparisonBlock = ({ dashboardData, loading }) => {
+  // Prepare chart data from API response
+  const revenueData = dashboardData.slice(0, 5).map(item => ({
+    name: item.company,
+    revenue: parseFloat(item.revenue.replace(/[BMK]/g, '')) || 0,
+    netProfit: parseFloat(item.netProfit.replace(/[BMK]/g, '')) || 0,
+  }));
+
+  const growthData = dashboardData.slice(0, 5).map(item => ({
+    name: item.company,
+    growth: item.growth || 0,
+    roi: parseFloat(item.roi.replace('%', '')) || 0,
+  }));
+
+  // Calculate summary metrics
+  const avgRevGrowth = dashboardData.length > 0
+    ? (dashboardData.reduce((sum, item) => sum + (item.growth || 0), 0) / dashboardData.length).toFixed(1)
+    : 0;
+  const avgROI = dashboardData.length > 0
+    ? (dashboardData.reduce((sum, item) => sum + parseFloat(item.roi || 0), 0) / dashboardData.length).toFixed(1)
+    : 0;
+  const avgDebtRatio = dashboardData.length > 0
+    ? (dashboardData.reduce((sum, item) => sum + (item.debtRatio || 0), 0) / dashboardData.length).toFixed(2)
+    : 0;
 
   return (
     <div className="comparison-section">
@@ -34,21 +48,22 @@ const ComparisonBlock = () => {
         </div>
         <div className="comparison-controls">
           <select className="control-select">
-            <option>Companies</option>
+            <option>All Companies</option>
           </select>
           <select className="control-select">
-            <option>Time range</option>
+            <option>Q3 2024</option>
+            <option>Q2 2024</option>
+            <option>Q1 2024</option>
           </select>
-          <button className="btn-compare-now">Compare Now</button>
         </div>
       </div>
 
       <div className="comparison-metrics">
-        <div className="summary-card">Revenue Growth %<div className="summary-value">15%</div></div>
-        <div className="summary-card">Net Profit Margin<div className="summary-value">20%</div></div>
-        <div className="summary-card">ROI<div className="summary-value">12%</div></div>
-        <div className="summary-card">Debt-to-Equity Ratio<div className="summary-value">0.45</div></div>
-        <div className="summary-card">Market Growth %<div className="summary-value">10%</div></div>
+        <div className="summary-card">Revenue Growth %<div className="summary-value">{avgRevGrowth}%</div></div>
+        <div className="summary-card">Net Profit Margin<div className="summary-value">{avgRevGrowth}%</div></div>
+        <div className="summary-card">ROI<div className="summary-value">{avgROI}%</div></div>
+        <div className="summary-card">Debt-to-Equity Ratio<div className="summary-value">{avgDebtRatio}</div></div>
+        <div className="summary-card">Companies<div className="summary-value">{dashboardData.length}</div></div>
       </div>
 
       <div className="comparison-body">
@@ -56,32 +71,40 @@ const ComparisonBlock = () => {
           <div className="chart-card">
             <div className="chart-card-title">Revenue & Net Profit Comparison</div>
             <div className="chart-placeholder">
+              {loading ? (
+                <div style={{ textAlign: 'center', padding: '60px', color: 'rgba(255,255,255,0.6)' }}>Loading...</div>
+              ) : (
                 <ResponsiveContainer width="100%" height={260}>
-                <BarChart data={revenueData}>
-                  <XAxis dataKey="name" stroke="#9aa4b2" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Bar dataKey="revenue" name="Revenue" fill="#f6b84b" />
-                  <Bar dataKey="netProfit" name="Net Profit" fill="#4aa3ff" />
-                </BarChart>
-              </ResponsiveContainer>
+                  <BarChart data={revenueData}>
+                    <XAxis dataKey="name" stroke="#9aa4b2" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey="revenue" name="Revenue" fill="#f6b84b" />
+                    <Bar dataKey="netProfit" name="Net Profit" fill="#4aa3ff" />
+                  </BarChart>
+                </ResponsiveContainer>
+              )}
             </div>
           </div>
 
           <div className="chart-card">
             <div className="chart-card-title">Growth Trends Across Industries</div>
             <div className="chart-placeholder">
+              {loading ? (
+                <div style={{ textAlign: 'center', padding: '60px', color: 'rgba(255,255,255,0.6)' }}>Loading...</div>
+              ) : (
                 <ResponsiveContainer width="100%" height={260}>
-                <LineChart data={growthData}>
-                  <XAxis dataKey="name" stroke="#9aa4b2" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Line type="monotone" dataKey="growth" name="Growth %" stroke="#f6b84b" />
-                  <Line type="monotone" dataKey="roi" name="ROI %" stroke="#4aa3ff" />
-                </LineChart>
-              </ResponsiveContainer>
+                  <LineChart data={growthData}>
+                    <XAxis dataKey="name" stroke="#9aa4b2" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Line type="monotone" dataKey="growth" name="Growth %" stroke="#f6b84b" />
+                    <Line type="monotone" dataKey="roi" name="ROI %" stroke="#4aa3ff" />
+                  </LineChart>
+                </ResponsiveContainer>
+              )}
             </div>
           </div>
         </div>
@@ -101,39 +124,35 @@ const ComparisonBlock = () => {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>Tesla</td>
-                  <td>Automotive</td>
-                  <td>850M</td>
-                  <td>104M</td>
-                  <td>15%</td>
-                  <td>0.35</td>
-                  <td className="positive">+10%</td>
-                </tr>
-                <tr>
-                  <td>Apple</td>
-                  <td>Technology</td>
-                  <td>710M</td>
-                  <td>131M</td>
-                  <td>12%</td>
-                  <td>0.45</td>
-                  <td className="negative">-5%</td>
-                </tr>
-                <tr>
-                  <td>Microsoft</td>
-                  <td>Technology</td>
-                  <td>794M</td>
-                  <td>152M</td>
-                  <td>14%</td>
-                  <td>0.40</td>
-                  <td className="positive">+8%</td>
-                </tr>
+                {loading ? (
+                  <tr>
+                    <td colSpan="7" style={{ textAlign: 'center', padding: '20px' }}>Loading data...</td>
+                  </tr>
+                ) : dashboardData.length === 0 ? (
+                  <tr>
+                    <td colSpan="7" style={{ textAlign: 'center', padding: '20px' }}>No data available</td>
+                  </tr>
+                ) : (
+                  dashboardData.map((item, index) => (
+                    <tr key={index}>
+                      <td>{item.company}</td>
+                      <td>{item.industry}</td>
+                      <td>{item.revenue}</td>
+                      <td>{item.netProfit}</td>
+                      <td>{item.roi}</td>
+                      <td>{item.debtRatio}</td>
+                      <td className={item.growth >= 0 ? 'positive' : 'negative'}>
+                        {item.growth >= 0 ? '+' : ''}{item.growth}%
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
 
           <div className="comparison-actions">
-            <div className="ai-insight">AI Insight: The Technology sector outperformed Energy by 12% ROI in 2025 due to higher efficiency and market expansion.</div>
+            <div className="ai-insight">AI Insight: Data fetched in real-time from MongoDB database.</div>
             <div className="action-buttons">
               <button className="btn-export">Export Comparison Report</button>
               <button className="btn-generate">Generate AI Summary</button>
@@ -146,31 +165,84 @@ const ComparisonBlock = () => {
 };
 
 function Dashboard() {
+  const [dashboardData, setDashboardData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Fetch dashboard data on mount
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(`${API_BASE_URL}/api/v1/dashboard/`);
+        const result = await response.json();
+
+        if (result.data) {
+          setDashboardData(result.data);
+        } else if (result.error) {
+          setError(result.error);
+        }
+      } catch (err) {
+        console.error('Failed to fetch dashboard data:', err);
+        setError('Failed to connect to server');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDashboardData();
+
+    // Refresh data every 30 seconds for real-time updates
+    const interval = setInterval(fetchDashboardData, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Calculate key metrics from dashboard data
+  const totalRevenue = dashboardData.reduce((sum, item) => {
+    const val = item.revenue.replace(/[BMK]/g, '');
+    const multiplier = item.revenue.includes('B') ? 1000000000 : item.revenue.includes('M') ? 1000000 : 1000;
+    return sum + (parseFloat(val) || 0) * multiplier;
+  }, 0);
+
+  const totalProfit = dashboardData.reduce((sum, item) => {
+    const val = item.netProfit.replace(/[BMK]/g, '');
+    const multiplier = item.netProfit.includes('B') ? 1000000000 : item.netProfit.includes('M') ? 1000000 : 1000;
+    return sum + (parseFloat(val) || 0) * multiplier;
+  }, 0);
+
+  const formatCurrency = (num) => {
+    if (num >= 1000000000) return `$${(num / 1000000000).toFixed(1)}B`;
+    if (num >= 1000000) return `$${(num / 1000000).toFixed(0)}M`;
+    if (num >= 1000) return `$${(num / 1000).toFixed(0)}K`;
+    return `$${num.toFixed(0)}`;
+  };
+
   return (
     <div className="dashboard-page">
       <div className="dashboard-header">
         <div>
           <h3 className="section-title">Key Metrics Overview</h3>
+          {error && <div style={{ color: '#f87171', fontSize: '13px' }}>{error}</div>}
         </div>
       </div>
 
       {/* Key Metrics Cards */}
       <div className="metrics-grid">
         <div className="metric-card">
-          <div className="metric-label">Revenue</div>
-          <div className="metric-value">$1,250,000</div>
+          <div className="metric-label">Total Revenue</div>
+          <div className="metric-value">{loading ? '...' : formatCurrency(totalRevenue)}</div>
         </div>
         <div className="metric-card">
-          <div className="metric-label">Profit</div>
-          <div className="metric-value">$320,000</div>
+          <div className="metric-label">Total Profit</div>
+          <div className="metric-value">{loading ? '...' : formatCurrency(totalProfit)}</div>
         </div>
         <div className="metric-card">
-          <div className="metric-label">Expenses</div>
-          <div className="metric-value">$185,000</div>
+          <div className="metric-label">Companies</div>
+          <div className="metric-value">{loading ? '...' : dashboardData.length}</div>
         </div>
         <div className="metric-card">
-          <div className="metric-label">Cash Flow</div>
-          <div className="metric-value">$150,000</div>
+          <div className="metric-label">Last Updated</div>
+          <div className="metric-value" style={{ fontSize: '16px' }}>{new Date().toLocaleTimeString()}</div>
         </div>
       </div>
 
@@ -179,33 +251,36 @@ function Dashboard() {
         <h3 className="section-title">AI Forecast: Next Quarter Projection</h3>
         <div className="forecast-chart-placeholder">
           <div className="chart-area">
-            {/* Placeholder for chart - will be filled with actual chart library */}
-            <p className="chart-placeholder-text">Chart will be rendered here with Recharts</p>
+            <p className="chart-placeholder-text">Real-time data from MongoDB - refreshes every 30 seconds</p>
           </div>
         </div>
-        
+
         <div className="forecast-metrics">
           <div className="forecast-metric">
-            <div className="forecast-label">Predicted Revenue</div>
-            <div className="forecast-value">$155,000</div>
-            <div className="forecast-change positive">+3.2%</div>
+            <div className="forecast-label">Avg Growth Rate</div>
+            <div className="forecast-value">
+              {loading ? '...' : `${(dashboardData.reduce((s, i) => s + (i.growth || 0), 0) / (dashboardData.length || 1)).toFixed(1)}%`}
+            </div>
+            <div className="forecast-change positive">Real-time</div>
           </div>
           <div className="forecast-metric">
-            <div className="forecast-label">Profit Margin</div>
-            <div className="forecast-value">17%</div>
-            <div className="forecast-change positive">+2.6%</div>
+            <div className="forecast-label">Avg ROI</div>
+            <div className="forecast-value">
+              {loading ? '...' : `${(dashboardData.reduce((s, i) => s + parseFloat(i.roi || 0), 0) / (dashboardData.length || 1)).toFixed(1)}%`}
+            </div>
+            <div className="forecast-change positive">From API</div>
           </div>
           <div className="forecast-metric">
-            <div className="forecast-label">Model Accuracy</div>
-            <div className="forecast-value">87.6%</div>
+            <div className="forecast-label">Data Source</div>
+            <div className="forecast-value">MongoDB</div>
           </div>
         </div>
 
         <button className="btn-primary">View Detailed Forecast →</button>
       </div>
 
-      {/* Company & Industry Comparison Section (moved below forecast) */}
-      <ComparisonBlock />
+      {/* Company & Industry Comparison Section */}
+      <ComparisonBlock dashboardData={dashboardData} loading={loading} />
     </div>
   );
 }

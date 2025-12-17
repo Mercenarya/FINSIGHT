@@ -93,4 +93,3 @@ class Request(Document):
 class History(Document):
     request_id = ReferenceField(Request, required=True)
     output = StringField()
-

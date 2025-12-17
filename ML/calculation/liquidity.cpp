@@ -34,7 +34,7 @@ class Liquidity{
         /*Template : sử dụng để làm biển mẫu nhằm xác định đa dạng kiểu dữ liệu vào*/
         template <typename T>
         // tỷ số thành khoản hiện tại
-        double current_ratio(T current_assets, T liabilities){
+        float current_ratio(T current_assets, T liabilities){
             try
             {
                 if(liabilities == 0.0){
@@ -50,7 +50,7 @@ class Liquidity{
                 // liabilities = static_cast<double>(liabilities);
 
                 /*Ratio*/
-                double ratio = static_cast<float> (current_assets) / liabilities;
+                float ratio = static_cast<float> (current_assets) / liabilities;
                 return ratio;
                 
 
@@ -82,7 +82,7 @@ class Liquidity{
                 // liabilities = static_cast<double>(liabilities);
 
                 /*Ratio*/
-                double ratio = static_cast<float>(current_assets - inventory) / liabilities;
+                float ratio = static_cast<float>(current_assets - inventory) / liabilities;
 
                 return ratio;
 
@@ -115,7 +115,7 @@ class Liquidity{
                 // liabilities = static_cast<double>(liabilities);
 
                 /*Ratio*/
-                double ratio = static_cast<double>(cash) / liabilities;
+                float ratio = static_cast<double>(cash) / liabilities;
                 return ratio;
             }
             catch(const std::exception& e)
@@ -128,48 +128,3 @@ class Liquidity{
         }
 
 };
-
-
-// extract result of current ratio to absolute vector
-// template<typename T>
-// vector<double> crt_ratio_vt(vector<T> &assets, vector<T> &liabilities){
-//     vector<double> result;
-//     CRT ratio = 0;
-//     if(assets.size() != liabilities.size()){
-//         throw std::invalid_argument("Assets and liabilities must be same length");
-//     }
-//     for(int value = 0; value < assets.size(); value ++){
-//         ratio = Liquidity().current_ratio(assets[value],liabilities[value]);
-//         result.push_back(ratio);
-//     }
-//     return result;
-// };
-
-// // extract result
-// template<typename T>
-// void extract_data( vector<T> &data){
-//     for(auto value : data){
-//         cout<<value<<",";
-//     }
-
-// };
-
-
-// int main(){
-//     vector<long long> assets = {
-//         423'990'500, 400'374'790,
-//         372'183'892, 528'475'505
-//     };
-//     vector<long long> liabilities = {
-//         470'411'783, 514'844'802,
-//         440'710'635, 506'624'303
-//     };
-
-//     vector<double> data = crt_ratio_vt(assets, liabilities);
-//     extract_data(data);
-// }
-
-/* Trưng dụng hàm */
-// void extract_data(){};
-// void merge_vct(){};
-// vector<double> crt_ratio_vt(){};

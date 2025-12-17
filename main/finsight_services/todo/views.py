@@ -3,6 +3,8 @@ from django.http import HttpResponse,JsonResponse
 from .services import analysis as an
 from .services import companies_search as cpn
 from .services import ultimate as ulti
+from .services import prediction as predict
+from .services import comparison_service as cmp
 from django.template import loader
 from django.views.decorators.csrf import csrf_exempt #skip csrf của react để tương tác API
 from django.views.decorators.http import require_http_methods
@@ -46,8 +48,7 @@ async def analysis_api(request):
             quarter = request.GET.get('period','')
             metrics = request.GET.get('metrics','')
 
-            
-
+        
             # kết quả phân tích (dict result chính cho đối số hiển thị và dữ liệu biểu đồ)
             analysis_result = {}
 
@@ -216,5 +217,402 @@ async def companies_search(request):
             {
                 'error':'An unexpected error occured during loading result',
                 'Detail':f'{error}'
+            },
+            status = 500
+        )
+
+
+# dự đoán các giá trị doanh nghiệp
+@csrf_exempt
+@require_http_methods(['GET'])
+async def prediction_api(request):
+    try:
+        if request.method == 'GET':
+            
+            # lấy dữ liệu được cập nhật về 
+            df_reports = await an.read_data(an.RAW)
+            df_assets = await an.read_data(an.ASSETS)
+
+            # kiểm tra và xác nhận dữ liệu được lấy về
+            if df_reports is None or df_assets is None or isinstance(df_reports, str) or isinstance(df_assets,str):
+                return JsonResponse(
+                    {
+                        'error':'Failed to read data files.',
+                        'detail':f"{df_reports} {df_assets}"
+                    },
+                    status = 500
+                )
+
+
+            company = request.GET.get('company','')
+            year = request.GET.get('year','')
+            quarter = request.GET.get('period','')
+            metrics = request.GET.get('metrics','')
+
+            df_reports = await an.read_data(an.RAW)
+            df_assets = await an.read_data(an.ASSETS)
+
+            if df_reports is None or df_assets is None or isinstance(df_reports, str) or isinstance(df_assets,str):
+                return JsonResponse(
+                    {
+                        'error':'Failed to read data files.',
+                        'detail':f"{df_reports} {df_assets}"
+                    },
+                    status = 500
+                )
+            
+            # kết quả phân tích 
+            predict_analysis = {}
+            predict_target = {}
+
+            # danh sách các quarters để lấy giá trị hiện tại và dự báo
+            quarters = ['Quarter 1','Quarter 2','Quarter 3','Quarter 4','Quarter 5']
+
+            # previous quarter
+
+            prev_quarter = [x for x in range(len(quarters)-1)]
+
+            # dữ liệu biểu đồ cột
+            chart_data = []
+
+            quarter_num = 1
+
+            if quarter == 'Quarter 1':
+                quarter_num = 1
+            if quarter == 'Quarter 2':
+                quarter_num = 2
+            if quarter == 'Quarter 3':
+                quarter_num = 3
+            if quarter == 'Quarter 4':
+                quarter_num = 4
+
+            await ulti.run_procedure_ultimate(
+                result=company,
+                metrics=metrics,
+                year=int(year),
+                quarter=int(quarter_num),
+                prev_quarter='Quarter 2',
+                current_quarter='Quarter 4',
+                major=0
+            )
+
+            # lấy dữ liệu cho
+            for q in prev_quarter:
+                quarters_data = {
+                    'quarter': q
+                }
+
+                try:
+                    quick_current = await predict.predict_lq_current_qick(
+
+                    )
+                    # Nếu như dữ liệu được trả về là dictionary
+                    if isinstance(quick_current,dict):
+                        quarters_data.update(
+                            {
+                                'Quarter 5':quick_current
+                            }
+                        )
+
+
+                except: pass
+                chart_data.append(quarters_data)
+
+            predict_analysis['chart_data'] = chart_data
+            
+            # Liquidity cho quarter được chọn
+            liquidity_results = await an.extract_finance_liquidity(
+                df=df_assets,
+                quarter=prev_quarter,
+            )
+            liquidity_predict = await predict.total_prediction(quarter=quarter)
+
+            if isinstance(liquidity_results, dict):
+                predict_analysis['liquidity'] = liquidity_results
+            
+
+            # Thêm thông tin request vào response
+            predict_analysis['request_info'] = {
+                'company': company,
+                'year': year,
+                'quarter': quarter,
+                'metrics': metrics
             }
+
+            # quý được dự báo
+            predict_target['request_info'] = {
+                'company': company,
+                'year': year,
+                'quarter': quarter,
+                'metrics': metrics,
+                'prediction':liquidity_predict
+            }
+            
+    except Exception as error:
+        return JsonResponse(
+           {
+                'error':'An unexpected error occured during prediction',
+                'Detail':f'{error}'
+           },
+           status = 500
+        )
+    
+# So sánh hai công ty
+@csrf_exempt
+@require_http_methods(['POST', 'GET'])
+async def compare_companies_api(request):
+    """
+    API endpoint to compare two companies
+    
+    POST Request Body (JSON):
+    {
+        "ticker1": "VIC",
+        "ticker2": "VNM",
+        "quarter": "Third_quarter"  // Optional, defaults to Third_quarter
+    }
+    
+    GET Request Parameters:
+    ?ticker1=VIC&ticker2=VNM&quarter=Third_quarter
+    
+    Response:
+    {
+        "meta": {
+            "quarter": "Third_quarter",
+            "company1": "VIC",
+            "company2": "VNM"
+        },
+        "analysis": {
+            "profitability_winner": "VIC",
+            "liquidity_winner": "VNM",
+            "efficiency_winner": "VIC"
+        },
+        "details": [...]
+    }
+    """
+    try:
+        # Handle both POST and GET requests
+        if request.method == 'POST':
+            try:
+                body = json.loads(request.body.decode('utf-8'))
+                ticker1 = body.get('ticker1', '')
+                ticker2 = body.get('ticker2', '')
+                quarter = body.get('quarter', 'Third_quarter')
+            except json.JSONDecodeError:
+                return JsonResponse(
+                    {
+                        'error': 'Invalid JSON format',
+                        'detail': 'Request body must be valid JSON'
+                    },
+                    status=400
+                )
+        else:  # GET request
+            ticker1 = request.GET.get('ticker1', '')
+            ticker2 = request.GET.get('ticker2', '')
+            quarter = request.GET.get('quarter', 'Third_quarter')
+        
+        # Validate parameters
+        if not ticker1 or not ticker2:
+            return JsonResponse(
+                {
+                    'error': 'Missing required parameters',
+                    'detail': 'Both ticker1 and ticker2 are required',
+                    'example': {
+                        'ticker1': 'VIC',
+                        'ticker2': 'VNM',
+                        'quarter': 'Third_quarter'
+                    }
+                },
+                status=400
+            )
+        
+        # Call comparison service
+        comparison_result = await cmp.async_compare_companies(
+            ticker1=ticker1.upper(),
+            ticker2=ticker2.upper(),
+            quarter=quarter
+        )
+        
+        # Check for errors in result
+        if 'error' in comparison_result:
+            return JsonResponse(
+                comparison_result,
+                status=404
+            )
+        
+        return JsonResponse(comparison_result, safe=False)
+    
+    except Exception as error:
+        return JsonResponse(
+            {
+                'error': 'An unexpected error occurred during comparison',
+                'detail': str(error)
+            },
+            status=500
+        )
+
+
+@csrf_exempt
+@require_http_methods(['GET'])
+async def companies_list_api(request):
+    """
+    API endpoint to fetch all available company tickers from MongoDB
+    
+    GET /api/v1/companies/
+    
+    Returns:
+        JSON response with list of company tickers
+    """
+    try:
+        from pymongo import MongoClient
+        import os
+        
+        MONGO_URI = os.getenv('MONGO_URI', 'mongodb://localhost:27017/')
+        MONGO_DB = os.getenv('MONGO_DB', 'dataset')
+        MONGO_COLLECTION = os.getenv('MONGO_COLLECTION', 'companies')
+        
+        client = MongoClient(MONGO_URI)
+        db = client[MONGO_DB]
+        collection = db[MONGO_COLLECTION]
+        
+        # Get all unique tickers
+        tickers = collection.distinct('ticker')
+        client.close()
+        
+        # Filter search query if provided
+        search = request.GET.get('search', '').upper()
+        if search:
+            tickers = [t for t in tickers if search in t.upper()]
+        
+        return JsonResponse({
+            'companies': sorted(tickers),
+            'count': len(tickers)
+        })
+    
+    except Exception as error:
+        return JsonResponse(
+            {
+                'error': 'Failed to fetch companies list',
+                'detail': str(error)
+            },
+            status=500
+        )
+
+
+@csrf_exempt
+@require_http_methods(['GET'])
+async def dashboard_data_api(request):
+    """
+    API endpoint to fetch dashboard data with company metrics
+    
+    GET /api/v1/dashboard/
+    
+    Returns:
+        JSON response with company metrics for dashboard table
+    """
+    try:
+        from pymongo import MongoClient
+        import os
+        
+        MONGO_URI = os.getenv('MONGO_URI', 'mongodb://localhost:27017/')
+        MONGO_DB = os.getenv('MONGO_DB', 'dataset')
+        MONGO_COLLECTION = os.getenv('MONGO_COLLECTION', 'companies')
+        
+        client = MongoClient(MONGO_URI)
+        db = client[MONGO_DB]
+        collection = db[MONGO_COLLECTION]
+        
+        # Get quarter parameter (default to Third_quarter)
+        quarter = request.GET.get('quarter', 'Third_quarter')
+        
+        # Fetch all companies
+        companies = list(collection.find())
+        client.close()
+        
+        # Process each company data
+        dashboard_data = []
+        
+        for company in companies:
+            ticker = company.get('ticker', 'Unknown')
+            reports = company.get('reports', [])
+            assets = company.get('assets', [])
+            
+            # Helper function to get value from data array
+            def get_value(data_array, keyword, quarter_key):
+                import math
+                if not data_array:
+                    return 0
+                for item in data_array:
+                    if 'title' in item and keyword.lower() in item['title'].lower():
+                        val = item.get(quarter_key, 0)
+                        if val is None or val == '':
+                            return 0
+                        if isinstance(val, str):
+                            try:
+                                return float(val.replace(',', '').strip()) if val.strip() else 0
+                            except:
+                                return 0
+                        try:
+                            result = float(val)
+                            return 0 if math.isnan(result) else result
+                        except:
+                            return 0
+                return 0
+            
+            # Extract metrics
+            revenue = get_value(reports, "1. Doanh thu bán hàng", quarter)
+            net_profit = get_value(reports, "18. Lợi nhuận sau thuế", quarter)
+            total_assets = get_value(assets, "TỔNG CỘNG TÀI SẢN", quarter)
+            equity = get_value(assets, "D. VỐN CHỦ SỞ HỮU", quarter)
+            total_liabilities = get_value(assets, "C- NỢ PHẢI TRẢ", quarter)
+            
+            # Calculate ratios with NaN protection
+            import math
+            roi = round((net_profit / total_assets * 100), 2) if total_assets > 0 else 0
+            debt_ratio = round((total_liabilities / total_assets), 2) if total_assets > 0 else 0
+            growth = round((net_profit / revenue * 100), 2) if revenue > 0 else 0
+            
+            # Ensure no NaN values
+            roi = 0 if math.isnan(roi) else roi
+            debt_ratio = 0 if math.isnan(debt_ratio) else debt_ratio
+            growth = 0 if math.isnan(growth) else growth
+            
+            # Format large numbers
+            def format_number(num):
+                import math
+                if num is None or (isinstance(num, float) and math.isnan(num)):
+                    return "0"
+                if num >= 1000000000:
+                    return f"{num/1000000000:.1f}B"
+                elif num >= 1000000:
+                    return f"{num/1000000:.0f}M"
+                elif num >= 1000:
+                    return f"{num/1000:.0f}K"
+                return str(int(num)) if num >= 0 else "0"
+            
+            dashboard_data.append({
+                'company': ticker,
+                'industry': 'Finance',  # Default - can be extended with industry data
+                'revenue': format_number(revenue),
+                'netProfit': format_number(net_profit),
+                'roi': f"{roi}%",
+                'debtRatio': debt_ratio,
+                'growth': growth
+            })
+        
+        # Sort by revenue (highest first)
+        dashboard_data.sort(key=lambda x: float(x['revenue'].replace('B', '000').replace('M', '').replace('K', '')) if x['revenue'] else 0, reverse=True)
+        
+        return JsonResponse({
+            'data': dashboard_data[:10],  # Return top 10
+            'quarter': quarter,
+            'count': len(dashboard_data)
+        })
+    
+    except Exception as error:
+        return JsonResponse(
+            {
+                'error': 'Failed to fetch dashboard data',
+                'detail': str(error)
+            },
+            status=500
         )

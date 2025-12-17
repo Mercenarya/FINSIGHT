@@ -10,29 +10,29 @@ namespace py = pybind11;
 
 using T = long long;
 // nhóm liquidity
-using cash_ratio_sig = double (Liquidity::*)(T, T);
-using quick_ratio_sig = double (Liquidity::*)(T, T, T);
-using current_ratio_sig = double (Liquidity::*)(T, T);
+using cash_ratio_sig = float (Liquidity::*)(T, T);
+using quick_ratio_sig = float (Liquidity::*)(T, T, T);
+using current_ratio_sig = float (Liquidity::*)(T, T);
 
 // nhóm Profitability
-using gross_profit_margin_sig = double (Profitability::*)(T ,T);
-using opm_margin_sig = double (Profitability::*)(T,T);
-using npm_margin_sig = double (Profitability::*)(T,T);
-using roa_ratios_sig = double (Profitability::*)(T,T);
-using roe_ratios_sig = double (Profitability::*)(T,T);
-using eps_ratios_sig = double (Profitability::*)(T,T,T);
+using gross_profit_margin_sig = float (Profitability::*)(T ,T);
+using opm_margin_sig = float (Profitability::*)(T,T);
+using npm_margin_sig = float (Profitability::*)(T,T);
+using roa_ratios_sig = float (Profitability::*)(T,T);
+using roe_ratios_sig = float (Profitability::*)(T,T);
+using eps_ratios_sig = float (Profitability::*)(T,T,T);
 
 // nhóm Efficiency
-using inventory_TOR_sig = double (Efficiency::*)(T,T);
-using dio_stand_sig = double (Efficiency::*)(const int,T);
-using art_turnover_sig = double (Efficiency::*)(T,T);
-using tta_turnover_sig = double (Efficiency::*)(T,T);
-using apt_turnover_sig = double (Efficiency::*)(T,T);
-using dpo_outstanding_sig = double (Efficiency::*)(const int,T);
+using inventory_TOR_sig = float (Efficiency::*)(T,T);
+using dio_stand_sig = float (Efficiency::*)(const int,T);
+using art_turnover_sig = float (Efficiency::*)(T,T);
+using tta_turnover_sig = float (Efficiency::*)(T,T);
+using apt_turnover_sig = float (Efficiency::*)(T,T);
+using dpo_outstanding_sig = float (Efficiency::*)(const int,T);
 
 // Nhóm growth
-using single_growth_rate_sig = double (Growth::*)(T,T);
-using cagr_growth_rate_sig = double (Growth::*)(T,T,T);
+using single_growth_rate_sig = float (Growth::*)(T,T);
+using cagr_growth_rate_sig = float (Growth::*)(T,T,T);
 
 
 PYBIND11_MODULE(evaluate_module_update, m){
@@ -63,6 +63,8 @@ PYBIND11_MODULE(evaluate_module_update, m){
     .def("dio_stand",&Efficiency::dio_stand_py, "DIO Stand")
     .def("dpo_outstanding",&Efficiency::dpo_outstanding_py, "DPO Outstanding");
   
+
+    
     py::class_<Growth>(m, "Growth").def(py::init<>())
     .def("single_growth_rate",static_cast<single_growth_rate_sig>(&Growth::single_growth_rate),"Single growth rate")
     .def("cagr_growth_rate",static_cast<cagr_growth_rate_sig>(&Growth::cagr_growth_rate),"CAGR growth rate");
