@@ -44,6 +44,7 @@ urlpatterns = [
     re_path(r'^api/v1/compare/?$', views.compare_companies_api, name='compare_companies_api'),
     re_path(r'^api/v1/companies/?$', views.companies_list_api, name='companies_list_api'),
     re_path(r'^api/v1/dashboard/?$', views.dashboard_data_api, name='dashboard_data_api'),
+    re_path(r'^api/v1/forecast/?$', views.prediction_api, name='prediction_data_api'),
     # Catch-all route for React SPA - must be last
     re_path(r'^(?!api/).*$', views.clients, name='react_spa_catchall'),
 ]

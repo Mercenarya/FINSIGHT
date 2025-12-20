@@ -28,7 +28,7 @@ SECRET_KEY = "django-insecure-5&kcg%3r12*odx87slg_5(^-p!+l=e+w17xp4up7%95jy-pjg5
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
+CORS_ALLOW_ALL_ORIGINS = True
 
 
 # Application definition
@@ -41,11 +41,13 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django_extensions",
+    'corsheaders',
     'todo',
     
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
