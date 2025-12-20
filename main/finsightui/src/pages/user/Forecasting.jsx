@@ -104,10 +104,10 @@ function Forecasting() {
         <div className="filter-group">
           <label>Company</label>
           <div className="search-box">
-            <input 
-              className="search-input" 
+            <input
+              className="search-input"
               placeholder="Search company..."
-              value={searchValue} 
+              value={searchValue}
               onChange={(e) => { setSearchValue(e.target.value); fetch_api_search(e.target.value); }}
               onFocus={() => setDropdownOpen(true)}
               onBlur={() => setTimeout(() => setDropdownOpen(false), 200)}
@@ -163,11 +163,11 @@ function Forecasting() {
               <Tooltip contentStyle={{ backgroundColor: '#1a2332', border: 'none', borderRadius: '8px' }} />
               <Legend />
               {Object.values(selectionsByCategory).flat().map(key => (
-                <Line 
-                  key={key} 
-                  type="monotone" 
-                  dataKey={key} 
-                  stroke={metricColors[key]} 
+                <Line
+                  key={key}
+                  type="monotone"
+                  dataKey={key}
+                  stroke={metricColors[key]}
                   strokeWidth={3}
                   connectNulls={true}
                   dot={(props) => {
@@ -203,7 +203,7 @@ function Forecasting() {
                 <div key={item.key} className="metric-modal-item" onClick={() => {
                   setModalSelected(prev => prev.includes(item.key) ? prev.filter(k => k !== item.key) : [...prev, item.key])
                 }}>
-                  {item.label} 
+                  {item.label}
                   <input type="checkbox" checked={modalSelected.includes(item.key)} readOnly />
                 </div>
               ))}

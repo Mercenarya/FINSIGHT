@@ -5,6 +5,7 @@ from .services import companies_search as cpn
 from .services import ultimate as ulti
 from .services import prediction as predict
 from .services import comparison_service as cmp
+from .services import gemini_service as gemini
 from django.template import loader
 from django.views.decorators.csrf import csrf_exempt #skip csrf của react để tương tác API
 from django.views.decorators.http import require_http_methods
@@ -158,6 +159,14 @@ async def analysis_api(request):
             if isinstance(analysis_result, str):
                 analysis_result = json.loads(analysis_result)
             
+            # Generate AI insight using Gemini
+            try:
+                insight = gemini.generate_analysis_insight(analysis_result, company)
+                analysis_result['insight'] = insight
+            except Exception as e:
+                print(f"Error generating AI insight: {e}")
+                analysis_result['insight'] = "AI insight is temporarily unavailable. Please try again later."
+            
             return JsonResponse(analysis_result,safe=False)
 
         if request.method == 'POST':
@@ -223,6 +232,7 @@ async def companies_search(request):
 
 
 # dự đoán các giá trị doanh nghiệp
+# dự đoán các giá trị doanh nghiệp
 
 @csrf_exempt
 @require_http_methods(['GET'])
@@ -249,37 +259,66 @@ async def prediction_api(request):
         )
 
         # Lấy dữ liệu thực tế (Historical Data)
-        # Giả sử hàm này trả về list/dict chứa các chỉ số của Q1, Q2, Q3, Q4
         df_assets = await an.read_data(an.ASSETS)
-        historical_liquidity = await an.extract_finance_liquidity(
-            df=df_assets,
-            quarter=['Quarter 1', 'Quarter 2', 'Quarter 3', 'Quarter 4']
-        )
-
+        
         chart_data = []
         
-        # Build mảng dữ liệu lịch sử
-    
+        # Build mảng dữ liệu lịch sử - gọi extract_finance_liquidity cho TỪNG quarter
         for q in ['Quarter 1', 'Quarter 2', 'Quarter 3', 'Quarter 4']:
-            q_values = historical_liquidity.get(q, {})
-            chart_data.append({
-                "quarter": q,
-                "cash_ratio": q_values.get("cash ratio", 0),
-                "quick_ratio": q_values.get("quick ratio", 0),
-                "current_ratio": q_values.get("current ratio", 0),
-                "isForecast": False
-            })
+            try:
+                q_values = await an.extract_finance_liquidity(df=df_assets, quarter=q)
+                if isinstance(q_values, dict) and q_values:
+                    chart_data.append({
+                        "quarter": q,
+                        "cash_ratio": float(q_values.get("cash ratio", 0)),
+                        "quick_ratio": float(q_values.get("quick ratio", 0)),
+                        "current_ratio": float(q_values.get("current ratio", 0)),
+                        "isForecast": False
+                    })
+                else:
+                    # Fallback nếu không có dữ liệu
+                    chart_data.append({
+                        "quarter": q,
+                        "cash_ratio": 0,
+                        "quick_ratio": 0,
+                        "current_ratio": 0,
+                        "isForecast": False
+                    })
+            except Exception as e:
+                print(f"Error extracting liquidity for {q}: {e}")
+                chart_data.append({
+                    "quarter": q,
+                    "cash_ratio": 0,
+                    "quick_ratio": 0,
+                    "current_ratio": 0,
+                    "isForecast": False
+                })
 
         #Lấy dữ liệu dự báo cho Q5 (Prediction)
         liquidity_predict = await predict.total_prediction(quarter=f"Quarter {quarter_num}")
 
         if isinstance(liquidity_predict, dict):
+            # total_prediction trả về: {"prediction": [{"cash_ratio": ...}, {"current_ratio": ..., "quick_ratio": ...}]}
+            predictions = liquidity_predict.get("prediction", [])
+            
+            # Lấy giá trị từ mảng predictions
+            cash_ratio_val = 0
+            quick_ratio_val = 0
+            current_ratio_val = 0
+            
+            if len(predictions) >= 1 and isinstance(predictions[0], dict):
+                cash_ratio_val = predictions[0].get("cash_ratio", 0)
+            
+            if len(predictions) >= 2 and isinstance(predictions[1], dict):
+                quick_ratio_val = predictions[1].get("quick_ratio", 0)
+                current_ratio_val = predictions[1].get("current_ratio", 0)
+            
             chart_data.append({
-                "quarter": "Q5 (Dự báo)",
-                "cash_ratio": liquidity_predict.get("cash ratio", 0),
-                "quick_ratio": liquidity_predict.get("quick ratio", 0),
-                "current_ratio": liquidity_predict.get("current ratio", 0),
-                "isForecast": True # Flag quan trọng để React vẽ nét đứt
+                "quarter": "Quarter 5",
+                "cash_ratio": float(cash_ratio_val),
+                "quick_ratio": float(quick_ratio_val),
+                "current_ratio": float(current_ratio_val),
+                "isForecast": True
             })
 
         # Trả về cho Frontend
@@ -624,9 +663,32 @@ async def dashboard_data_api(request):
                 import math
                 if not data_array:
                     return 0
+                
+                # Map quarter formats
+                quarter_alt = {
+                    'Third_quarter': 'Quarter 3',
+                    'Fourth_quarter': 'Quarter 4',
+                    'First_quarter': 'Quarter 1',
+                    'Second_quarter': 'Quarter 2',
+                    'Quarter 1': 'First_quarter',
+                    'Quarter 2': 'Second_quarter',
+                    'Quarter 3': 'Third_quarter',
+                    'Quarter 4': 'Fourth_quarter',
+                }
+                
                 for item in data_array:
-                    if 'title' in item and keyword.lower() in item['title'].lower():
-                        val = item.get(quarter_key, 0)
+                    # Support both 'title' and 'Title'
+                    title = item.get('title', item.get('Title', ''))
+                    
+                    if title and keyword.lower() in title.lower():
+                        # Try primary key first
+                        val = item.get(quarter_key, None)
+                        
+                        # Try alternative format if not found
+                        if val is None or val == '':
+                            alt_key = quarter_alt.get(quarter_key, '')
+                            val = item.get(alt_key, 0)
+                        
                         if val is None or val == '':
                             return 0
                         if isinstance(val, str):

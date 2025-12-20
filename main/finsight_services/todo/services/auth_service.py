@@ -114,7 +114,7 @@ def verify_token(token: str) -> dict:
         return {'valid': False, 'error': f'Invalid token: {str(e)}'}
 
 
-def register_user(username: str, email: str, password: str, role: str = 'user', phone: str = '', hash_pwd: bool = True) -> dict:
+def register_user(username: str, email: str, password: str, phone: str = '', hash_pwd: bool = True) -> dict:
     """
     Register a new user
     
@@ -122,7 +122,6 @@ def register_user(username: str, email: str, password: str, role: str = 'user', 
         username: User's full name
         email: User's email address
         password: User's password
-        role: User's role (user, admin, expert)
         phone: User's phone number
         hash_pwd: Whether to hash the password (default: True)
     
@@ -148,14 +147,13 @@ def register_user(username: str, email: str, password: str, role: str = 'user', 
         final_password = hash_password(password) if hash_pwd else password
         
         # Create user document matching frontend form:
-        # Full Name, Email, Phone Number, Password, Role
+        # Full Name, Email, Phone Number, Password
         user_doc = {
             '_id': user_id,
             'username': username,
             'email': email,
             'phone': phone,
-            'password': final_password,
-            'role': role
+            'password': final_password
         }
         
         # Insert user
@@ -167,8 +165,7 @@ def register_user(username: str, email: str, password: str, role: str = 'user', 
                 'id': user_id,
                 'username': username,
                 'email': email,
-                'phone': phone,
-                'role': role
+                'phone': phone
             }
         }
     
@@ -226,8 +223,7 @@ def authenticate_user(email: str, password: str) -> dict:
                 'id': user_id,
                 'username': user.get('username', ''),
                 'email': user['email'],
-                'phone': user.get('phone', ''),
-                'role': user.get('role', 'user')
+                'phone': user.get('phone', '')
             }
         }
     

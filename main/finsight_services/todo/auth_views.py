@@ -23,8 +23,7 @@ def register(request):
     {
         "username": "john_doe",
         "email": "john@example.com",
-        "password": "securepassword123",
-        "role": "user"  // optional, defaults to "user"
+        "password": "securepassword123"
     }
     
     Response (201):
@@ -33,8 +32,7 @@ def register(request):
         "user": {
             "id": "...",
             "username": "john_doe",
-            "email": "john@example.com",
-            "role": "user"
+            "email": "john@example.com"
         }
     }
     """
@@ -55,7 +53,6 @@ def register(request):
         username = body.get('username', '').strip()
         email = body.get('email', '').strip().lower()
         password = body.get('password', '')
-        role = body.get('role', 'user').strip()
         phone = body.get('phone', '').strip()
         
         # Validate required fields
@@ -91,21 +88,11 @@ def register(request):
                 status=400
             )
         
-        # Set default role if not provided
-        valid_roles = ['investor', 'analyst', 'student', 'user']
-        if role:
-            role = role.lower()
-            if role not in valid_roles:
-                role = 'user'  # Default to 'user' if invalid
-        else:
-            role = 'user'  # Default role
-        
         # Register user
         result = auth_service.register_user(
             username=username,
             email=email,
             password=password,
-            role=role,
             phone=phone
         )
         

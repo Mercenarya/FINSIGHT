@@ -43,7 +43,7 @@ def get_value_by_title(data_array: List[Dict], keyword: str, quarter_key: str) -
     Args:
         data_array: Array of financial data items
         keyword: Keyword to search in title field
-        quarter_key: Quarter field name (e.g., 'Third_quarter')
+        quarter_key: Quarter field name (e.g., 'Third_quarter' or 'Quarter 3')
     
     Returns:
         Parsed monetary value or 0 if not found
@@ -51,9 +51,32 @@ def get_value_by_title(data_array: List[Dict], keyword: str, quarter_key: str) -
     if not data_array or not isinstance(data_array, list):
         return 0.0
     
+    # Map quarter formats for flexibility
+    quarter_alternatives = {
+        'First_quarter': 'Quarter 1',
+        'Second_quarter': 'Quarter 2',
+        'Third_quarter': 'Quarter 3',
+        'Fourth_quarter': 'Quarter 4',
+        'Quarter 1': 'First_quarter',
+        'Quarter 2': 'Second_quarter',
+        'Quarter 3': 'Third_quarter',
+        'Quarter 4': 'Fourth_quarter',
+    }
+    
     for item in data_array:
-        if 'title' in item and keyword.lower() in item['title'].lower():
-            return parse_money(item.get(quarter_key, 0))
+        # Support both 'title' and 'Title' keys
+        title = item.get('title', item.get('Title', ''))
+        
+        if title and keyword.lower() in title.lower():
+            # Try primary quarter key first
+            value = item.get(quarter_key, None)
+            
+            # If not found, try alternative format
+            if value is None or value == '':
+                alt_key = quarter_alternatives.get(quarter_key, '')
+                value = item.get(alt_key, 0)
+            
+            return parse_money(value)
     
     return 0.0
 

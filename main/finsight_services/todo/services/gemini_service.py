@@ -131,12 +131,12 @@ def generate_fallback_recommendation(comparison_data: Dict[str, Any]) -> str:
         return f"""**Investment Recommendation (Auto-generated)**
 
 Based on the financial analysis:
-- **Profitability Winner**: {profitability_winner}
-- **Liquidity Winner**: {liquidity_winner}
-- **Efficiency Winner**: {efficiency_winner}
-- **Growth Winner**: {growth_winner}
+- Profitability Winner: {profitability_winner}
+- Liquidity Winner: {liquidity_winner}
+- Efficiency Winner: {efficiency_winner}
+- Growth Winner: {growth_winner}
 
-**Recommendation**: Consider investing in **{recommended}** as it {reason}.
+Recommendation: Consider investing in {recommended} as it {reason}.
 
 *Note: This is an auto-generated recommendation. AI analysis is temporarily unavailable due to rate limits. Please try again later for detailed AI insights.*"""
         
@@ -147,3 +147,118 @@ Based on the financial analysis:
 async def async_generate_recommendation(comparison_data: Dict[str, Any]) -> str:
     """Async wrapper for generate_comparison_recommendation"""
     return generate_comparison_recommendation(comparison_data)
+
+
+def generate_analysis_insight(analysis_data: Dict[str, Any], company: str = '') -> str:
+    """
+    Generate AI-powered insight for single company analysis
+    
+    Args:
+        analysis_data: Dictionary containing analysis results (profitability, liquidity, chart_data)
+        company: Company name/ticker
+        
+    Returns:
+        AI-generated insight string about the company's financial health
+    """
+    try:
+        configure_gemini()
+        
+        # Extract key metrics
+        profitability = analysis_data.get('profitability', {})
+        liquidity = analysis_data.get('liquidity', {})
+        chart_data = analysis_data.get('chart_data', [])
+        
+        # Build metrics summary
+        metrics_summary = f"""
+        Company: {company}
+        
+        Profitability Metrics:
+        - Gross Margin: {profitability.get('Gross marrgin', 'N/A')}%
+        - Operating Profit Margin: {profitability.get('Operating profit margin', 'N/A')}%
+        - ROA Ratio: {profitability.get('ROA Ratio value', 'N/A')}
+        - ROE Profit: {profitability.get('ROE Profit', 'N/A')}
+        
+        Liquidity Metrics:
+        - Cash Ratio: {liquidity.get('cash ratio', 'N/A')}
+        - Quick Ratio: {liquidity.get('quick ratio', 'N/A')}
+        - Current Ratio: {liquidity.get('current ratio', 'N/A')}
+        """
+        
+        # Add quarterly trend if available
+        if chart_data and len(chart_data) > 0:
+            metrics_summary += "\n        Quarterly Data:\n"
+            for q_data in chart_data[-4:]:  # Last 4 quarters
+                quarter = q_data.get('quarter', q_data.get('Quarter', ''))
+                metrics_summary += f"        - {quarter}\n"
+        
+        # Create prompt
+        prompt = f"""
+        You are a financial analyst expert. Analyze the following company's financial data 
+        and provide insights about its financial health.
+        
+        {metrics_summary}
+        
+        Requirements:
+        1. Assess the company's profitability situation
+        2. Evaluate liquidity and financial stability
+        3. Identify any concerning trends or positive signs
+        4. Provide a brief recommendation
+        5. Keep response concise, maximum 150 words
+        6. Use simple language that investors can understand
+        7. Response in Vietnamese language
+        """
+        
+        # Call Gemini API
+        client = genai.Client(api_key=GEMINI_API_KEY or os.getenv('GEMINI_API_KEY', ''))
+        response = client.models.generate_content(
+            model='gemini-2.0-flash',
+            contents=prompt
+        )
+        return response.text
+        
+    except Exception as e:
+        print(f"Gemini Analysis API error: {e}")
+        # Return fallback insight
+        return generate_fallback_analysis_insight(analysis_data, company)
+
+
+def generate_fallback_analysis_insight(analysis_data: Dict[str, Any], company: str = '') -> str:
+    """
+    Generate a basic insight when Gemini API is not available
+    """
+    try:
+        profitability = analysis_data.get('profitability', {})
+        liquidity = analysis_data.get('liquidity', {})
+        
+        gross_margin = profitability.get('Gross marrgin', 0)
+        roa = profitability.get('ROA Ratio value', 0)
+        current_ratio = liquidity.get('current ratio', 0)
+        
+        insights = []
+        
+        # Analyze profitability
+        if isinstance(gross_margin, (int, float)):
+            if gross_margin > 30:
+                insights.append(f"Biên lợi nhuận gộp {gross_margin:.1f}% cho thấy khả năng sinh lời tốt")
+            elif gross_margin > 15:
+                insights.append(f"Biên lợi nhuận gộp {gross_margin:.1f}% ở mức trung bình")
+            else:
+                insights.append(f"Biên lợi nhuận gộp {gross_margin:.1f}% cần được cải thiện")
+        
+        # Analyze liquidity
+        if isinstance(current_ratio, (int, float)):
+            if current_ratio > 2:
+                insights.append("Chỉ số thanh khoản tốt, công ty có khả năng thanh toán nợ ngắn hạn")
+            elif current_ratio > 1:
+                insights.append("Khả năng thanh khoản ổn định")
+            else:
+                insights.append("Cần chú ý đến khả năng thanh khoản")
+        
+        if insights:
+            return f"**Phân tích tài chính {company}:**\n\n" + "\n".join([f"• {i}" for i in insights]) + "\n\n*Lưu ý: Đây là phân tích tự động. Vui lòng thử lại sau để có nhận xét AI chi tiết hơn.*"
+        else:
+            return "Không đủ dữ liệu để phân tích. Vui lòng chọn các chỉ số và chạy phân tích."
+            
+    except Exception as e:
+        return f"Không thể tạo nhận xét: {str(e)}"
+

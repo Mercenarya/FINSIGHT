@@ -1,9 +1,23 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import './UserLayout.css';
 
 function UserLayout() {
   const location = useLocation();
+  const [username, setUsername] = useState('user');
+
+  useEffect(() => {
+    // Get user info from localStorage
+    const userStr = localStorage.getItem('user');
+    if (userStr) {
+      try {
+        const user = JSON.parse(userStr);
+        setUsername(user.username || 'user');
+      } catch (e) {
+        console.error('Error parsing user data:', e);
+      }
+    }
+  }, []);
 
   const menuItems = [
     { path: '/user/dashboard', label: 'Dashboard', icon: '📊' },
@@ -42,7 +56,7 @@ function UserLayout() {
         <header className="main-header">
           <h1>Dashboard</h1>
           <div className="user-info">
-            <span>Hello, user</span>
+            <span>Hello, {username}</span>
           </div>
         </header>
         <div className="content-wrapper">

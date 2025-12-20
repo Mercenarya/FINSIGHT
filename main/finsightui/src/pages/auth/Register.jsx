@@ -9,8 +9,7 @@ function Register() {
     email: '',
     phoneNumber: '',
     password: '',
-    confirmPassword: '',
-    role: ''
+    confirmPassword: ''
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -23,15 +22,39 @@ function Register() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (formData.password !== formData.confirmPassword) {
       alert('Passwords do not match!');
       return;
     }
-    // TODO: Add registration logic
-    console.log('Registration attempt:', formData);
-    navigate('/login');
+
+    try {
+      const response = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: formData.fullName,
+          email: formData.email,
+          phone: formData.phoneNumber,
+          password: formData.password
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert('Registration successful! Please login.');
+        navigate('/login');
+      } else {
+        alert(data.error || 'Registration failed');
+      }
+    } catch (error) {
+      console.error('Registration error:', error);
+      alert('Unable to connect to server. Please try again.');
+    }
   };
 
   return (
@@ -132,24 +155,7 @@ function Register() {
           </div>
         </div>
 
-        <div className="form-group">
-          <label htmlFor="role">Role</label>
-          <div className="input-wrapper">
-            <span className="input-icon">👤</span>
-            <select
-              id="role"
-              name="role"
-              value={formData.role}
-              onChange={handleChange}
-              required
-            >
-              <option value="">Select Role</option>
-              <option value="investor">Investor</option>
-              <option value="analyst">Analyst</option>
-              <option value="student">Student</option>
-            </select>
-          </div>
-        </div>
+
 
         <button type="submit" className="auth-button">Create Account</button>
 
