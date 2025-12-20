@@ -224,6 +224,8 @@ async def companies_search(request):
 
 # dự đoán các giá trị doanh nghiệp
 
+# dự đoán các giá trị doanh nghiệp
+
 @csrf_exempt
 @require_http_methods(['GET'])
 async def prediction_api(request):
@@ -249,37 +251,66 @@ async def prediction_api(request):
         )
 
         # Lấy dữ liệu thực tế (Historical Data)
-        # Giả sử hàm này trả về list/dict chứa các chỉ số của Q1, Q2, Q3, Q4
         df_assets = await an.read_data(an.ASSETS)
-        historical_liquidity = await an.extract_finance_liquidity(
-            df=df_assets,
-            quarter=['Quarter 1', 'Quarter 2', 'Quarter 3', 'Quarter 4']
-        )
-
+        
         chart_data = []
         
-        # Build mảng dữ liệu lịch sử
-    
+        # Build mảng dữ liệu lịch sử - gọi extract_finance_liquidity cho TỪNG quarter
         for q in ['Quarter 1', 'Quarter 2', 'Quarter 3', 'Quarter 4']:
-            q_values = historical_liquidity.get(q, {})
-            chart_data.append({
-                "quarter": q,
-                "cash_ratio": q_values.get("cash ratio", 0),
-                "quick_ratio": q_values.get("quick ratio", 0),
-                "current_ratio": q_values.get("current ratio", 0),
-                "isForecast": False
-            })
+            try:
+                q_values = await an.extract_finance_liquidity(df=df_assets, quarter=q)
+                if isinstance(q_values, dict) and q_values:
+                    chart_data.append({
+                        "quarter": q,
+                        "cash_ratio": float(q_values.get("cash ratio", 0)),
+                        "quick_ratio": float(q_values.get("quick ratio", 0)),
+                        "current_ratio": float(q_values.get("current ratio", 0)),
+                        "isForecast": False
+                    })
+                else:
+                    # Fallback nếu không có dữ liệu
+                    chart_data.append({
+                        "quarter": q,
+                        "cash_ratio": 0,
+                        "quick_ratio": 0,
+                        "current_ratio": 0,
+                        "isForecast": False
+                    })
+            except Exception as e:
+                print(f"Error extracting liquidity for {q}: {e}")
+                chart_data.append({
+                    "quarter": q,
+                    "cash_ratio": 0,
+                    "quick_ratio": 0,
+                    "current_ratio": 0,
+                    "isForecast": False
+                })
 
         #Lấy dữ liệu dự báo cho Q5 (Prediction)
         liquidity_predict = await predict.total_prediction(quarter=f"Quarter {quarter_num}")
 
         if isinstance(liquidity_predict, dict):
+            # total_prediction trả về: {"prediction": [{"cash_ratio": ...}, {"current_ratio": ..., "quick_ratio": ...}]}
+            predictions = liquidity_predict.get("prediction", [])
+            
+            # Lấy giá trị từ mảng predictions
+            cash_ratio_val = 0
+            quick_ratio_val = 0
+            current_ratio_val = 0
+            
+            if len(predictions) >= 1 and isinstance(predictions[0], dict):
+                cash_ratio_val = predictions[0].get("cash_ratio", 0)
+            
+            if len(predictions) >= 2 and isinstance(predictions[1], dict):
+                quick_ratio_val = predictions[1].get("quick_ratio", 0)
+                current_ratio_val = predictions[1].get("current_ratio", 0)
+            
             chart_data.append({
-                "quarter": "Q5 (Dự báo)",
-                "cash_ratio": liquidity_predict.get("cash ratio", 0),
-                "quick_ratio": liquidity_predict.get("quick ratio", 0),
-                "current_ratio": liquidity_predict.get("current ratio", 0),
-                "isForecast": True # Flag quan trọng để React vẽ nét đứt
+                "quarter": "Quarter 5",
+                "cash_ratio": float(cash_ratio_val),
+                "quick_ratio": float(quick_ratio_val),
+                "current_ratio": float(current_ratio_val),
+                "isForecast": True
             })
 
         # Trả về cho Frontend
@@ -290,7 +321,6 @@ async def prediction_api(request):
 
     except Exception as error:
         return JsonResponse({'error': str(error)}, status=500)
-
 
 
 
