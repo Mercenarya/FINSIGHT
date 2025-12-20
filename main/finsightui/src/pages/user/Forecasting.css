@@ -26,10 +26,10 @@
   border-radius: 12px;
 }
 
-/* Filters area: match Comparison.css dark panel */
+/* Vùng bộ lọc: giống với panel tối trong Comparison.css */
 .forecasting-filters {
   display: grid;
-  /* four equal filter columns + action button */
+  /* 4 cột bộ lọc bằng nhau + nút hành động */
   grid-template-columns: repeat(4, 1fr) auto;
   gap: 16px;
   align-items: center;
@@ -56,7 +56,7 @@
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 6px;
   font-size: 14px;
-  background: #1e3a5f; 
+  background: #1e3a5f;
   color: white;
   width: 100%;
   box-sizing: border-box;
@@ -90,7 +90,7 @@
 }
 
 .chart-placeholder-large {
-  /* make chart panel match dashboard dark theme and remove light-gray look */
+  /* Làm panel biểu đồ hòa hợp với theme tối của dashboard */
   background: #1e3a5f;
   border-radius: 8px;
   min-height: 350px;
@@ -100,7 +100,7 @@
   margin-bottom: 24px;
 }
 
-/* New panel grouping for forecasting visualization */
+/* Panel nhóm mới cho biểu đồ dự báo */
 .forecasting-panel {
   background: #1e3a5f;
   padding: 24px;
@@ -110,27 +110,34 @@
 
 .forecast-chart-large {
   width: 100%;
-  min-height: 480px; /* expanded so chart fills area previously occupied by metric cards */
+  min-height: 480px;
+  /* Mở rộng để biểu đồ lấp đầy vùng trước đó có thẻ chỉ số */
 }
 
-.forecast-metrics-row { display: none; }
-.forecast-metric-small { display: none; }
+.forecast-metrics-row {
+  display: none;
+}
 
-/* small input (Year) matching Comparison style */
+.forecast-metric-small {
+  display: none;
+}
+
+/* Ô nhập nhỏ (Năm) giống style Comparison */
 .small-input {
   background: #1e3a5f;
   color: white;
-  border: 1px solid rgba(255,255,255,0.18);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   padding: 10px 12px;
   border-radius: 6px;
   height: 44px;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), inset -1px 0 0 rgba(255,255,255,0.02);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), inset -1px 0 0 rgba(255, 255, 255, 0.02);
 }
 
-/* re-use search dropdown styles similar to Comparison */
+/* Dùng lại style dropdown giống Comparison */
 .period-wrapper {
   position: relative;
 }
+
 .period-trigger {
   display: inline-flex;
   align-items: center;
@@ -140,6 +147,7 @@
   width: 100%;
   box-sizing: border-box;
 }
+
 .search-dropdown {
   position: absolute;
   top: 48px;
@@ -147,12 +155,13 @@
   width: 100%;
   background: #0f1c2e;
   border-radius: 0 0 6px 6px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
   z-index: 20;
   max-height: 220px;
   overflow-y: auto;
   padding: 6px 0;
 }
+
 .search-dropdown-item {
   padding: 10px 18px;
   color: #fff;
@@ -160,7 +169,9 @@
   font-size: 1rem;
   transition: background 0.18s, color 0.18s;
 }
-.search-dropdown-item:hover, .search-dropdown-item.active {
+
+.search-dropdown-item:hover,
+.search-dropdown-item.active {
   background: #00d9ff;
   color: #0f1c2e;
 }
@@ -170,10 +181,10 @@
   gap: 12px;
   align-items: flex-start;
   margin-top: 16px;
-  background: rgba(0,0,0,0.06);
+  background: rgba(0, 0, 0, 0.06);
   padding: 12px;
   border-radius: 8px;
-  color: rgba(255,255,255,0.9);
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .forecast-info {

@@ -28,7 +28,7 @@ SECRET_KEY = "django-insecure-5&kcg%3r12*odx87slg_5(^-p!+l=e+w17xp4up7%95jy-pjg5
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
+CORS_ALLOW_ALL_ORIGINS = True
 
 
 # Application definition
@@ -41,15 +41,15 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django_extensions",
-    "corsheaders",
+    'corsheaders',
     'todo',
     
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
-    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -132,41 +132,3 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
-# MongoDB Configuration
-MONGODB_SETTINGS = {
-    'host': os.getenv('MONGO_URI', 'mongodb://localhost:27017/'),
-    'db': os.getenv('MONGO_DB', 'financial_db'),
-    'collection': os.getenv('MONGO_COLLECTION', 'datasets')
-}
-
-# CORS Configuration
-CORS_ALLOW_ALL_ORIGINS = True  # For development only
-# For production, use:
-# CORS_ALLOWED_ORIGINS = [
-#     "http://localhost:3000",
-#     "http://localhost:8080",
-#     "https://your-n8n-instance.com",
-# ]
-
-CORS_ALLOW_METHODS = [
-    'DELETE',
-    'GET',
-    'OPTIONS',
-    'PATCH',
-    'POST',
-    'PUT',
-]
-
-CORS_ALLOW_HEADERS = [
-    'accept',
-    'accept-encoding',
-    'authorization',
-    'content-type',
-    'dnt',
-    'origin',
-    'user-agent',
-    'x-csrftoken',
-    'x-requested-with',
-]
-

@@ -4,7 +4,8 @@ Uses Google Gemini API to generate investment recommendations
 """
 import os
 import time
-import google.generativeai as genai
+# import google.generativeai as genai
+import google.genai as genai
 from typing import Dict, Any
 
 # Configure Gemini API

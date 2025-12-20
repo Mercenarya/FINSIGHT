@@ -3,6 +3,7 @@ from django.http import HttpResponse,JsonResponse
 from .services import analysis as an
 from .services import companies_search as cpn
 from .services import ultimate as ulti
+from .services import prediction as predict
 from .services import comparison_service as cmp
 from django.template import loader
 from django.views.decorators.csrf import csrf_exempt #skip csrf của react để tương tác API
@@ -47,8 +48,7 @@ async def analysis_api(request):
             quarter = request.GET.get('period','')
             metrics = request.GET.get('metrics','')
 
-            
-
+        
             # kết quả phân tích (dict result chính cho đối số hiển thị và dữ liệu biểu đồ)
             analysis_result = {}
 
@@ -217,10 +217,229 @@ async def companies_search(request):
             {
                 'error':'An unexpected error occured during loading result',
                 'Detail':f'{error}'
-            }
+            },
+            status = 500
         )
 
 
+# dự đoán các giá trị doanh nghiệp
+
+@csrf_exempt
+@require_http_methods(['GET'])
+async def prediction_api(request):
+    try:
+
+        company = request.GET.get('company', '')
+        year = request.GET.get('year', '')
+        quarter = request.GET.get('period', 'Quarter 4')
+        metrics_str = request.GET.get('metrics', '')
+        
+        # Chuyển đổi period thành số (ví dụ: 'Quarter 4' -> 4)
+        quarter_num = int(quarter) if quarter.isdigit() else 4
+
+        # Chạy Procedure để chuẩn bị dữ liệu Q1 -> Q4
+        await ulti.run_procedure_ultimate(
+            result=company,
+            metrics=metrics_str,
+            year=int(year),
+            quarter=quarter_num,
+            prev_quarter='Quarter 2',
+            current_quarter='Quarter 4',
+            major=0
+        )
+
+        # Lấy dữ liệu thực tế (Historical Data)
+        # Giả sử hàm này trả về list/dict chứa các chỉ số của Q1, Q2, Q3, Q4
+        df_assets = await an.read_data(an.ASSETS)
+        historical_liquidity = await an.extract_finance_liquidity(
+            df=df_assets,
+            quarter=['Quarter 1', 'Quarter 2', 'Quarter 3', 'Quarter 4']
+        )
+
+        chart_data = []
+        
+        # Build mảng dữ liệu lịch sử
+    
+        for q in ['Quarter 1', 'Quarter 2', 'Quarter 3', 'Quarter 4']:
+            q_values = historical_liquidity.get(q, {})
+            chart_data.append({
+                "quarter": q,
+                "cash_ratio": q_values.get("cash ratio", 0),
+                "quick_ratio": q_values.get("quick ratio", 0),
+                "current_ratio": q_values.get("current ratio", 0),
+                "isForecast": False
+            })
+
+        #Lấy dữ liệu dự báo cho Q5 (Prediction)
+        liquidity_predict = await predict.total_prediction(quarter=f"Quarter {quarter_num}")
+
+        if isinstance(liquidity_predict, dict):
+            chart_data.append({
+                "quarter": "Q5 (Dự báo)",
+                "cash_ratio": liquidity_predict.get("cash ratio", 0),
+                "quick_ratio": liquidity_predict.get("quick ratio", 0),
+                "current_ratio": liquidity_predict.get("current ratio", 0),
+                "isForecast": True # Flag quan trọng để React vẽ nét đứt
+            })
+
+        # Trả về cho Frontend
+        return JsonResponse({
+            "chart_data": chart_data,
+            "ai_insight": f"Dựa trên dữ liệu {year}, chỉ số thanh khoản trong quý tới có xu hướng ổn định."
+        }, safe=False)
+
+    except Exception as error:
+        return JsonResponse({'error': str(error)}, status=500)
+
+
+
+
+# @csrf_exempt
+# @require_http_methods(['GET'])
+# async def prediction_api(request):
+#     try:
+#         if request.method == 'GET':
+            
+#             # lấy dữ liệu được cập nhật về 
+#             df_reports = await an.read_data(an.RAW)
+#             df_assets = await an.read_data(an.ASSETS)
+
+#             # kiểm tra và xác nhận dữ liệu được lấy về
+#             if df_reports is None or df_assets is None or isinstance(df_reports, str) or isinstance(df_assets,str):
+#                 return JsonResponse(
+#                     {
+#                         'error':'Failed to read data files.',
+#                         'detail':f"{df_reports} {df_assets}"
+#                     },
+#                     status = 500
+#                 )
+
+
+#             company = request.GET.get('company','')
+#             year = request.GET.get('year','')
+#             quarter = request.GET.get('period','')
+#             metrics = request.GET.get('metrics','')
+
+#             df_reports = await an.read_data(an.RAW)
+#             df_assets = await an.read_data(an.ASSETS)
+
+#             if df_reports is None or df_assets is None or isinstance(df_reports, str) or isinstance(df_assets,str):
+#                 return JsonResponse(
+#                     {
+#                         'error':'Failed to read data files.',
+#                         'detail':f"{df_reports} {df_assets}"
+#                     },
+#                     status = 500
+#                 )
+            
+#             # kết quả phân tích 
+#             predict_analysis = {}
+#             predict_target = {}
+
+#             # danh sách các quarters để lấy giá trị hiện tại và dự báo
+#             quarters = ['Quarter 1','Quarter 2','Quarter 3','Quarter 4','Quarter 5']
+
+#             # previous quarter
+
+#             prev_quarter = [x for x in range(len(quarters)-1)]
+
+#             # dữ liệu biểu đồ cột
+#             chart_data = []
+
+#             quarter_num = 1
+
+#             if quarter == 'Quarter 1':
+#                 quarter_num = 1
+#             if quarter == 'Quarter 2':
+#                 quarter_num = 2
+#             if quarter == 'Quarter 3':
+#                 quarter_num = 3
+#             if quarter == 'Quarter 4':
+#                 quarter_num = 4
+            
+
+#             await ulti.run_procedure_ultimate(
+#                 result=company,
+#                 metrics=metrics,
+#                 year=int(year),
+#                 quarter=int(quarter_num),
+#                 prev_quarter='Quarter 2',
+#                 current_quarter='Quarter 4',
+#                 major=0
+#             )
+
+#             # lấy dữ liệu cho
+#             for q in prev_quarter:
+#                 quarters_data = {
+#                     'quarter': q
+#                 }
+
+#                 try:
+#                     lq = await predict.total_prediction(quarter='Quarter 4')
+#                     # Nếu như dữ liệu được trả về là dictionary
+#                     if isinstance(lq,dict):
+#                         quarters_data.update(
+#                             {
+#                                 'Quarter 5':lq
+#                             }
+#                         )
+
+
+#                 except: pass
+#                 chart_data.append(quarters_data)
+
+#             predict_analysis['chart_data'] = chart_data
+            
+#             # Liquidity cho quarter được chọn
+#             liquidity_results = await an.extract_finance_liquidity(
+#                 df=df_assets,
+#                 quarter=prev_quarter,
+                
+#             )
+#             liquidity_predict = await predict.total_prediction(quarter=quarter)
+#             if isinstance(liquidity_predict, dict):
+#                 chart_data.append({
+#                     "quarter": "Q5 (Predict)",
+#                     "cash_ratio": liquidity_predict.get("cash ratio", 0),
+#                     "quick_ratio": liquidity_predict.get("quick ratio", 0),
+#                     "current_ratio": liquidity_predict.get("current ratio", 0),
+#                     "isForecast": True 
+#                 })
+
+#             if isinstance(liquidity_results, dict):
+#                 predict_analysis['liquidity'] = liquidity_results
+            
+
+#             # Thêm thông tin request vào response
+#             predict_analysis['request_info'] = {
+#                 'company': company,
+#                 'year': year,
+#                 'quarter': quarter,
+#                 'metrics': metrics
+#             }
+
+#             # quý được dự báo
+#             predict_target['request_info'] = {
+#                 'company': company,
+#                 'year': year,
+#                 'quarter': quarter,
+#                 'metrics': metrics,
+#                 'prediction':liquidity_predict
+#             }
+#             response_data = {
+#                 'chart_data':chart_data
+#             }
+
+#             return JsonResponse(response_data, safe=False)
+#     except Exception as error:
+#         return JsonResponse(
+#            {
+#                 'error':'An unexpected error occured during prediction',
+#                 'Detail':f'{error}'
+#            },
+#            status = 500
+#         )
+    
 # So sánh hai công ty
 @csrf_exempt
 @require_http_methods(['POST', 'GET'])

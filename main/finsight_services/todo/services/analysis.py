@@ -7,15 +7,12 @@ import sklearn
 import json
 from sklearn.preprocessing import StandardScaler
 import asyncio
-from pymongo import MongoClient
+
 
 CURRENT = os.path.dirname(os.path.realpath(__file__))
 ROOT = os.path.abspath(os.path.join(CURRENT,'..','..'))
 
-# MongoDB Configuration
-MONGO_URI = os.getenv('MONGO_URI', 'mongodb://localhost:27017/')
-MONGO_DB = os.getenv('MONGO_DB', 'dataset')
-MONGO_COLLECTION = os.getenv('MONGO_COLLECTION', 'companies')
+
 
 # CURRENT = os.path.dirname(os.path.abspath(__file__))
 # ROOT = os.path.join(CURRENT)
@@ -29,6 +26,10 @@ ASSETS = os.path.join(RAW_DIR,'data','raw','assets001.csv')
 LIBS = os.path.join(ROOT, 'libs') 
 MODULE_DIR = os.path.join(ROOT, 'libs') 
 
+
+MONGO_URI = os.getenv('MONGO_URI', 'mongodb://localhost:27017/')
+MONGO_DB = os.getenv('MONGO_DB', 'dataset')
+MONGO_COLLECTION = os.getenv('MONGO_COLLECTION', 'companies')
 
 os.add_dll_directory('D:/Msys2/ucrt64/bin')
 print("LIST DIRECTORY ***")
@@ -62,12 +63,9 @@ gr = evaluate_module_update.Growth()
 lq = evaluate_module_update.Liquidity()
 
 
-
 '''
 Mục tính mức độ lơi nhuận tài chính
 '''
-
-
 
 # chuẩn hóa cụm
 async def normalization(data):
@@ -199,11 +197,6 @@ async def extract_finance_profitability(df,df2,quarter):
         equity = df2.iloc[93]['Quarter 1']
         print("Equity : ",equity)
 
-        # lợi nhuận sau thuế công ty mẹ (ROE Profit)
-        hqt_income_profit = df.iloc[19]['Quarter 1']
-
-        # lãi cơ bản trên cổ phiếu
-        basis_share_holder = df.iloc[21]['Quarter 1']
 
         pft = evaluate_module_update.Profitability()
         revenue = df.iloc[2][quarter]
@@ -255,7 +248,6 @@ async def extract_finance_profitability(df,df2,quarter):
 
         analysis_template = {
             "Quarter":quarter,
-
             "Gross marrgin":round(gross_margin,2),
             "Operating profit margin":round(operating_margin,2),
             "ROA Ratio value":round(roa_ratio,7) ,
@@ -265,8 +257,6 @@ async def extract_finance_profitability(df,df2,quarter):
         }
 
         return analysis_template
-
-
 
     except Exception as error :
         return f"Extract params errors : {error}"
@@ -283,8 +273,6 @@ async def extract_finance_liquidity(df,quarter):
         current_assest = int(df.iloc[0][quarter]) # tài sản ngắn hạn
         inventory = int(df.iloc[17][quarter]) # hàng tồn kho
 
-
-
         # chỉ số thanh khoản cash ratio
         cash_ratio = lq.cash_ratio(cash,liabilities)
 
@@ -299,68 +287,47 @@ async def extract_finance_liquidity(df,quarter):
             'Quarter':quarter,
             'cash ratio': cash_ratio,
             'quick ratio': quick_ratio,
-            'current ratio': current_ratio
+            'current ratio': current_ratio,
+            'current assets':current_assest,
+            'liabilities':liabilities,
+            'cash':cash,
+            'inventory':inventory
         }
         return template
-
-
 
     except Exception as error:
         print("Error occured during extracting liquidity result: ",error)
         return {}
 
 # phân tích và đánh giá mức hiệu quả tài chính 
-async def extract_finance_efficiency(df, df2, quarter):
+async def extract_finance_efficiency(df,quarter):
     '''
-    Phân tích hiệu quả tài chính bao gồm:
-    - Inventory Turnover (Vòng quay hàng tồn kho)
-    - Asset Turnover (Vòng quay tài sản)
-    - Receivables Turnover (Vòng quay khoản phải thu)
+    // nhóm Efficiency
+    using inventory_TOR_sig = double (Efficiency::*)(T,T);
+    using dio_stand_sig = double (Efficiency::*)(const int,T);
+    using art_turnover_sig = double (Efficiency::*)(T,T);
+    using tta_turnover_sig = double (Efficiency::*)(T,T);
+    using apt_turnover_sig = double (Efficiency::*)(T,T);
+    using dpo_outstanding_sig = double (Efficiency::*)(const int,T);
     '''
     ef = evaluate_module_update.Efficiency()
     try:
-        # Lấy dữ liệu từ báo cáo tài chính
-        # Doanh thu thuần
-        revenue = int(df.iloc[2][quarter])
         
-        # Giá vốn hàng bán
-        cost_of_goods_sold = int(df.iloc[3][quarter])
-        
-        # Hàng tồn kho (từ bảng cân đối)
-        inventory = int(df2.iloc[17][quarter])
-        
-        # Tổng tài sản
-        total_assets = int(df2.iloc[62][quarter])
-        
-        # Khoản phải thu
-        receivables = int(df2.iloc[10][quarter])
-        
-        # Tính các chỉ số hiệu quả
-        # 1. Inventory Turnover = Cost of Goods Sold / Average Inventory
-        inventory_turnover = ef.inventory_TOR(cost_of_goods_sold, inventory) if inventory > 0 else 0
-        
-        # 2. Days Inventory Outstanding (DIO)
-        dio = ef.dio_stand(365, inventory_turnover) if inventory_turnover > 0 else 0
-        
-        # 3. Asset Turnover = Revenue / Total Assets
-        asset_turnover = ef.tta_turnover(revenue, total_assets) if total_assets > 0 else 0
-        
-        # 4. Receivables Turnover = Revenue / Receivables
-        receivables_turnover = ef.art_turnover(revenue, receivables) if receivables > 0 else 0
-        
-        # Template kết quả
-        template = {
-            'Quarter': quarter,
-            'inventory_turnover': round(inventory_turnover, 2),
-            'days_inventory_outstanding': round(dio, 2),
-            'asset_turnover': round(asset_turnover, 2),
-            'receivables_turnover': round(receivables_turnover, 2)
-        }
-        
-        return template
+        # các phân mục hỗ trợ phân tích 
+        costgs = int(df[None][quarter])
+        avginventory = int(df[None][quarter])
+        inventory_turnover = int(df[None][quarter])
+        netcreditsale = int(df[None][quarter])
+        avgaccountsrcv = int(df[None][quarter])
+        netsales = int(df[None][quarter])
+        avgttassets = int(df[None][quarter])
+        avgaccpay = int(df[None][quarter])
+        accpayturnover = int(df[None][quarter])
+
+
 
     except Exception as error:
-        print("An error occurred during extracting efficiency:", error)
+        print("An error occured during extracting efficiency ", error)
         return {}
 
 
