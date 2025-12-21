@@ -5,6 +5,7 @@ from .services import companies_search as cpn
 from .services import ultimate as ulti
 from .services import prediction as predict
 from .services import comparison_service as cmp
+from .services import prediction_ai_generate as gen
 from django.template import loader
 from django.views.decorators.csrf import csrf_exempt #skip csrf của react để tương tác API
 from django.views.decorators.http import require_http_methods
@@ -262,9 +263,9 @@ async def prediction_api(request):
                 if isinstance(q_values, dict) and q_values:
                     chart_data.append({
                         "quarter": q,
-                        "cash_ratio": float(q_values.get("cash ratio", 0)),
-                        "quick_ratio": float(q_values.get("quick ratio", 0)),
-                        "current_ratio": float(q_values.get("current ratio", 0)),
+                        "cash_ratio": round(float(q_values.get("cash ratio", 0)),2),
+                        "quick_ratio": round(float(q_values.get("quick ratio", 0)),2),
+                        "current_ratio": round(float(q_values.get("current ratio", 0)),2),
                         "isForecast": False
                     })
                 else:
@@ -307,16 +308,28 @@ async def prediction_api(request):
             
             chart_data.append({
                 "quarter": "Quarter 5",
-                "cash_ratio": float(cash_ratio_val),
-                "quick_ratio": float(quick_ratio_val),
-                "current_ratio": float(current_ratio_val),
+                "cash_ratio": round(float(cash_ratio_val),2),
+                "quick_ratio": round(float(quick_ratio_val),2),
+                "current_ratio": round(float(current_ratio_val),2),
                 "isForecast": True
             })
 
+            
+        # kết quả đánh giá và nhận xét từ AI
+        generative = gen.AgentGenerative(
+            float(predictions[0].get("cash_ratio", 0)), 
+            float(predictions[1].get("quick_ratio", 0)),
+            float(predictions[1].get("current_ratio", 0))
+        )
+
+        predict_data = generative._result()
+        gen_text = await gen.genereative(predict_data,chart_data)
+        print(chart_data)
+        print(gen_text)
         # Trả về cho Frontend
         return JsonResponse({
             "chart_data": chart_data,
-            "ai_insight": f"Dựa trên dữ liệu {year}, chỉ số thanh khoản trong quý tới có xu hướng ổn định."
+            "ai_insight": f"{gen_text}"
         }, safe=False)
 
     except Exception as error:
