@@ -106,12 +106,10 @@ def generate_fallback_recommendation(comparison_data: Dict[str, Any]) -> str:
         meta = comparison_data.get('meta', {})
         
         profitability_winner = analysis.get('profitability_winner', '')
-        liquidity_winner = analysis.get('liquidity_winner', '')
-        efficiency_winner = analysis.get('efficiency_winner', '')
         growth_winner = analysis.get('growth_winner', '')
         
-        # Count wins
-        winners = [profitability_winner, liquidity_winner, efficiency_winner, growth_winner]
+        # Count wins - only 2 categories: profitability and growth
+        winners = [profitability_winner, growth_winner]
         company1 = meta.get('company1', '')
         company2 = meta.get('company2', '')
         
@@ -120,10 +118,10 @@ def generate_fallback_recommendation(comparison_data: Dict[str, Any]) -> str:
         
         if c1_wins > c2_wins:
             recommended = company1
-            reason = f"wins in {c1_wins} out of 4 categories"
+            reason = f"wins in {c1_wins} out of 2 categories"
         elif c2_wins > c1_wins:
             recommended = company2
-            reason = f"wins in {c2_wins} out of 4 categories"
+            reason = f"wins in {c2_wins} out of 2 categories"
         else:
             recommended = profitability_winner
             reason = "has better profitability (tie-breaker)"
@@ -131,10 +129,8 @@ def generate_fallback_recommendation(comparison_data: Dict[str, Any]) -> str:
         return f"""**Investment Recommendation (Auto-generated)**
 
 Based on the financial analysis:
-- Profitability Winner: {profitability_winner}
-- Liquidity Winner: {liquidity_winner}
-- Efficiency Winner: {efficiency_winner}
-- Growth Winner: {growth_winner}
+- Best Profitability: {profitability_winner}
+- Best Growth: {growth_winner}
 
 Recommendation: Consider investing in {recommended} as it {reason}.
 

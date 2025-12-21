@@ -37,7 +37,7 @@ function LandingPage() {
                         <span className="highlight">FinSight AI</span>
                     </h1>
                     <p className="hero-subtitle">
-                        Upload your reports. Analyze instantly. Predict smarter.
+                        Choose your favourite company. Analyze instantly. Predict smarter.
                     </p>
                     <div className="hero-buttons">
                         <button className="btn-primary" onClick={handleTryDemo}>
@@ -186,11 +186,11 @@ function LandingPage() {
                         <div className="step-number">
                             <span>01</span>
                         </div>
-                        <h3 className="step-title">Upload Financial Data</h3>
+                        <h3 className="step-title">Choose Your Company</h3>
                         <p className="step-description">
-                            Import your Excel/CSV files with financial statements.
+                            Select your favourite company from the system.
                         </p>
-                    </div>
+                    </div>s
 
                     {/* Step 2 */}
                     <div className="step-item">
