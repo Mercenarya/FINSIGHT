@@ -1,15 +1,11 @@
-"""
-Gemini AI Service for Financial Analysis Recommendations
-Uses Google Gemini API to generate investment recommendations
-"""
 import os
 import time
-# import google.generativeai as genai
-import google.genai as genai
+import google.generativeai as genai  # Use old SDK - tested working
+# import google.genai as genai
 from typing import Dict, Any
 
 # Configure Gemini API
-GEMINI_API_KEY = os.getenv('GEMINI_API_KEY', '')
+GEMINI_API_KEY = os.getenv('GEMINI_API_KEY', 'AIzaSyAtRP8pwpPoKDptESlwjVXreCw9dY9b1kU')
 
 
 def configure_gemini():
@@ -166,54 +162,70 @@ def generate_analysis_insight(analysis_data: Dict[str, Any], company: str = '') 
         
         # Build metrics summary
         metrics_summary = f"""
-        Company: {company}
+        Công ty: {company}
         
-        Profitability Metrics:
-        - Gross Margin: {profitability.get('Gross marrgin', 'N/A')}%
-        - Operating Profit Margin: {profitability.get('Operating profit margin', 'N/A')}%
-        - ROA Ratio: {profitability.get('ROA Ratio value', 'N/A')}
-        - ROE Profit: {profitability.get('ROE Profit', 'N/A')}
+        Chỉ số lợi nhuận (Profitability):
+        - Biên lợi nhuận gộp (Gross Margin): {profitability.get('Gross marrgin', 'N/A')}%
+        - Biên lợi nhuận hoạt động (Operating Profit Margin): {profitability.get('Operating profit margin', 'N/A')}%
+        - Tỷ suất sinh lời trên tài sản (ROA): {profitability.get('ROA Ratio value', 'N/A')}
+        - Tỷ suất sinh lời trên vốn chủ sở hữu (ROE): {profitability.get('ROE Profit', 'N/A')}
         
-        Liquidity Metrics:
-        - Cash Ratio: {liquidity.get('cash ratio', 'N/A')}
-        - Quick Ratio: {liquidity.get('quick ratio', 'N/A')}
-        - Current Ratio: {liquidity.get('current ratio', 'N/A')}
+        Chỉ số thanh khoản (Liquidity):
+        - Tỷ số tiền mặt (Cash Ratio): {liquidity.get('cash ratio', 'N/A')}
+        - Tỷ số thanh toán nhanh (Quick Ratio): {liquidity.get('quick ratio', 'N/A')}
+        - Tỷ số thanh toán hiện hành (Current Ratio): {liquidity.get('current ratio', 'N/A')}
         """
         
         # Add quarterly trend if available
         if chart_data and len(chart_data) > 0:
-            metrics_summary += "\n        Quarterly Data:\n"
+            metrics_summary += "\n        Dữ liệu theo quý:\n"
             for q_data in chart_data[-4:]:  # Last 4 quarters
                 quarter = q_data.get('quarter', q_data.get('Quarter', ''))
-                metrics_summary += f"        - {quarter}\n"
+                cash_r = q_data.get('cash ratio', q_data.get('cash_ratio', 'N/A'))
+                quick_r = q_data.get('quick ratio', q_data.get('quick_ratio', 'N/A'))
+                current_r = q_data.get('current ratio', q_data.get('current_ratio', 'N/A'))
+                metrics_summary += f"        - {quarter}: Cash={cash_r}, Quick={quick_r}, Current={current_r}\n"
         
         # Create prompt
         prompt = f"""
-        You are a financial analyst expert. Analyze the following company's financial data 
-        and provide insights about its financial health.
+        Bạn là chuyên gia phân tích tài chính. Phân tích dữ liệu tài chính của công ty dưới đây
+        và đưa ra nhận xét về tình hình tài chính.
         
         {metrics_summary}
         
-        Requirements:
-        1. Assess the company's profitability situation
-        2. Evaluate liquidity and financial stability
-        3. Identify any concerning trends or positive signs
-        4. Provide a brief recommendation
-        5. Keep response concise, maximum 150 words
-        6. Use simple language that investors can understand
-        7. Response in Vietnamese language
+        Yêu cầu:
+        1. Đánh giá khả năng sinh lời của công ty
+        2. Đánh giá khả năng thanh khoản và ổn định tài chính
+        3. Xác định các xu hướng đáng lo ngại hoặc tích cực
+        4. Đưa ra khuyến nghị ngắn gọn
+        5. Trả lời tối đa 150 từ
+        6. Sử dụng ngôn ngữ đơn giản, dễ hiểu cho nhà đầu tư
+        7. Trả lời bằng tiếng Việt
         """
         
-        # Call Gemini API
-        client = genai.Client(api_key=GEMINI_API_KEY or os.getenv('GEMINI_API_KEY', ''))
-        response = client.models.generate_content(
-            model='gemini-2.0-flash',
-            contents=prompt
-        )
-        return response.text
+        # Call Gemini API with retry logic for quota limits
+        max_retries = 2
+        for attempt in range(max_retries):
+            try:
+                print(f"[Gemini] Attempt {attempt + 1}/{max_retries} for {company}")
+                model = genai.GenerativeModel('gemini-2.0-flash')
+                response = model.generate_content(prompt)
+                print(f"[Gemini] SUCCESS for {company}")
+                return response.text
+            except Exception as api_error:
+                error_str = str(api_error)
+                print(f"[Gemini] API error on attempt {attempt + 1}: {error_str}")
+                if 'quota' in error_str.lower() or 'rate' in error_str.lower() or 'retry' in error_str.lower():
+                    if attempt < max_retries - 1:
+                        print(f"[Gemini] Quota limit hit, waiting 45 seconds before retry...")
+                        time.sleep(45)
+                    else:
+                        raise
+                else:
+                    raise
         
     except Exception as e:
-        print(f"Gemini Analysis API error: {e}")
+        print(f"[Gemini] Analysis API error: {e}")
         # Return fallback insight
         return generate_fallback_analysis_insight(analysis_data, company)
 

@@ -80,7 +80,7 @@ def save_forecasting_result(
     ai_insight: str = ''
 ) -> Optional[str]:
     """
-    Save forecasting/prediction result to MongoDB dataset.dataset collection
+    Save forecasting/prediction result to MongoDB Forecast.Forecast collection
     
     Args:
         company: Company ticker (e.g., 'VIC')
@@ -95,8 +95,9 @@ def save_forecasting_result(
     """
     try:
         client = get_mongo_client()
-        db = client[MONGO_DB]
-        collection = db[DATASET_COLLECTION]
+        # Use Forecast database and Forecast collection
+        db = client['Forecast']
+        collection = db['Forecast']
         
         # Separate historical and forecast data
         historical_data = [d for d in chart_data if not d.get('isForecast', False)]
